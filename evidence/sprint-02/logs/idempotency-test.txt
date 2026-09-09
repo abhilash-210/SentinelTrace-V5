@@ -1,0 +1,7 @@
+=== SENTINEL-TRACE V5 — NORMALIZATION IDEMPOTENCY TEST ===
+
+Target Event: evt_30760a6876fe4d9a
+First Call Normalized ID:  norm_abbbdc9f151a4285
+Second Call Normalized ID: norm_abbbdc9f151a4285
+Database Record PK Match:  True
+Idempotency Confirmed:     True

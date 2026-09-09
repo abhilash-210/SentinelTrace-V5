@@ -1,0 +1,74 @@
+{
+  "sprint": "Sprint 9B",
+  "title": "Continuous Assurance Governance, Remediation & Recovery Verification",
+  "status": "COMPLETE & FROZEN",
+  "timestamp": "2026-09-08T07:41:19.105869+00:00",
+  "test_summary": {
+    "total_tests": 455,
+    "passed": 455,
+    "failed": 0,
+    "errors": 0,
+    "regressions": 0,
+    "sprint_9b_tests": 57
+  },
+  "database_migration": {
+    "revision": "p6q7r8s9t0u1",
+    "down_revision": "o5p6q7r8s9t0",
+    "schema": "sentinel",
+    "tables_created": [
+      "sentinel.assurance_remediation_cases",
+      "sentinel.assurance_root_cause_analyses",
+      "sentinel.assurance_remediation_recommendations",
+      "sentinel.assurance_remediation_plans",
+      "sentinel.assurance_remediation_approvals",
+      "sentinel.assurance_remediation_executions",
+      "sentinel.assurance_recovery_verifications",
+      "sentinel.assurance_recovery_records"
+    ]
+  },
+  "api_endpoints": [
+    "POST /api/v1/assurance-remediation/cases/from-alert/{alert_id}",
+    "POST /api/v1/assurance-remediation/cases",
+    "GET /api/v1/assurance-remediation/cases",
+    "GET /api/v1/assurance-remediation/cases/{case_id}",
+    "GET /api/v1/assurance-remediation/cases/{case_id}/timeline",
+    "POST /api/v1/assurance-remediation/cases/{case_id}/root-cause",
+    "GET /api/v1/assurance-remediation/cases/{case_id}/root-cause",
+    "POST /api/v1/assurance-remediation/cases/{case_id}/recommendations/generate",
+    "GET /api/v1/assurance-remediation/cases/{case_id}/recommendations",
+    "POST /api/v1/assurance-remediation/cases/{case_id}/plans",
+    "POST /api/v1/assurance-remediation/plans/{plan_id}/submit",
+    "POST /api/v1/assurance-remediation/plans/{plan_id}/review",
+    "POST /api/v1/assurance-remediation/plans/{plan_id}/authorize",
+    "POST /api/v1/assurance-remediation/plans/{plan_id}/execution",
+    "POST /api/v1/assurance-remediation/cases/{case_id}/verify-recovery",
+    "GET /api/v1/assurance-remediation/cases/{case_id}/recovery",
+    "POST /api/v1/assurance-remediation/cases/{case_id}/confirm-recovery",
+    "GET /api/v1/assurance-remediation/kpis/summary",
+    "GET /api/v1/assurance-remediation/trends",
+    "GET /api/v1/assurance-remediation/cases/{case_id}/trace"
+  ],
+  "frontend_build_status": {
+    "framework": "React 18 + Vite + Tailwind CSS",
+    "page": "frontend/src/pages/AssuranceRemediation.jsx",
+    "build_status": "SUCCESS",
+    "route": "/assurance-remediation"
+  },
+  "invariants_verified": [
+    "ASSURANCE DEGRADATION MUST NOT BE SILENT",
+    "REMEDIATION MUST BE GOVERNED",
+    "RECOVERY MUST BE VERIFIED",
+    "UNKNOWN != HEALTHY",
+    "UNKNOWN != RECOVERED",
+    "INCONCLUSIVE != VERIFIED",
+    "APPROVAL != EXECUTION",
+    "EXECUTION != RECOVERY",
+    "SELF APPROVAL FORBIDDEN (HTTP 409)",
+    "CRYPTOGRAPHIC FAILURE OVERRIDES NUMERICAL SCORE",
+    "HISTORICAL ASSURANCE EVALUATIONS ARE IMMUTABLE",
+    "GOVERNANCE EVENTS ARE APPEND-ONLY",
+    "SENTINELTRACE RECOMMENDS. HUMANS AUTHORIZE.",
+    "NO AUTONOMOUS EXTERNAL INFRASTRUCTURE MODIFICATION",
+    "PROVENANCE MUST NEVER BE FABRICATED"
+  ]
+}

@@ -1,0 +1,4 @@
+﻿NAME                      IMAGE                                                                     COMMAND                  SERVICE    CREATED          STATUS                    PORTS
+sentinel-trace-backend    sha256:668f0c66c5daa7008a2ec97c164b011535686c6ad635b5367ecb23942b391e3a   "uvicorn app.main:ap…"   backend    8 minutes ago    Up 8 minutes (healthy)    0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+sentinel-trace-db         postgres:15-alpine                                                        "docker-entrypoint.s…"   db         8 minutes ago    Up 8 minutes (healthy)    0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+sentinel-trace-frontend   sentinel-trace-frontend                                                   "/docker-entrypoint.…"   frontend   59 seconds ago   Up 57 seconds (healthy)   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp

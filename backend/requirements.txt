@@ -1,0 +1,31 @@
+# ==================================================
+# SENTINEL-TRACE Backend Dependencies
+# Sprint 0 — Project Foundation
+# ==================================================
+# Python version: 3.11+ recommended (3.11-3.13 for pre-built wheels)
+# For local dev on Python 3.15+, use Docker (see README).
+# ==================================================
+
+# Web Framework
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+
+# Database
+sqlalchemy==2.0.30
+psycopg2-binary==2.9.9
+alembic==1.13.1
+
+# Configuration
+pydantic-settings==2.3.0
+python-dotenv==1.0.1
+
+# Security (used in future sprints — declared here)
+bcrypt==4.1.3
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# HTTP utilities
+httpx==0.27.0
+
+# Development / linting
+ruff==0.4.9

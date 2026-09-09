@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-09-06T12:05:30.450Z",
+  "service": "auth-gateway",
+  "event_type": "AUTHENTICATION_FAILURE",
+  "client_ip": "198.51.100.77",
+  "username": "svc_monitoring",
+  "auth_method": "mfa_push",
+  "error_code": "AUTH_INVALID_TOKEN",
+  "session_id": "sess_8f912c4b7d10e23a",
+  "metadata": {
+    "geo_country": "IN",
+    "datacenter": "asia-south1",
+    "attempts_count": 3
+  }
+}

@@ -1,0 +1,32 @@
+======================================================================
+SENTINEL-TRACE V5 — SPRINT 3C API ENDPOINTS EXECUTION LOG
+======================================================================
+Base URL: http://localhost:8000/api/v1
+
+1. GET /api/v1/semantic-policies
+   - Status: 200 OK
+   - Returns: Complete list of registered policies with versioning metadata and supersedes linkage.
+
+2. GET /api/v1/semantic-policies/{policy_id}
+   - Status: 200 OK
+   - Returns: Complete policy details with all scoped mapping rules.
+
+3. GET /api/v1/semantic-policies/compare?source_policy_id=spol_cisco_asa_v1&target_policy_id=spol_cisco_asa_v2_draft
+   - Status: 200 OK
+   - Returns: Deterministic comparison object containing unchanged, changed, added, and removed rules with calculated semantic impact.
+
+4. GET /api/v1/protected-fields
+   - Status: 200 OK
+   - Returns: Security-sensitive canonical fields (action.result, authentication.outcome, severity) and criticality classifications.
+
+5. POST /api/v1/semantic-policies
+   - Status: 201 Created
+   - Returns: Newly created policy initialized strictly in DRAFT status.
+
+6. GET /api/v1/semantic-interpretations/{interpretation_id}/trace
+   - Status: 200 OK
+   - Returns: 6-tier complete provenance chain from Raw Evidence to Drift Alerts.
+
+7. GET /api/v1/semantic-drift-alerts
+   - Status: 200 OK
+   - Returns: Filterable active drift alerts.

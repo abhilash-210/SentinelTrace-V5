@@ -1,0 +1,10 @@
+======================================================================
+SENTINEL-TRACE DOCKER SERVICES STATUS
+Timestamp: 2026-09-06T18:20:24.358203+00:00
+======================================================================
+
+NAME                      IMAGE                     COMMAND                  SERVICE    CREATED          STATUS                    PORTS
+sentinel-trace-backend    sentinel-trace-backend    "uvicorn app.main:ap…"   backend    43 seconds ago   Up 40 seconds (healthy)   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
+sentinel-trace-db         postgres:15-alpine        "docker-entrypoint.s…"   db         7 hours ago      Up 7 hours (healthy)      0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+sentinel-trace-frontend   sentinel-trace-frontend   "/docker-entrypoint.…"   frontend   42 seconds ago   Up 40 seconds (healthy)   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp
+

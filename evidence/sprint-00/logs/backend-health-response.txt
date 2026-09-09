@@ -1,0 +1,30 @@
+﻿Backend Health Response — Sprint 0
+====================================
+Timestamp: 2026-09-06 16:52:52 +05:30
+
+Status: BACKEND NOT RUNNING LOCALLY
+Reason: Python 3.15 on this machine cannot build pydantic-core (no MSVC linker).
+        Backend is designed to run inside Docker with Python 3.11-slim.
+
+Expected response from GET http://localhost:8000/health:
+{
+  "status": "healthy",
+  "service": "sentinel-trace-backend",
+  "version": "0.1.0",
+  "environment": "development",
+  "database": "connected",
+  "timestamp": "<UTC ISO timestamp>"
+}
+
+Expected response from GET http://localhost:8000/:
+{
+  "service": "sentinel-trace-backend",
+  "version": "0.1.0",
+  "description": "SENTINEL-TRACE: Verifiable Security Log Normalization & Semantic Trust Governance Platform",
+  "docs_url": "/docs",
+  "health_url": "/health",
+  "sprint": "Sprint 0 - Project Foundation"
+}
+
+Verification Method: Code review of backend/app/routers/health.py confirms these responses.
+Docker Compose Verification: PENDING (requires Docker Desktop to be started).

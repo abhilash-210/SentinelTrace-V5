@@ -1,0 +1,1091 @@
+﻿python.exe : test_01_raw_event_ingestion_succeeds 
+(test_sprint1_ingestion.TestSprint1Ingestion.test_01_raw_event_ingestion_succeeds)
+At line:1 char:1
++ & "d:\SIH 2026\SENTINEL-TRACE\backend\.venv\Scripts\python.exe" -m un ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (test_01_raw_eve...stion_succeeds):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+TEST 1: Ingesting a raw security event succeeds with HTTP 201. ... D:\SIH 
+2026\SENTINEL-TRACE\backend\.venv\Lib\site-packages\jose\jwt.py:281: DeprecationWarning: datetime.datetime.utcnow() is 
+deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: 
+datetime.datetime.now(datetime.UTC).
+  now = timegm(datetime.utcnow().utctimetuple())
+D:\SIH 2026\SENTINEL-TRACE\backend\.venv\Lib\site-packages\jose\jwt.py:311: DeprecationWarning: 
+datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to 
+represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = timegm(datetime.utcnow().utctimetuple())
+2026-09-07 23:16:41,078 | INFO     | app.services.event_service | Preserving event: id=evt_3843c8a49b0e44aa source='Cisco ASA Firewall' format=text bytes=94 sha256=c09b8ba62bae296fcb08b42dd90ff2823ef2dc2d8291be173a56130ca9b3f831
+2026-09-07 23:16:41,088 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+ok
+test_02_event_identifier_generated (test_sprint1_ingestion.TestSprint1Ingestion.test_02_event_identifier_generated)
+2026-09-07 23:16:41,094 | INFO     | app.services.event_service | Preserving event: id=evt_04ea45bb554d4acb source='Linux Auth Gateway' format=text bytes=86 sha256=81a6877905193df6734045207b4f25d24952f636e682eb3ee1b9a99d433e5540
+2026-09-07 23:16:41,101 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+TEST 2: Unique event ID (evt_...) is generated and non-empty. ... ok
+test_03_sha256_hash_generated (test_sprint1_ingestion.TestSprint1Ingestion.test_03_sha256_hash_generated)
+2026-09-07 23:16:41,109 | INFO     | app.services.event_service | Preserving event: id=evt_7ad8dee04b0444e9 source='Endpoint EDR' format=json bytes=61 sha256=9410e922ef261cbfa55d038ae15b85abfc8f78dd98111143ec5899fd6508f3e5
+2026-09-07 23:16:41,117 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+TEST 3: SHA-256 hash is generated and exactly 64 hex characters. ... ok
+test_04_stored_raw_content_equals_submitted_exactly 
+(test_sprint1_ingestion.TestSprint1Ingestion.test_04_stored_raw_content_equals_submitted_exactly)
+2026-09-07 23:16:41,123 | INFO     | app.services.event_service | Preserving event: id=evt_876671c1bb604af8 source='Exactness Test Device' format=text bytes=59 sha256=d8ce524b309c8a6a3b99a61fd3d8c2ee524007c667fcb204a409c415790414d4
+2026-09-07 23:16:41,131 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+TEST 4: Stored raw_content in PostgreSQL matches the submitted string EXACTLY. ... ok
+test_05_evidence_retrieval_works (test_sprint1_ingestion.TestSprint1Ingestion.test_05_evidence_retrieval_works)
+2026-09-07 23:16:41,141 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events?limit=10&offset=0 "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,152 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events/evt_876671c1bb604af8 "HTTP/1.1 200 OK"
+TEST 5: Retrieval via GET /api/v1/events and GET /api/v1/events/{id} works. ... ok
+test_06_integrity_verification_succeeds_for_unchanged_event 
+(test_sprint1_ingestion.TestSprint1Ingestion.test_06_integrity_verification_succeeds_for_unchanged_event)
+2026-09-07 23:16:41,155 | INFO     | app.services.event_service | Preserving event: id=evt_f66cbef28e124b11 source='Integrity Check Node' format=text bytes=49 sha256=139794ed58ca6b9e0b184c2d6ab58bbf14909816ebd8a50a5dfd680443932b3f
+2026-09-07 23:16:41,168 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,179 | INFO     | app.services.event_service | Integrity verified for evt_f66cbef28e124b11: hash=139794ed58ca6b9e0b184c2d6ab58bbf14909816ebd8a50a5dfd680443932b3f
+2026-09-07 23:16:41,180 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events/evt_f66cbef28e124b11/verify "HTTP/1.1 200 OK"
+TEST 6: Integrity verification returns VERIFIED for an untouched event. ... ok
+test_07_tampering_causes_verification_failure 
+(test_sprint1_ingestion.TestSprint1Ingestion.test_07_tampering_causes_verification_failure)
+2026-09-07 23:16:41,186 | INFO     | app.services.event_service | Preserving event: id=evt_98f44d3c27684d1b source='Tamper Target' format=text bytes=37 sha256=4252307896f23685491fe76cc1beba425415ea87b4c73fa5688b3de95f92b6aa
+2026-09-07 23:16:41,191 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,208 | WARNING  | app.services.event_service | INTEGRITY MISMATCH DETECTED for evt_98f44d3c27684d1b: stored=4252307896f23685491fe76cc1beba425415ea87b4c73fa5688b3de95f92b6aa live=04d13ed388883e53781bba2acedaca91f1eef22e7514e796e546531ce2154bd5
+2026-09-07 23:16:41,211 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events/evt_98f44d3c27684d1b/verify "HTTP/1.1 200 OK"
+TEST 7: Modifying raw_content directly in DB triggers MISMATCH on verification. ... ok
+test_08_hash_remains_deterministic (test_sprint1_ingestion.TestSprint1Ingestion.test_08_hash_remains_deterministic)
+TEST 8: compute_sha256 produces identical hash for identical inputs. ... ok
+test_01_syslog_parser_extracts_fields 
+(test_sprint2_normalization.TestSprint2Normalization.test_01_syslog_parser_extracts_fields)
+TEST 1: Syslog parser extracts network, action, and header fields. ... ok
+test_02_json_parser_extracts_fields 
+(test_sprint2_normalization.TestSprint2Normalization.test_02_json_parser_extracts_fields)
+TEST 2: JSON parser extracts structured authentication fields. ... ok
+test_03_csv_parser_extracts_fields 
+(test_sprint2_normalization.TestSprint2Normalization.test_03_csv_parser_extracts_fields)
+TEST 3: CSV parser extracts system process audit fields. ... ok
+test_04_normalization_preserves_original_event_id 
+(test_sprint2_normalization.TestSprint2Normalization.test_04_normalization_preserves_original_event_id)
+2026-09-07 23:16:41,221 | INFO     | app.services.event_service | Preserving event: id=evt_7c8e6d0b77df4f0a source='Test Firewall' format=text bytes=108 sha256=72c7b08714dc219ceedb40a77c108396760bfe8a754ed054e474048844c58bd4
+2026-09-07 23:16:41,226 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,241 | INFO     | app.services.normalization_service | Normalized event evt_7c8e6d0b77df4f0a -> norm_b7ad3464249b4c13 (Class: Network Activity, Action: ALLOW, Confidence: 0.95)
+2026-09-07 23:16:41,241 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_7c8e6d0b77df4f0a/normalize "HTTP/1.1 200 OK"
+TEST 4: Normalization strictly links back to original_event_id. ... ok
+test_05_normalized_event_persisted_in_db 
+(test_sprint2_normalization.TestSprint2Normalization.test_05_normalized_event_persisted_in_db)
+2026-09-07 23:16:41,256 | INFO     | app.services.event_service | Preserving event: id=evt_9cef1901ed5741e0 source='Test Auth Node' format=json bytes=85 sha256=70fd2f87a73c6c99beae130e9abb4832ddcc61513c58c4d3308734fcd591e831
+2026-09-07 23:16:41,263 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,275 | INFO     | app.services.normalization_service | Normalized event evt_9cef1901ed5741e0 -> norm_61061e2c888846e3 (Class: Authentication, Action: SUCCESS, Confidence: 0.98)
+2026-09-07 23:16:41,275 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_9cef1901ed5741e0/normalize "HTTP/1.1 200 OK"
+TEST 5: Normalized event record is successfully persisted in PostgreSQL. ... ok
+test_06_missing_fields_remain_null 
+(test_sprint2_normalization.TestSprint2Normalization.test_06_missing_fields_remain_null)
+2026-09-07 23:16:41,284 | INFO     | app.services.event_service | Preserving event: id=evt_766ddbaff58b47c2 source='Incomplete Source' format=text bytes=44 sha256=af51522a722ff6263e5bd068a6385165d363128df950e23e708fdecaeee2db93
+2026-09-07 23:16:41,284 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,298 | INFO     | app.services.normalization_service | Normalized event evt_766ddbaff58b47c2 -> norm_7e168304a36f4b3b (Class: Network Activity, Action: None, Confidence: 0.70)
+2026-09-07 23:16:41,298 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_766ddbaff58b47c2/normalize "HTTP/1.1 200 OK"
+TEST 6: Missing fields remain None/null (no data fabrication). ... ok
+test_07_malformed_input_fails_safely 
+(test_sprint2_normalization.TestSprint2Normalization.test_07_malformed_input_fails_safely)
+2026-09-07 23:16:41,309 | INFO     | app.services.event_service | Preserving event: id=evt_2a81934980144e2e source='Broken JSON Provider' format=json bytes=39 sha256=9cbfec0e2aaad2e14f0cd6f88583af0f34cc129325952842f4615cc357248f7f
+2026-09-07 23:16:41,314 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,314 | INFO     | app.services.normalization_service | Normalized event evt_2a81934980144e2e -> norm_dcba23692b0b488b (Class: Authentication, Action: None, Confidence: 0.20)
+2026-09-07 23:16:41,332 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_2a81934980144e2e/normalize "HTTP/1.1 200 OK"
+TEST 7: Malformed input fails safely with status FAILED/PARTIAL. ... ok
+test_08_confidence_calculation_works 
+(test_sprint2_normalization.TestSprint2Normalization.test_08_confidence_calculation_works)
+2026-09-07 23:16:41,332 | INFO     | app.services.event_service | Preserving event: id=evt_d79d6002c65e4bb7 source='Full Firewall' format=text bytes=136 sha256=457f2d2337861b632773fdf72eb37d35087edecf4111a3ce73ee87c53c535e05
+2026-09-07 23:16:41,332 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,347 | INFO     | app.services.normalization_service | Normalized event evt_d79d6002c65e4bb7 -> norm_21833ac3bf4e4efc (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-07 23:16:41,347 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_d79d6002c65e4bb7/normalize "HTTP/1.1 200 OK"
+TEST 8: Deterministic confidence scoring correctly computes penalties. ... ok
+test_09_repeated_normalization_is_idempotent 
+(test_sprint2_normalization.TestSprint2Normalization.test_09_repeated_normalization_is_idempotent)
+2026-09-07 23:16:41,363 | INFO     | app.services.event_service | Preserving event: id=evt_49ed550df3844712 source='Idempotency Test' format=csv bytes=57 sha256=eb3daf5c62444cfe97192f0ae373a4c3dd722b9b8904751876444a40d018abf7
+2026-09-07 23:16:41,363 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,386 | INFO     | app.services.normalization_service | Normalized event evt_49ed550df3844712 -> norm_cca6ea70651548fc (Class: System Activity, Action: SUCCESS, Confidence: 0.88)
+2026-09-07 23:16:41,386 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_49ed550df3844712/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,392 | INFO     | app.services.normalization_service | Idempotent normalization: returning existing normalized event norm_cca6ea70651548fc
+2026-09-07 23:16:41,395 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_49ed550df3844712/normalize "HTTP/1.1 200 OK"
+TEST 9: Repeated normalization is idempotent (returns existing record). ... ok
+test_10_raw_evidence_remains_unchanged 
+(test_sprint2_normalization.TestSprint2Normalization.test_10_raw_evidence_remains_unchanged)
+2026-09-07 23:16:41,395 | INFO     | app.services.event_service | Preserving event: id=evt_60374f45e71145c5 source='Evidence Protection Test' format=text bytes=43 sha256=b17d80a119f2448b8fada6a27f7a3463b879ca1bc1e6efd4b28ad4bf3d5ea41d
+2026-09-07 23:16:41,395 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,411 | INFO     | app.services.normalization_service | Normalized event evt_60374f45e71145c5 -> norm_1c7997081716430c (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-07 23:16:41,411 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_60374f45e71145c5/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,427 | INFO     | app.services.event_service | Integrity verified for evt_60374f45e71145c5: hash=b17d80a119f2448b8fada6a27f7a3463b879ca1bc1e6efd4b28ad4bf3d5ea41d
+2026-09-07 23:16:41,427 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events/evt_60374f45e71145c5/verify "HTTP/1.1 200 OK"
+TEST 10: Raw evidence in Evidence Vault remains completely immutable after normalization. ... ok
+2026-09-07 23:16:41,446 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+test_01_seed_policies_exist (test_sprint3_semantic_registry.TestSprint3SemanticRegistry.test_01_seed_policies_exist)
+2026-09-07 23:16:41,446 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,458 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies "HTTP/1.1 200 OK"
+TEST 1: Semantic policy seed data exists in database and API. ... ok
+test_02_cisco_policy_is_active 
+(test_sprint3_semantic_registry.TestSprint3SemanticRegistry.test_02_cisco_policy_is_active)
+2026-09-07 23:16:41,475 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,481 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_cisco_asa_v1 "HTTP/1.1 200 OK"
+TEST 2: Cisco ASA policy is ACTIVE and contains valid structural linkage. ... ok
+test_03_demo_vendor_policy_is_active 
+(test_sprint3_semantic_registry.TestSprint3SemanticRegistry.test_03_demo_vendor_policy_is_active)
+2026-09-07 23:16:41,489 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,496 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_demo_vendor_v1 "HTTP/1.1 200 OK"
+TEST 3: Demo Vendor policy is ACTIVE and contains valid structural linkage. ... ok
+test_04_same_raw_value_maps_differently_across_vendors 
+(test_sprint3_semantic_registry.TestSprint3SemanticRegistry.test_04_same_raw_value_maps_differently_across_vendors)
+2026-09-07 23:16:41,504 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,508 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_cisco_asa_v1 "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,508 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,508 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_demo_vendor_v1 "HTTP/1.1 200 OK"
+TEST 4: Same raw value 'PERMIT' maps to different canonical meanings across vendors: ... ok
+test_05_no_global_mapping_lookup_allowed 
+(test_sprint3_semantic_registry.TestSprint3SemanticRegistry.test_05_no_global_mapping_lookup_allowed)
+2026-09-07 23:16:41,520 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,520 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_global "HTTP/1.1 404 Not Found"
+TEST 5: Verify no unscoped global mapping table or global lookup API exists. ... ok
+test_06_protected_field_action_result_exists 
+(test_sprint3_semantic_registry.TestSprint3SemanticRegistry.test_06_protected_field_action_result_exists)
+2026-09-07 23:16:41,590 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,590 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/protected-fields "HTTP/1.1 200 OK"
+TEST 6: Protected field 'action.result' exists with CRITICAL criticality. ... ok
+test_07_protected_field_authentication_outcome_exists 
+(test_sprint3_semantic_registry.TestSprint3SemanticRegistry.test_07_protected_field_authentication_outcome_exists)
+2026-09-07 23:16:41,590 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,606 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/protected-fields "HTTP/1.1 200 OK"
+TEST 7: Protected field 'authentication.outcome' exists with CRITICAL criticality. ... ok
+test_08_semantic_policy_rules_belong_to_policy 
+(test_sprint3_semantic_registry.TestSprint3SemanticRegistry.test_08_semantic_policy_rules_belong_to_policy)
+TEST 8: Semantic policy rules strictly belong to parent policy and cascade on delete. ... ok
+test_09_new_policies_default_to_draft 
+(test_sprint3_semantic_registry.TestSprint3SemanticRegistry.test_09_new_policies_default_to_draft)
+2026-09-07 23:16:41,635 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+TEST 9: New policies default to DRAFT and cannot be initialized directly as ACTIVE. ... ok
+test_10_protected_field_severity_exists 
+(test_sprint3_semantic_registry.TestSprint3SemanticRegistry.test_10_protected_field_severity_exists)
+2026-09-07 23:16:41,643 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,643 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/protected-fields "HTTP/1.1 200 OK"
+TEST 10: Protected field 'severity' exists with HIGH criticality. ... ok
+2026-09-07 23:16:41,653 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+test_01_cisco_permit_maps_to_allowed 
+(test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation.test_01_cisco_permit_maps_to_allowed)
+2026-09-07 23:16:41,660 | INFO     | app.services.event_service | Preserving event: id=evt_c39a219ce24a4dfa source='Cisco ASA Firewall' format=text bytes=152 sha256=e248f80be8812a4b1ac294c0bc06c7c0a0719fb78b8cbf9217724ad05c8c4301
+2026-09-07 23:16:41,665 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,679 | INFO     | app.services.normalization_service | Normalized event evt_c39a219ce24a4dfa -> norm_b1e26ca795a243ef (Class: Network Activity, Action: PERMIT, Confidence: 0.80)
+2026-09-07 23:16:41,681 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_c39a219ce24a4dfa/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,694 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,713 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_c78fe86d6b4c467f for norm_b1e26ca795a243ef: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-07 23:16:41,713 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_b1e26ca795a243ef/interpret "HTTP/1.1 200 OK"
+TEST 1: Cisco ASA PERMIT maps to ALLOWED. ... ok
+test_02_demo_vendor_permit_maps_to_monitored 
+(test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation.test_02_demo_vendor_permit_maps_to_monitored)
+2026-09-07 23:16:41,713 | INFO     | app.services.event_service | Preserving event: id=evt_1affee0d611d492a source='Demo Vendor Tap Appliance' format=json bytes=107 sha256=d652854192cca1d621e4fde3de3628f0c7428b6b90786f135139334e7d73311c
+2026-09-07 23:16:41,730 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,730 | INFO     | app.services.normalization_service | Normalized event evt_1affee0d611d492a -> norm_c7187f8f716c4b30 (Class: Authentication, Action: PERMIT, Confidence: 0.85)
+2026-09-07 23:16:41,743 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_1affee0d611d492a/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,748 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,762 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_5d8983be218f4072 for norm_c7187f8f716c4b30: status=AMBIGUOUS, value=MONITORED, alerts=2
+2026-09-07 23:16:41,762 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_c7187f8f716c4b30/interpret "HTTP/1.1 200 OK"
+TEST 2: Demo Vendor PERMIT maps to MONITORED. ... ok
+test_03_same_token_vendor_isolation 
+(test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation.test_03_same_token_vendor_isolation)
+2026-09-07 23:16:41,762 | INFO     | app.services.event_service | Preserving event: id=evt_aeaec2e3d6bd4f19 source='Cisco ASA Node' format=text bytes=67 sha256=3a0bffffd2e51793aa1e535522d9c1cd4b54b5f5a4180d65cc08d90905edf5f6
+2026-09-07 23:16:41,776 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,790 | INFO     | app.services.normalization_service | Normalized event evt_aeaec2e3d6bd4f19 -> norm_b816b5858ef04833 (Class: Network Activity, Action: PERMIT, Confidence: 0.80)
+2026-09-07 23:16:41,792 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_aeaec2e3d6bd4f19/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,803 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,803 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_e300d336ec154bc0 for norm_b816b5858ef04833: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-07 23:16:41,803 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_b816b5858ef04833/interpret "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,817 | INFO     | app.services.event_service | Preserving event: id=evt_dccc94e02a994cbe source='Demo Vendor Node' format=json bytes=45 sha256=6c43df756b1fa946e8ad7b5efadb7b8e724a8b6d9b184184aa0efe6290fa4c7f
+2026-09-07 23:16:41,826 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,834 | INFO     | app.services.normalization_service | Normalized event evt_dccc94e02a994cbe -> norm_26ed5992b728434a (Class: Authentication, Action: PERMIT, Confidence: 0.85)
+2026-09-07 23:16:41,834 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_dccc94e02a994cbe/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,849 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,853 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_755afba08e4047fd for norm_26ed5992b728434a: status=AMBIGUOUS, value=MONITORED, alerts=2
+2026-09-07 23:16:41,857 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_26ed5992b728434a/interpret "HTTP/1.1 200 OK"
+TEST 3: Same raw token 'PERMIT' produces distinct interpretations across vendors. ... ok
+test_04_no_global_mapping_fallback 
+(test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation.test_04_no_global_mapping_fallback)
+2026-09-07 23:16:41,861 | INFO     | app.services.event_service | Preserving event: id=evt_829bd55970d942ce source='Unregistered Vendor Appliance' format=json bytes=98 sha256=e887fc45fe57f4869cf48cbd97c0da2177695e1ae85ef3fde9db6b7e6ffdab54
+2026-09-07 23:16:41,869 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,881 | INFO     | app.services.normalization_service | Normalized event evt_829bd55970d942ce -> norm_c3437f5b23ee4ee0 (Class: Authentication, Action: PERMIT, Confidence: 0.85)
+2026-09-07 23:16:41,881 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_829bd55970d942ce/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,893 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,903 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_385427e2f6e24cba for norm_c3437f5b23ee4ee0: status=UNMAPPED, value=None, alerts=1
+2026-09-07 23:16:41,903 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_c3437f5b23ee4ee0/interpret "HTTP/1.1 200 OK"
+TEST 4: No global fallback mapping exists; unknown vendor results in UNMAPPED. ... ok
+test_05_unknown_semantic_value_produces_unmapped (test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretat
+ion.test_05_unknown_semantic_value_produces_unmapped)
+2026-09-07 23:16:41,914 | INFO     | app.services.event_service | Preserving event: id=evt_914a8e3d404f4b1d source='Cisco ASA Gateway' format=text bytes=78 sha256=c8b03cceacc5d90c07e8a7e7c130bcc3a7e6b6d36d3b3c670c26c6ca2a03af72
+2026-09-07 23:16:41,919 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,932 | INFO     | app.services.normalization_service | Normalized event evt_914a8e3d404f4b1d -> norm_749726dc88b740bc (Class: Network Activity, Action: UNKNOWN_CUSTOM_OP, Confidence: 0.80)
+2026-09-07 23:16:41,934 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_914a8e3d404f4b1d/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,944 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,945 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_8dd0be96b1d14e1c for norm_749726dc88b740bc: status=UNMAPPED, value=None, alerts=1
+2026-09-07 23:16:41,945 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_749726dc88b740bc/interpret "HTTP/1.1 200 OK"
+TEST 5: Unknown semantic value produces UNMAPPED status. ... ok
+test_06_unmapped_value_creates_drift_alert 
+(test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation.test_06_unmapped_value_creates_drift_alert)
+2026-09-07 23:16:41,958 | INFO     | app.services.event_service | Preserving event: id=evt_433dc730d5c3456c source='Cisco ASA Alert Probe' format=text bytes=80 sha256=7326437b66b297c34218da9abeb65dbb460b2fda5219900be04520a9317e41fd
+2026-09-07 23:16:41,960 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:41,975 | INFO     | app.services.normalization_service | Normalized event evt_433dc730d5c3456c -> norm_456475f922984bce (Class: Network Activity, Action: UNRECOGNIZED_ACTION, Confidence: 0.80)
+2026-09-07 23:16:41,978 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_433dc730d5c3456c/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:41,980 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:41,991 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_7a753d9918564a23 for norm_456475f922984bce: status=UNMAPPED, value=None, alerts=1
+2026-09-07 23:16:41,991 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_456475f922984bce/interpret "HTTP/1.1 200 OK"
+TEST 6: Unmapped value creates UNMAPPED_VALUE drift alert. ... ok
+test_07_ambiguous_rule_creates_drift_alert 
+(test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation.test_07_ambiguous_rule_creates_drift_alert)
+2026-09-07 23:16:41,999 | INFO     | app.services.event_service | Preserving event: id=evt_af17837e7ee74963 source='Demo Vendor Ambiguity Test' format=json bytes=45 sha256=6c43df756b1fa946e8ad7b5efadb7b8e724a8b6d9b184184aa0efe6290fa4c7f
+2026-09-07 23:16:42,007 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:42,018 | INFO     | app.services.normalization_service | Normalized event evt_af17837e7ee74963 -> norm_3a5fd5e05f3742d6 (Class: Authentication, Action: PERMIT, Confidence: 0.85)
+2026-09-07 23:16:42,020 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_af17837e7ee74963/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,030 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,038 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_b8baa347aa544a5d for norm_3a5fd5e05f3742d6: status=AMBIGUOUS, value=MONITORED, alerts=2
+2026-09-07 23:16:42,039 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_3a5fd5e05f3742d6/interpret "HTTP/1.1 200 OK"
+TEST 7: AMBIGUOUS rule creates AMBIGUOUS_MAPPING alert. ... ok
+test_08_protected_field_ambiguity_creates_high_risk_alert (test_sprint3b_semantic_interpretation.TestSprint3BSemanticIn
+terpretation.test_08_protected_field_ambiguity_creates_high_risk_alert)
+2026-09-07 23:16:42,043 | INFO     | app.services.event_service | Preserving event: id=evt_a33f8468dd6c42cd source='Demo Vendor Protected Risk Test' format=json bytes=45 sha256=6c43df756b1fa946e8ad7b5efadb7b8e724a8b6d9b184184aa0efe6290fa4c7f
+2026-09-07 23:16:42,051 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:42,065 | INFO     | app.services.normalization_service | Normalized event evt_a33f8468dd6c42cd -> norm_1bb278fc5190435d (Class: Authentication, Action: PERMIT, Confidence: 0.85)
+2026-09-07 23:16:42,065 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_a33f8468dd6c42cd/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,073 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,073 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_9a10a26ab46144b3 for norm_1bb278fc5190435d: status=AMBIGUOUS, value=MONITORED, alerts=2
+2026-09-07 23:16:42,087 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_1bb278fc5190435d/interpret "HTTP/1.1 200 OK"
+TEST 8: Protected semantic field ambiguity creates PROTECTED_FIELD_RISK alert. ... ok
+test_09_conflicting_rules_create_policy_conflict (test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretat
+ion.test_09_conflicting_rules_create_policy_conflict)
+2026-09-07 23:16:42,097 | INFO     | app.services.event_service | Preserving event: id=evt_b43e59a4ff384ecd source='Conflict Vendor Device' format=text bytes=62 sha256=6083500aa95237bac2eb81c13f9c245fa424eb6cbee9c67d9d7b2378db8b3b46
+2026-09-07 23:16:42,105 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:42,114 | INFO     | app.services.normalization_service | Normalized event evt_b43e59a4ff384ecd -> norm_fa71eafb1c2d4c24 (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-07 23:16:42,114 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_b43e59a4ff384ecd/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,114 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,136 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_d683fa4107604b1e for norm_fa71eafb1c2d4c24: status=CONFLICT, value=None, alerts=1
+2026-09-07 23:16:42,136 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_fa71eafb1c2d4c24/interpret "HTTP/1.1 200 OK"
+TEST 9: Conflicting policy rules create POLICY_CONFLICT status and alert. ... ok
+test_10_confidence_scoring_is_deterministic 
+(test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation.test_10_confidence_scoring_is_deterministic)
+2026-09-07 23:16:42,136 | INFO     | app.services.event_service | Preserving event: id=evt_fe713a0392b14c3d source='Cisco ASA Det Test' format=text bytes=60 sha256=35b340f11b308bdd22c3a877e827978887f64b4f1d3ea27edd4e1bf7348e1cb1
+2026-09-07 23:16:42,150 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:42,160 | INFO     | app.services.normalization_service | Normalized event evt_fe713a0392b14c3d -> norm_07ed948b53234dfc (Class: Network Activity, Action: DENY, Confidence: 0.80)
+2026-09-07 23:16:42,162 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_fe713a0392b14c3d/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,171 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,178 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_65cdca083db24ea5 for norm_07ed948b53234dfc: status=INTERPRETED, value=DENIED, alerts=0
+2026-09-07 23:16:42,181 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_07ed948b53234dfc/interpret "HTTP/1.1 200 OK"
+TEST 10: Confidence scoring is deterministic with explainable reasons. ... ok
+test_11_repeated_interpretation_is_idempotent (test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation
+.test_11_repeated_interpretation_is_idempotent)
+2026-09-07 23:16:42,183 | INFO     | app.services.event_service | Preserving event: id=evt_49a17d584f0745c5 source='Cisco Idempotency Test' format=text bytes=61 sha256=d98e80e196e7c02271001a109c99c9533a2bf4fb3f62b6fe496b7b5e61519281
+2026-09-07 23:16:42,190 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:42,203 | INFO     | app.services.normalization_service | Normalized event evt_49a17d584f0745c5 -> norm_ed2c04c41b414c5e (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-07 23:16:42,203 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_49a17d584f0745c5/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,212 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,223 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_3470260b616d4fac for norm_ed2c04c41b414c5e: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-07 23:16:42,223 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_ed2c04c41b414c5e/interpret "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,226 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,226 | INFO     | sentinel.services.semantic_interpretation | Returning existing interpretation interp_3470260b616d4fac for normalized event norm_ed2c04c41b414c5e
+2026-09-07 23:16:42,226 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_ed2c04c41b414c5e/interpret "HTTP/1.1 200 OK"
+TEST 11: Repeated interpretation is idempotent (returns existing record). ... ok
+test_12_normalized_event_remains_unchanged 
+(test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation.test_12_normalized_event_remains_unchanged)
+2026-09-07 23:16:42,242 | INFO     | app.services.event_service | Preserving event: id=evt_e282bd9e71474643 source='Cisco Immutability Test' format=text bytes=61 sha256=d98e80e196e7c02271001a109c99c9533a2bf4fb3f62b6fe496b7b5e61519281
+2026-09-07 23:16:42,246 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:42,261 | INFO     | app.services.normalization_service | Normalized event evt_e282bd9e71474643 -> norm_6238aa33ac664775 (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-07 23:16:42,263 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_e282bd9e71474643/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,266 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,279 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_3a262464f61f4009 for norm_6238aa33ac664775: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-07 23:16:42,281 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_6238aa33ac664775/interpret "HTTP/1.1 200 OK"
+TEST 12: Original normalized event in database remains 100% unchanged. ... ok
+test_13_raw_evidence_remains_unchanged 
+(test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation.test_13_raw_evidence_remains_unchanged)
+2026-09-07 23:16:42,287 | INFO     | app.services.event_service | Preserving event: id=evt_6a5d3a30dffd4054 source='Cisco Raw Integrity Test' format=text bytes=52 sha256=687f79b71959a6df41370bb0f6e17da8ce666869ca4a5d89d81f774ae76fc8c1
+2026-09-07 23:16:42,293 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:42,303 | INFO     | app.services.normalization_service | Normalized event evt_6a5d3a30dffd4054 -> norm_dffef2863b7a43d5 (Class: Network Activity, Action: PERMIT, Confidence: 0.80)
+2026-09-07 23:16:42,306 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_6a5d3a30dffd4054/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,309 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,318 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_997e9de161ff4a1c for norm_dffef2863b7a43d5: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-07 23:16:42,318 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_dffef2863b7a43d5/interpret "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,333 | INFO     | app.services.event_service | Integrity verified for evt_6a5d3a30dffd4054: hash=687f79b71959a6df41370bb0f6e17da8ce666869ca4a5d89d81f774ae76fc8c1
+2026-09-07 23:16:42,334 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events/evt_6a5d3a30dffd4054/verify "HTTP/1.1 200 OK"
+TEST 13: Raw evidence in Evidence Vault remains 100% unchanged. ... ok
+test_14_trace_endpoint_shows_complete_chain 
+(test_sprint3b_semantic_interpretation.TestSprint3BSemanticInterpretation.test_14_trace_endpoint_shows_complete_chain)
+2026-09-07 23:16:42,334 | INFO     | app.services.event_service | Preserving event: id=evt_9d28504279b84cb7 source='Cisco ASA Trace Audit' format=text bytes=62 sha256=30ebd2c118e98f4de2825637f2cc6d0b658188b0731a4bac697e159307be62c3
+2026-09-07 23:16:42,345 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:42,348 | INFO     | app.services.normalization_service | Normalized event evt_9d28504279b84cb7 -> norm_473c8be2053b4a7d (Class: Network Activity, Action: PERMIT, Confidence: 0.80)
+2026-09-07 23:16:42,348 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_9d28504279b84cb7/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,364 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,364 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_e0866bb4247549d8 for norm_473c8be2053b4a7d: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-07 23:16:42,364 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_473c8be2053b4a7d/interpret "HTTP/1.1 200 OK"
+2026-09-07 23:16:42,391 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-interpretations/interp_e0866bb4247549d8/trace "HTTP/1.1 200 OK"
+TEST 14: Trace endpoint returns full audit chain from raw evidence to interpretation. ... ok
+2026-09-07 23:16:42,397 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+test_01_policy_version_lineage_and_status 
+(test_sprint3c_semantic_governance.TestSprint3CSemanticGovernance.test_01_policy_version_lineage_and_status)
+2026-09-07 23:16:42,407 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,413 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies "HTTP/1.1 200 OK"
+TEST 1: Policies maintain explicit versioning and supersedes_policy_id linkage. ... ok
+test_02_compare_policies_diff_and_semantic_impact 
+(test_sprint3c_semantic_governance.TestSprint3CSemanticGovernance.test_02_compare_policies_diff_and_semantic_impact)
+2026-09-07 23:16:42,426 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,429 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/compare?source_policy_id=spol_cisco_asa_v1&target_policy_id=spol_cisco_asa_v2_draft "HTTP/1.1 200 OK"
+TEST 2: Policy comparison correctly computes unchanged, changed, and added rules with impact. ... ok
+test_03_compare_policies_invalid_id_404 
+(test_sprint3c_semantic_governance.TestSprint3CSemanticGovernance.test_03_compare_policies_invalid_id_404)
+2026-09-07 23:16:42,438 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,438 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/compare?source_policy_id=spol_cisco_asa_v1&target_policy_id=spol_nonexistent_999 "HTTP/1.1 404 Not Found"
+TEST 3: Comparing with a non-existent policy returns 404. ... ok
+test_04_create_draft_policy_enforcement 
+(test_sprint3c_semantic_governance.TestSprint3CSemanticGovernance.test_04_create_draft_policy_enforcement)
+2026-09-07 23:16:42,454 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+TEST 4: Creating a policy always defaults to DRAFT status and forbids direct activation. ... ok
+test_05_protected_fields_security_catalog 
+(test_sprint3c_semantic_governance.TestSprint3CSemanticGovernance.test_05_protected_fields_security_catalog)
+2026-09-07 23:16:42,458 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:42,458 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/protected-fields "HTTP/1.1 200 OK"
+TEST 5: Protected fields catalog includes critical telemetry fields. ... ok
+2026-09-07 23:16:42,470 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+test_01_demo_users_seed_correctly 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_01_demo_users_seed_correctly)
+TEST 1: Demo users seed correctly with expected roles and active status. ... ok
+test_02_password_stored_as_secure_hash 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_02_password_stored_as_secure_hash)
+2026-09-07 23:16:42,470 | WARNING  | passlib.handlers.bcrypt | (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "D:\SIH 2026\SENTINEL-TRACE\backend\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+TEST 2: Passwords are stored exclusively as Bcrypt hashes, never in plaintext. ... ok
+test_03_valid_login_returns_jwt (test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_03_valid_login_returns_jwt)
+2026-09-07 23:16:45,253 | INFO     | sentinel.routers.auth | User 'admin_demo' successfully authenticated with role 'ADMIN'
+2026-09-07 23:16:45,268 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 200 OK"
+TEST 3: Valid login returns JWT token, token_type bearer, and user context. ... ok
+test_04_invalid_login_rejected_401 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_04_invalid_login_rejected_401)
+2026-09-07 23:16:45,460 | WARNING  | sentinel.routers.auth | Failed login attempt for identifier: 'admin_demo'
+2026-09-07 23:16:45,461 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 401 Unauthorized"
+2026-09-07 23:16:45,469 | WARNING  | sentinel.routers.auth | Failed login attempt for identifier: 'nonexistent_user'
+2026-09-07 23:16:45,469 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 401 Unauthorized"
+TEST 4: Invalid login returns 401 without revealing whether username or password was wrong. ... ok
+test_05_inactive_user_cannot_login 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_05_inactive_user_cannot_login)
+2026-09-07 23:16:45,479 | WARNING  | sentinel.services.user | Login rejected: user 'deactivated_user' is inactive.
+2026-09-07 23:16:45,479 | WARNING  | sentinel.routers.auth | Failed login attempt for identifier: 'deactivated_user'
+2026-09-07 23:16:45,481 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 401 Unauthorized"
+TEST 5: Inactive user account cannot authenticate and receives 401. ... ok
+test_06_auth_me_returns_current_user 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_06_auth_me_returns_current_user)
+2026-09-07 23:16:45,491 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/auth/me "HTTP/1.1 200 OK"
+TEST 6: GET /api/v1/auth/me returns currently authenticated user details. ... ok
+test_07_missing_token_returns_401 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_07_missing_token_returns_401)
+2026-09-07 23:16:45,496 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 401 Unauthorized"
+TEST 7: Requesting protected endpoints without token returns HTTP 401. ... ok
+test_08_invalid_token_returns_401 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_08_invalid_token_returns_401)
+2026-09-07 23:16:45,499 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/auth/me "HTTP/1.1 401 Unauthorized"
+TEST 8: Requesting with malformed or invalid token returns HTTP 401. ... ok
+test_09_policy_author_can_create_draft_policy 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_09_policy_author_can_create_draft_policy)
+2026-09-07 23:16:45,582 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+TEST 9: POLICY_AUTHOR has SEMANTIC_POLICY_CREATE permission to create draft policy. ... ok
+test_10_viewer_cannot_create_policy 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_10_viewer_cannot_create_policy)
+2026-09-07 23:16:45,582 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'SEMANTIC_POLICY_CREATE'
+2026-09-07 23:16:45,582 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 403 Forbidden"
+TEST 10: VIEWER lacks SEMANTIC_POLICY_CREATE and receives 403 Forbidden. ... ok
+test_11_security_analyst_can_ingest_evidence 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_11_security_analyst_can_ingest_evidence)
+2026-09-07 23:16:45,596 | INFO     | app.services.event_service | Preserving event: id=evt_29d6ab5d6aa146a6 source='Analyst Ingest Test' format=text bytes=63 sha256=4d185cf4eda98159fa1d079558ebe435eba0a91aca1870a4eff5df54143f8bd8
+2026-09-07 23:16:45,596 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+TEST 11: SECURITY_ANALYST has EVIDENCE_INGEST permission to ingest raw events. ... ok
+test_12_viewer_cannot_ingest_evidence 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_12_viewer_cannot_ingest_evidence)
+2026-09-07 23:16:45,607 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'EVIDENCE_INGEST'
+2026-09-07 23:16:45,610 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 403 Forbidden"
+TEST 12: VIEWER lacks EVIDENCE_INGEST and receives 403 Forbidden. ... ok
+test_13_security_analyst_can_normalize_event 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_13_security_analyst_can_normalize_event)
+2026-09-07 23:16:45,615 | INFO     | app.services.event_service | Preserving event: id=evt_411ab105a5234243 source='Analyst Norm Test' format=text bytes=36 sha256=897ddcb17c8d1db110826390e30a370af0b6d6e85adf0c43ee1bf60c74a480a4
+2026-09-07 23:16:45,622 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:45,631 | INFO     | app.services.normalization_service | Normalized event evt_411ab105a5234243 -> norm_9ae11f916e364874 (Class: Network Activity, Action: ALLOW, Confidence: 0.95)
+2026-09-07 23:16:45,631 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_411ab105a5234243/normalize "HTTP/1.1 200 OK"
+TEST 13: SECURITY_ANALYST has EVENT_NORMALIZE permission to normalize events. ... ok
+test_14_policy_author_cannot_normalize_event 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_14_policy_author_cannot_normalize_event)
+2026-09-07 23:16:45,642 | INFO     | app.services.event_service | Preserving event: id=evt_1ad987f8ff90408b source='Norm Auth Test' format=text bytes=12 sha256=3431838e9ba427094f2be714044e810545fc7c26a0772b2218ce25a25e93ba05
+2026-09-07 23:16:45,648 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:45,649 | WARNING  | sentinel.core.auth | Access denied: User 'author_demo' with role 'POLICY_AUTHOR' lacks permission 'EVENT_NORMALIZE'
+2026-09-07 23:16:45,649 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_1ad987f8ff90408b/normalize "HTTP/1.1 403 Forbidden"
+TEST 14: POLICY_AUTHOR lacks EVENT_NORMALIZE and receives 403 Forbidden. ... ok
+test_15_security_analyst_can_interpret_normalized_event 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_15_security_analyst_can_interpret_normalized_event)
+2026-09-07 23:16:45,658 | INFO     | app.services.event_service | Preserving event: id=evt_9f54f53f55ec4dd6 source='Cisco ASA Analyst' format=text bytes=137 sha256=f4afa890c91616f817e05a718d29e207e271b6e34a10f743c532b82ee573ff92
+2026-09-07 23:16:45,658 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:45,678 | INFO     | app.services.normalization_service | Normalized event evt_9f54f53f55ec4dd6 -> norm_43ba0de2080f4f55 (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-07 23:16:45,678 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_9f54f53f55ec4dd6/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:45,691 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:45,691 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_964f6f2fdbc4404f for norm_43ba0de2080f4f55: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-07 23:16:45,691 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_43ba0de2080f4f55/interpret "HTTP/1.1 200 OK"
+TEST 15: SECURITY_ANALYST has SEMANTIC_INTERPRET permission to run semantic interpretation. ... ok
+test_16_auditor_can_access_readonly_trace 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_16_auditor_can_access_readonly_trace)
+2026-09-07 23:16:45,706 | INFO     | app.services.event_service | Preserving event: id=evt_502406f731e2416a source='Cisco ASA Auditor' format=text bytes=138 sha256=c800c26f26050a8e09ddda2e2cc7824e141f7ac19c94b3d36741b885778b5057
+2026-09-07 23:16:45,712 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-07 23:16:45,724 | INFO     | app.services.normalization_service | Normalized event evt_502406f731e2416a -> norm_ec7870e83d394b1b (Class: Network Activity, Action: PERMIT, Confidence: 0.80)
+2026-09-07 23:16:45,726 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_502406f731e2416a/normalize "HTTP/1.1 200 OK"
+2026-09-07 23:16:45,735 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:45,742 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_f4770d6587544dce for norm_ec7870e83d394b1b: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-07 23:16:45,744 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_ec7870e83d394b1b/interpret "HTTP/1.1 200 OK"
+2026-09-07 23:16:45,754 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-interpretations/interp_f4770d6587544dce/trace "HTTP/1.1 200 OK"
+TEST 16: AUDITOR has AUDIT_READ permission to inspect complete traceability chain. ... ok
+test_17_non_admin_cannot_access_user_management 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_17_non_admin_cannot_access_user_management)
+2026-09-07 23:16:45,757 | WARNING  | sentinel.core.auth | Access denied: User 'analyst_demo' with role 'SECURITY_ANALYST' lacks permission 'USER_MANAGE'
+2026-09-07 23:16:45,757 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/users "HTTP/1.1 403 Forbidden"
+TEST 17: Non-admin users cannot manage users (HTTP 403 Forbidden). ... ok
+test_18_admin_can_list_users (test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_18_admin_can_list_users)
+2026-09-07 23:16:45,769 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/users "HTTP/1.1 200 OK"
+TEST 18: ADMIN has USER_READ / USER_MANAGE to query user directory. ... ok
+test_19_password_hash_never_exposed_in_api_response 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_19_password_hash_never_exposed_in_api_response)
+2026-09-07 23:16:45,784 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/users "HTTP/1.1 200 OK"
+2026-09-07 23:16:45,797 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/users/usr_admin_001 "HTTP/1.1 200 OK"
+TEST 19: password_hash never appears in user list, user detail, or auth responses. ... ok
+test_20_admin_can_create_and_update_user 
+(test_sprint4a_identity_rbac.TestSprint4AIdentityRBAC.test_20_admin_can_create_and_update_user)
+2026-09-07 23:16:45,999 | INFO     | sentinel.services.ledger | Governance Ledger [#307] USER_CREATED appended by 'ops_3a6329' (Hash: 8f9469192254...)
+2026-09-07 23:16:46,004 | INFO     | sentinel.routers.user | User 'ops_3a6329' created by admin 'admin_demo'
+2026-09-07 23:16:46,007 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/users "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,016 | INFO     | sentinel.services.ledger | Governance Ledger [#308] ROLE_CHANGED appended by 'ops_3a6329' (Hash: 60b699d969ed...)
+2026-09-07 23:16:46,022 | INFO     | sentinel.routers.user | User 'ops_3a6329' updated by admin 'admin_demo'
+2026-09-07 23:16:46,023 | INFO     | httpx | HTTP Request: PATCH http://testserver/api/v1/users/usr_7d2de735cb9b "HTTP/1.1 200 OK"
+TEST 20: ADMIN can create a new user and update role / active status. ... ok
+2026-09-07 23:16:46,030 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+test_01_draft_policy_can_be_submitted 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_01_draft_policy_can_be_submitted)
+2026-09-07 23:16:46,046 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,054 | INFO     | sentinel.services.ledger | Governance Ledger [#309] POLICY_SUBMITTED appended by 'author_demo' (Hash: 5b3adf3ef48a...)
+2026-09-07 23:16:46,054 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_985f3449ace3
+2026-09-07 23:16:46,065 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_985f3449ace3/submit "HTTP/1.1 200 OK"
+TEST 1: Draft policy can be submitted for review with SEMANTIC_POLICY_SUBMIT. ... ok
+test_02_submission_changes_policy_status_to_pending_review 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_02_submission_changes_policy_status_to_pending_review)
+2026-09-07 23:16:46,078 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,080 | INFO     | sentinel.services.ledger | Governance Ledger [#310] POLICY_SUBMITTED appended by 'author_demo' (Hash: db83e3d58cf4...)
+2026-09-07 23:16:46,080 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_6db5ba98263f
+2026-09-07 23:16:46,094 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_6db5ba98263f/submit "HTTP/1.1 200 OK"
+TEST 2: Submission changes policy state to PENDING_REVIEW in database. ... ok
+test_03_approval_request_records_requester_identity 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_03_approval_request_records_requester_identity)
+2026-09-07 23:16:46,107 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,117 | INFO     | sentinel.services.ledger | Governance Ledger [#311] POLICY_SUBMITTED appended by 'author_demo' (Hash: 5357396bb4e1...)
+2026-09-07 23:16:46,117 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_16edffd38641
+2026-09-07 23:16:46,117 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_16edffd38641/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,134 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/policy-approvals/approval_85275612588b "HTTP/1.1 200 OK"
+TEST 3: Policy approval ticket accurately captures requester user_id and timestamps. ... ok
+test_04_policy_author_cannot_approve_own_policy 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_04_policy_author_cannot_approve_own_policy)
+2026-09-07 23:16:46,147 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,157 | INFO     | sentinel.services.ledger | Governance Ledger [#312] POLICY_SUBMITTED appended by 'author_demo' (Hash: 2465cd7283f0...)
+2026-09-07 23:16:46,157 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_eb7bbeacc55b
+2026-09-07 23:16:46,161 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_eb7bbeacc55b/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,161 | WARNING  | sentinel.core.auth | Access denied: User 'author_demo' with role 'POLICY_AUTHOR' lacks permission 'POLICY_APPROVE'
+2026-09-07 23:16:46,161 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_b12492ea772b/approve "HTTP/1.1 403 Forbidden"
+2026-09-07 23:16:46,173 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,193 | INFO     | sentinel.services.ledger | Governance Ledger [#313] POLICY_SUBMITTED appended by 'admin_demo' (Hash: 1c1c9d97cb79...)
+2026-09-07 23:16:46,193 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'admin_demo' (ADMIN) on SEMANTIC_POLICY:spol_d120a4e7102c
+2026-09-07 23:16:46,193 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_d120a4e7102c/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,205 | WARNING  | sentinel.services.governance | SECURITY VIOLATION: User 'admin_demo' attempted self-approval of ticket approval_3ac8c23e59db
+2026-09-07 23:16:46,205 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_3ac8c23e59db/approve "HTTP/1.1 403 Forbidden"
+TEST 4: MAKER-CHECKER SEPARATION: Policy author CANNOT approve their own policy (403). ... ok
+test_05_different_reviewer_can_approve_policy 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_05_different_reviewer_can_approve_policy)
+2026-09-07 23:16:46,219 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,229 | INFO     | sentinel.services.ledger | Governance Ledger [#314] POLICY_SUBMITTED appended by 'author_demo' (Hash: b7521d68d8fd...)
+2026-09-07 23:16:46,229 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_5de67306995a
+2026-09-07 23:16:46,236 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_5de67306995a/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,245 | INFO     | sentinel.services.ledger | Governance Ledger [#315] POLICY_APPROVED appended by 'reviewer_demo' (Hash: fd60fc73285b...)
+2026-09-07 23:16:46,245 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_5de67306995a
+2026-09-07 23:16:46,252 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_050ffe97f60e/approve "HTTP/1.1 200 OK"
+TEST 5: Authorized different reviewer successfully approves the policy. ... ok
+test_06_rejection_workflow_works (test_sprint4b_dual_control.TestSprint4BDualControl.test_06_rejection_workflow_works)
+2026-09-07 23:16:46,266 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,268 | INFO     | sentinel.services.ledger | Governance Ledger [#316] POLICY_SUBMITTED appended by 'author_demo' (Hash: 4238aa88eb57...)
+2026-09-07 23:16:46,268 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_9adfd28b1302
+2026-09-07 23:16:46,281 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_9adfd28b1302/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,287 | INFO     | sentinel.services.ledger | Governance Ledger [#317] POLICY_REJECTED appended by 'reviewer_demo' (Hash: 08d16044617e...)
+2026-09-07 23:16:46,287 | INFO     | sentinel.services.governance | Governance Audit [POLICY_REJECTED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_9adfd28b1302
+2026-09-07 23:16:46,287 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_9a8bf027c6c5/reject "HTTP/1.1 200 OK"
+TEST 6: Reviewer rejection transitions approval and policy to REJECTED. ... ok
+test_07_invalid_state_transition_draft_to_active_blocked 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_07_invalid_state_transition_draft_to_active_blocked)
+2026-09-07 23:16:46,306 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,315 | WARNING  | sentinel.services.governance | Invalid policy state transition attempted: DRAFT -> ACTIVE
+2026-09-07 23:16:46,317 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_fbc8143d3891/activate "HTTP/1.1 409 Conflict"
+TEST 7: Attempting direct DRAFT -> ACTIVE activation is blocked with HTTP 409 Conflict. ... ok
+test_08_only_approved_policy_can_activate 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_08_only_approved_policy_can_activate)
+2026-09-07 23:16:46,329 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,339 | INFO     | sentinel.services.ledger | Governance Ledger [#318] POLICY_SUBMITTED appended by 'author_demo' (Hash: a27d440ddccb...)
+2026-09-07 23:16:46,339 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_1f84b5389580
+2026-09-07 23:16:46,345 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_1f84b5389580/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,354 | INFO     | sentinel.services.ledger | Governance Ledger [#319] POLICY_APPROVED appended by 'reviewer_demo' (Hash: 6b0134889cc5...)
+2026-09-07 23:16:46,354 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_1f84b5389580
+2026-09-07 23:16:46,359 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_f77cff167b7d/approve "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,373 | INFO     | sentinel.services.ledger | Governance Ledger [#320] POLICY_SUPERSEDED appended by 'reviewer_demo' (Hash: 8b8c8458fdc8...)
+2026-09-07 23:16:46,373 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUPERSEDED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_3b50b27effc2
+2026-09-07 23:16:46,373 | INFO     | sentinel.services.ledger | Governance Ledger [#321] POLICY_ACTIVATED appended by 'reviewer_demo' (Hash: 1764f790a428...)
+2026-09-07 23:16:46,373 | INFO     | sentinel.services.governance | Governance Audit [POLICY_ACTIVATED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_1f84b5389580
+2026-09-07 23:16:46,379 | INFO     | sentinel.services.governance | Policy 'spol_1f84b5389580' v1 successfully ACTIVATED by 'reviewer_demo'
+2026-09-07 23:16:46,383 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_1f84b5389580/activate "HTTP/1.1 200 OK"
+TEST 8: Only APPROVED policies can be activated into live production. ... ok
+test_09_activation_supersedes_previous_active_policy 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_09_activation_supersedes_previous_active_policy)
+2026-09-07 23:16:46,388 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,404 | INFO     | sentinel.services.ledger | Governance Ledger [#322] POLICY_SUBMITTED appended by 'author_demo' (Hash: bb3e213c214a...)
+2026-09-07 23:16:46,404 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_544ce188ca95
+2026-09-07 23:16:46,404 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_544ce188ca95/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,420 | INFO     | sentinel.services.ledger | Governance Ledger [#323] POLICY_APPROVED appended by 'reviewer_demo' (Hash: 2bd6b00ac629...)
+2026-09-07 23:16:46,420 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_544ce188ca95
+2026-09-07 23:16:46,425 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_e2c5017a4e48/approve "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,436 | INFO     | sentinel.services.ledger | Governance Ledger [#324] POLICY_ACTIVATED appended by 'reviewer_demo' (Hash: b3cc927d9c60...)
+2026-09-07 23:16:46,436 | INFO     | sentinel.services.governance | Governance Audit [POLICY_ACTIVATED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_544ce188ca95
+2026-09-07 23:16:46,436 | INFO     | sentinel.services.governance | Policy 'spol_544ce188ca95' v1 successfully ACTIVATED by 'reviewer_demo'
+2026-09-07 23:16:46,436 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_544ce188ca95/activate "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,452 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,461 | INFO     | sentinel.services.ledger | Governance Ledger [#325] POLICY_SUBMITTED appended by 'author_demo' (Hash: e45f4a48a319...)
+2026-09-07 23:16:46,461 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_cab36a6e2910
+2026-09-07 23:16:46,469 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_cab36a6e2910/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,478 | INFO     | sentinel.services.ledger | Governance Ledger [#326] POLICY_APPROVED appended by 'reviewer_demo' (Hash: b9d6f6610257...)
+2026-09-07 23:16:46,478 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_cab36a6e2910
+2026-09-07 23:16:46,485 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_7fcaa077a7cf/approve "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,492 | INFO     | sentinel.services.ledger | Governance Ledger [#327] POLICY_SUPERSEDED appended by 'reviewer_demo' (Hash: b393f50c423a...)
+2026-09-07 23:16:46,494 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUPERSEDED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_544ce188ca95
+2026-09-07 23:16:46,494 | INFO     | sentinel.services.ledger | Governance Ledger [#328] POLICY_ACTIVATED appended by 'reviewer_demo' (Hash: d46ec76db06b...)
+2026-09-07 23:16:46,494 | INFO     | sentinel.services.governance | Governance Audit [POLICY_ACTIVATED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_cab36a6e2910
+2026-09-07 23:16:46,499 | INFO     | sentinel.services.governance | Policy 'spol_cab36a6e2910' v1 successfully ACTIVATED by 'reviewer_demo'
+2026-09-07 23:16:46,502 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_cab36a6e2910/activate "HTTP/1.1 200 OK"
+TEST 9: Activating a new policy version automatically marks the old version as SUPERSEDED. ... ok
+test_10_governance_audit_event_created_for_submission 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_10_governance_audit_event_created_for_submission)
+2026-09-07 23:16:46,517 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,518 | INFO     | sentinel.services.ledger | Governance Ledger [#329] POLICY_SUBMITTED appended by 'author_demo' (Hash: b07bc1507f4e...)
+2026-09-07 23:16:46,518 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_fbbba5e9a204
+2026-09-07 23:16:46,529 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_fbbba5e9a204/submit "HTTP/1.1 200 OK"
+TEST 10: Submitting a policy creates an immutable POLICY_SUBMITTED audit log entry. ... ok
+test_11_governance_audit_event_created_for_approval 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_11_governance_audit_event_created_for_approval)
+2026-09-07 23:16:46,548 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,550 | INFO     | sentinel.services.ledger | Governance Ledger [#330] POLICY_SUBMITTED appended by 'author_demo' (Hash: 5117048d0341...)
+2026-09-07 23:16:46,550 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_84edce80fb11
+2026-09-07 23:16:46,563 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_84edce80fb11/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,573 | INFO     | sentinel.services.ledger | Governance Ledger [#331] POLICY_APPROVED appended by 'reviewer_demo' (Hash: c3782ddf5035...)
+2026-09-07 23:16:46,573 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_84edce80fb11
+2026-09-07 23:16:46,581 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_e4efed9ce0e0/approve "HTTP/1.1 200 OK"
+TEST 11: Approving a policy creates an immutable POLICY_APPROVED audit log entry. ... ok
+test_12_governance_history_timeline_endpoint 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_12_governance_history_timeline_endpoint)
+2026-09-07 23:16:46,594 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,600 | INFO     | sentinel.services.ledger | Governance Ledger [#332] POLICY_SUBMITTED appended by 'author_demo' (Hash: 2f8b213e83bb...)
+2026-09-07 23:16:46,600 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_39212fbf968e
+2026-09-07 23:16:46,607 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_39212fbf968e/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,618 | INFO     | sentinel.services.ledger | Governance Ledger [#333] POLICY_APPROVED appended by 'reviewer_demo' (Hash: fac1900ecc36...)
+2026-09-07 23:16:46,618 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_39212fbf968e
+2026-09-07 23:16:46,626 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_964ff4525201/approve "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,635 | INFO     | sentinel.services.ledger | Governance Ledger [#334] POLICY_SUPERSEDED appended by 'reviewer_demo' (Hash: 8e7e6d459761...)
+2026-09-07 23:16:46,635 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUPERSEDED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_18ce080149a7
+2026-09-07 23:16:46,637 | INFO     | sentinel.services.ledger | Governance Ledger [#335] POLICY_ACTIVATED appended by 'reviewer_demo' (Hash: 1110a689194d...)
+2026-09-07 23:16:46,637 | INFO     | sentinel.services.governance | Governance Audit [POLICY_ACTIVATED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_39212fbf968e
+2026-09-07 23:16:46,637 | INFO     | sentinel.services.governance | Policy 'spol_39212fbf968e' v1 successfully ACTIVATED by 'reviewer_demo'
+2026-09-07 23:16:46,637 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_39212fbf968e/activate "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,649 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_39212fbf968e/governance-history "HTTP/1.1 200 OK"
+TEST 12: GET /api/v1/semantic-policies/{id}/governance-history returns chronological audit trail. ... ok
+test_13_unauthorized_roles_blocked_from_approval 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_13_unauthorized_roles_blocked_from_approval)
+2026-09-07 23:16:46,665 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,665 | INFO     | sentinel.services.ledger | Governance Ledger [#336] POLICY_SUBMITTED appended by 'author_demo' (Hash: 9f990662add5...)
+2026-09-07 23:16:46,665 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_18ee779772a9
+2026-09-07 23:16:46,680 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_18ee779772a9/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,687 | WARNING  | sentinel.core.auth | Access denied: User 'analyst_demo' with role 'SECURITY_ANALYST' lacks permission 'POLICY_APPROVE'
+2026-09-07 23:16:46,687 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_d42f3ed348b7/approve "HTTP/1.1 403 Forbidden"
+2026-09-07 23:16:46,694 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'POLICY_APPROVE'
+2026-09-07 23:16:46,695 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_d42f3ed348b7/approve "HTTP/1.1 403 Forbidden"
+TEST 13: VIEWER and SECURITY_ANALYST cannot approve or review policy tickets (403). ... ok
+test_14_admin_cannot_self_approve_authored_policy 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_14_admin_cannot_self_approve_authored_policy)
+2026-09-07 23:16:46,709 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,716 | INFO     | sentinel.services.ledger | Governance Ledger [#337] POLICY_SUBMITTED appended by 'admin_demo' (Hash: e02ac7f29b67...)
+2026-09-07 23:16:46,716 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'admin_demo' (ADMIN) on SEMANTIC_POLICY:spol_3cf505fca0a5
+2026-09-07 23:16:46,725 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_3cf505fca0a5/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,730 | WARNING  | sentinel.services.governance | SECURITY VIOLATION: User 'admin_demo' attempted self-approval of ticket approval_94ccce04f7ac
+2026-09-07 23:16:46,730 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_94ccce04f7ac/approve "HTTP/1.1 403 Forbidden"
+2026-09-07 23:16:46,735 | INFO     | sentinel.services.ledger | Governance Ledger [#338] POLICY_APPROVED appended by 'reviewer_demo' (Hash: 00af48f3716a...)
+2026-09-07 23:16:46,735 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_3cf505fca0a5
+2026-09-07 23:16:46,748 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_94ccce04f7ac/approve "HTTP/1.1 200 OK"
+TEST 14: Admin is subject to Maker-Checker rules and cannot self-approve a policy they created. ... ok
+test_15_approval_list_and_metrics_work 
+(test_sprint4b_dual_control.TestSprint4BDualControl.test_15_approval_list_and_metrics_work)
+2026-09-07 23:16:46,800 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/policy-approvals "HTTP/1.1 200 OK"
+TEST 15: GET /api/v1/policy-approvals returns paginated list with breakdown metrics. ... ok
+2026-09-07 23:16:46,806 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:46,806 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+test_01_genesis_entry_uses_genesis_hash 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_01_genesis_entry_uses_genesis_hash)
+2026-09-07 23:16:46,816 | INFO     | sentinel.services.ledger | Governance Ledger [#339] GENESIS_TEST appended by 'admin_demo' (Hash: 081c8be26af9...)
+TEST 1: The very first ledger entry in a new chain uses GENESIS_HASH. ... ok
+test_02_entry_hash_is_valid_sha256 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_02_entry_hash_is_valid_sha256)
+2026-09-07 23:16:46,822 | INFO     | sentinel.services.ledger | Governance Ledger [#340] POLICY_CREATED appended by 'author_demo' (Hash: 97eb43839ba7...)
+TEST 2: Entry hash and payload hash are valid 64-char hexadecimal SHA-256 strings. ... ok
+test_03_subsequent_entry_links_to_previous_hash 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_03_subsequent_entry_links_to_previous_hash)
+2026-09-07 23:16:46,828 | INFO     | sentinel.services.ledger | Governance Ledger [#341] POLICY_SUBMITTED appended by 'author_demo' (Hash: 85ea80d2fd33...)
+2026-09-07 23:16:46,828 | INFO     | sentinel.services.ledger | Governance Ledger [#342] POLICY_APPROVED appended by 'reviewer_demo' (Hash: b9e5616fb3cc...)
+TEST 3: Each subsequent entry links strictly to the entry_hash of the preceding sequence. ... ok
+test_04_valid_chain_verifies_successfully 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_04_valid_chain_verifies_successfully)
+TEST 4: Entire valid ledger chain passes cryptographic verification. ... ok
+test_05_payload_tampering_detected 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_05_payload_tampering_detected)
+2026-09-07 23:16:46,843 | INFO     | sentinel.services.ledger | Governance Ledger [#343] TAMPER_TEST appended by 'admin_demo' (Hash: e718d3d8cdd6...)
+TEST 5: Modifying the payload of any entry triggers TAMPER_DETECTED. ... ok
+test_06_middle_entry_hash_tampering_breaks_verification (test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLe
+dger.test_06_middle_entry_hash_tampering_breaks_verification)
+2026-09-07 23:16:46,864 | INFO     | sentinel.services.ledger | Governance Ledger [#344] HASH_TAMPER_TEST appended by 'admin_demo' (Hash: 6412422c75f9...)
+TEST 6: Modifying entry_hash of an entry breaks subsequent linkage and entry hash verification. ... ok
+test_07_hash_generation_is_deterministic 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_07_hash_generation_is_deterministic)
+TEST 7: Hash computation produces identical results across multiple calls. ... ok
+test_08_json_key_ordering_does_not_change_hash 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_08_json_key_ordering_does_not_change_hash)
+TEST 8: Canonical JSON serialization guarantees dictionary key order independence. ... ok
+test_09_sequence_numbers_remain_strictly_continuous (test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger
+.test_09_sequence_numbers_remain_strictly_continuous)
+TEST 9: Sequence numbers are sequential integers without gaps. ... ok
+test_10_previous_hash_modification_detected 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_10_previous_hash_modification_detected)
+2026-09-07 23:16:46,880 | INFO     | sentinel.services.ledger | Governance Ledger [#345] PREV_HASH_TEST appended by 'admin_demo' (Hash: 6f12389167f2...)
+TEST 10: Modifying previous_hash in a block triggers TAMPER_DETECTED. ... ok
+test_11_api_get_ledger_entries 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_11_api_get_ledger_entries)
+2026-09-07 23:16:46,911 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/governance-ledger "HTTP/1.1 200 OK"
+TEST 11: GET /api/v1/governance-ledger returns paginated entries with chain_head. ... ok
+test_12_api_verify_ledger_chain 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_12_api_verify_ledger_chain)
+2026-09-07 23:16:46,928 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/governance-ledger/verify "HTTP/1.1 200 OK"
+TEST 12: GET /api/v1/governance-ledger/verify returns cryptographic status. ... ok
+test_13_api_get_single_entry_detail 
+(test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLedger.test_13_api_get_single_entry_detail)
+2026-09-07 23:16:46,937 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/governance-ledger/gledger_a9f0daeb18c3 "HTTP/1.1 200 OK"
+TEST 13: GET /api/v1/governance-ledger/{id} returns single entry inspection. ... ok
+test_14_policy_governance_actions_create_ledger_entries (test_sprint5a_cryptographic_ledger.TestSprint5ACryptographicLe
+dger.test_14_policy_governance_actions_create_ledger_entries)
+2026-09-07 23:16:46,946 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-07 23:16:46,960 | INFO     | sentinel.services.ledger | Governance Ledger [#346] POLICY_SUBMITTED appended by 'author_demo' (Hash: 50df97566c93...)
+2026-09-07 23:16:46,960 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_e4767e10d638
+2026-09-07 23:16:46,965 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_e4767e10d638/submit "HTTP/1.1 200 OK"
+2026-09-07 23:16:46,975 | INFO     | sentinel.services.ledger | Governance Ledger [#347] POLICY_APPROVED appended by 'reviewer_demo' (Hash: e1bdb4939e21...)
+2026-09-07 23:16:46,975 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_e4767e10d638
+2026-09-07 23:16:46,975 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_57b8e1425dac/approve "HTTP/1.1 200 OK"
+TEST 14: Submitting and approving a policy automatically generates chained ledger entries. ... ok
+2026-09-07 23:16:46,997 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+test_01_leaf_hash_generation_deterministic 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_01_leaf_hash_generation_deterministic) ... ok
+test_02_parent_hash_generation_deterministic 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_02_parent_hash_generation_deterministic) ... ok
+test_03_same_ordered_entries_produce_same_root 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_03_same_ordered_entries_produce_same_root) ... ok
+test_04_different_ordering_produces_different_root 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_04_different_ordering_produces_different_root) ... ok
+test_05_single_leaf_tree_works (test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_05_single_leaf_tree_works) 
+... ok
+test_06_two_leaf_tree_works (test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_06_two_leaf_tree_works) ... ok
+test_07_odd_number_of_leaves_handled_deterministically 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_07_odd_number_of_leaves_handled_deterministically) ... ok
+test_08_inclusion_proof_generated_correctly 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_08_inclusion_proof_generated_correctly) ... ok
+test_09_valid_inclusion_proof_verifies_successfully 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_09_valid_inclusion_proof_verifies_successfully) ... ok
+test_10_modified_leaf_hash_fails_verification 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_10_modified_leaf_hash_fails_verification) ... ok
+test_11_modified_sibling_hash_fails_verification 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_11_modified_sibling_hash_fails_verification) ... ok
+test_12_modified_sibling_position_fails_verification 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_12_modified_sibling_position_fails_verification) ... ok
+test_13_modified_root_fails_verification 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_13_modified_root_fails_verification) ... ok
+test_14_proof_cannot_be_verified_against_wrong_batch 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_14_proof_cannot_be_verified_against_wrong_batch) ... ok
+2026-09-07 23:16:47,003 | INFO     | sentinel.services.ledger | Governance Ledger [#348] MERKLE_TEST_EVENT appended by 'admin_demo' (Hash: 896bad480ed1...)
+2026-09-07 23:16:47,003 | INFO     | sentinel.services.ledger | Governance Ledger [#349] MERKLE_TEST_EVENT appended by 'admin_demo' (Hash: 307dacd2cb89...)
+2026-09-07 23:16:47,003 | INFO     | sentinel.services.ledger | Governance Ledger [#350] MERKLE_TEST_EVENT appended by 'admin_demo' (Hash: 19c3d697618f...)
+2026-09-07 23:16:47,018 | INFO     | sentinel.services.merkle_batch | Sealed Merkle Batch 'mrb_e1e2fe16e0bb' with 10 entries. Root: 2d4f2c0ab3449630...
+test_15_database_proof_persistence_works 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_15_database_proof_persistence_works) ... ok
+test_16_sealed_merkle_root_remains_immutable 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_16_sealed_merkle_root_remains_immutable) ... ok
+2026-09-07 23:16:47,031 | INFO     | sentinel.services.merkle_batch | Sealed Merkle Batch 'mrb_87bdd42a992f' with 5 entries. Root: cfd0eb6a72397a94...
+test_17_duplicate_batch_or_empty_ledger_handled_safely 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_17_duplicate_batch_or_empty_ledger_handled_safely) ... ok
+2026-09-07 23:16:47,036 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/merkle/verify "HTTP/1.1 200 OK"
+test_18_api_verification_works_without_authentication 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_18_api_verification_works_without_authentication) ... ok
+2026-09-07 23:16:47,040 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'Permission.MERKLE_BATCH_CREATE'
+2026-09-07 23:16:47,040 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/merkle-batches "HTTP/1.1 403 Forbidden"
+test_19_unauthorized_batch_creation_rejected 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_19_unauthorized_batch_creation_rejected) ... ok
+2026-09-07 23:16:47,049 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/merkle-batches/mrb_0c5bdd1bd56d/trace "HTTP/1.1 200 OK"
+test_20_full_traceability_and_provenance_api_works 
+(test_sprint5b_merkle_proofs.TestSprint5BMerkleProofs.test_20_full_traceability_and_provenance_api_works) ... ok
+2026-09-07 23:16:47,049 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:47,076 | INFO     | sentinel.services.detection_rule | Detection rule seeding complete.
+test_01_seed_detection_rules_persisted 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_01_seed_detection_rules_persisted)
+Verify all seed detection rules are persisted in the database. ... ok
+test_02_seed_rules_have_dependencies 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_02_seed_rules_have_dependencies)
+Verify seed detection rules have associated canonical field dependencies. ... ok
+test_03_seed_idempotency (test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_03_seed_idempotency)
+2026-09-07 23:16:47,082 | INFO     | sentinel.services.detection_rule | Detection rule seeding complete.
+Verify re-seeding does not create duplicate rules. ... ok
+test_04_api_list_detection_rules 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_04_api_list_detection_rules)
+2026-09-07 23:16:47,096 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules "HTTP/1.1 200 OK"
+GET /api/v1/detection-rules returns paginated rule list. ... ok
+test_05_api_list_with_status_filter 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_05_api_list_with_status_filter)
+2026-09-07 23:16:47,105 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules?status=ACTIVE "HTTP/1.1 200 OK"
+GET /api/v1/detection-rules?status=ACTIVE returns only active rules. ... ok
+test_06_api_list_with_severity_filter 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_06_api_list_with_severity_filter)
+2026-09-07 23:16:47,121 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules?severity=CRITICAL "HTTP/1.1 200 OK"
+GET /api/v1/detection-rules?severity=CRITICAL returns only critical rules. ... ok
+test_07_api_get_rule_detail (test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_07_api_get_rule_detail)
+2026-09-07 23:16:47,128 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules/drule_fw_deny_scan "HTTP/1.1 200 OK"
+GET /api/v1/detection-rules/{rule_id} returns full rule with dependencies. ... ok
+test_08_api_get_rule_not_found 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_08_api_get_rule_not_found)
+2026-09-07 23:16:47,137 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules/nonexistent_rule "HTTP/1.1 404 Not Found"
+GET /api/v1/detection-rules/{invalid} returns 404. ... ok
+test_09_api_create_rule_always_draft 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_09_api_create_rule_always_draft)
+2026-09-07 23:16:47,150 | INFO     | sentinel.services.detection_rule | Created detection rule: Test DNS Exfiltration Rule (drule_be9167819e4d) by usr_admin_001
+2026-09-07 23:16:47,150 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rules "HTTP/1.1 201 Created"
+POST /api/v1/detection-rules creates rule in DRAFT status regardless of input. ... ok
+test_10_api_create_rule_without_dependencies 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_10_api_create_rule_without_dependencies)
+2026-09-07 23:16:47,166 | INFO     | sentinel.services.detection_rule | Created detection rule: Bare Minimum Rule (drule_f19f6456a875) by usr_analyst_004
+2026-09-07 23:16:47,166 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rules "HTTP/1.1 201 Created"
+POST /api/v1/detection-rules works without initial dependencies. ... ok
+test_11_api_canonical_fields_catalog 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_11_api_canonical_fields_catalog)
+2026-09-07 23:16:47,166 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules/canonical-fields "HTTP/1.1 200 OK"
+GET /api/v1/detection-rules/canonical-fields returns known fields. ... ok
+test_12_api_field_impact_analysis 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_12_api_field_impact_analysis)
+2026-09-07 23:16:47,183 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules/impact/action "HTTP/1.1 200 OK"
+GET /api/v1/detection-rules/impact/{field} returns dependent rules. ... ok
+test_13_api_dependency_graph (test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_13_api_dependency_graph)
+2026-09-07 23:16:47,192 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules/dependency-graph "HTTP/1.1 200 OK"
+GET /api/v1/detection-rules/dependency-graph returns nodes and edges. ... ok
+test_14_api_add_dependency (test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_14_api_add_dependency)
+2026-09-07 23:16:47,207 | INFO     | sentinel.services.detection_rule | Added dependency: drule_fw_deny_scan -> protocol (OPTIONAL)
+2026-09-07 23:16:47,207 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rules/drule_fw_deny_scan/dependencies "HTTP/1.1 201 Created"
+POST /api/v1/detection-rules/{id}/dependencies adds a new dependency. ... ok
+test_15_api_add_dependency_idempotent 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_15_api_add_dependency_idempotent)
+2026-09-07 23:16:47,218 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rules/drule_fw_deny_scan/dependencies "HTTP/1.1 201 Created"
+POST duplicate dependency returns existing without error. ... ok
+test_16_api_add_dependency_rule_not_found 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_16_api_add_dependency_rule_not_found)
+2026-09-07 23:16:47,220 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rules/nonexistent_rule/dependencies "HTTP/1.1 404 Not Found"
+POST dependency to nonexistent rule returns 404. ... ok
+test_17_rbac_viewer_can_read (test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_17_rbac_viewer_can_read)
+2026-09-07 23:16:47,231 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules "HTTP/1.1 200 OK"
+VIEWER role has DETECTION_RULE_READ permission. ... ok
+test_18_rbac_viewer_cannot_create 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_18_rbac_viewer_cannot_create)
+2026-09-07 23:16:47,241 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks any of required permissions [<Permission.DETECTION_RULE_CREATE: 'DETECTION_RULE_CREATE'>]
+2026-09-07 23:16:47,241 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rules "HTTP/1.1 403 Forbidden"
+VIEWER role lacks DETECTION_RULE_CREATE permission ù HTTP 403. ... ok
+test_19_rbac_unauthenticated_blocked 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_19_rbac_unauthenticated_blocked)
+2026-09-07 23:16:47,246 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules "HTTP/1.1 401 Unauthorized"
+Unauthenticated request returns 401. ... ok
+test_20_mitre_attack_fields_preserved 
+(test_sprint6a_detection_rules.TestSprint6ADetectionRules.test_20_mitre_attack_fields_preserved)
+2026-09-07 23:16:47,250 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules/drule_brute_force "HTTP/1.1 200 OK"
+Verify MITRE ATT&CK tactic and technique are preserved on seed rules. ... ok
+2026-09-07 23:16:47,261 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:47,261 | INFO     | sentinel.services.detection_rule | Detection rule seeding complete.
+test_01_trust_evaluation_record_created 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_01_trust_evaluation_record_created)
+Verify trust evaluation record creation and persistence. ... ok
+test_02_trusted_rule_calculation_works 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_02_trusted_rule_calculation_works)
+Verify exact alignment with no drift produces TRUSTED status (score >= 0.90). ... ok
+test_03_degraded_rule_calculation_works 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_03_degraded_rule_calculation_works)
+Verify COMPATIBLE mapping yields DEGRADED status (score between 0.70 and 0.89). ... ok
+test_04_at_risk_rule_calculation_works 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_04_at_risk_rule_calculation_works)
+Verify AMBIGUOUS mapping on protected field yields AT_RISK status (score 0.60). ... ok
+test_05_invalid_rule_calculation_works 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_05_invalid_rule_calculation_works)
+Verify INCOMPATIBLE mapping yields INVALID status (score < 0.40). ... ok
+test_06_unknown_state_never_automatically_trusted 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_06_unknown_state_never_automatically_trusted)
+Zero Trust Principle: UNKNOWN dependency state must NOT become TRUSTED (score <= 0.50). ... ok
+test_07_ambiguous_mapping_degrades_trust 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_07_ambiguous_mapping_degrades_trust)
+Verify AMBIGUOUS_MAPPING deducts 0.25 from base trust. ... ok
+test_08_incompatible_mapping_invalidates_trust 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_08_incompatible_mapping_invalidates_trust)
+Verify INCOMPATIBLE_MAPPING deducts 0.60 from base trust. ... ok
+test_09_unmapped_value_affects_dependent_rule 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_09_unmapped_value_affects_dependent_rule)
+Verify UNMAPPED_VALUE deducts 0.40 from base trust. ... ok
+test_10_protected_semantic_field_increases_trust_risk (test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrus
+t.test_10_protected_semantic_field_increases_trust_risk)
+Verify protected semantic field incurs additional -0.15 deduction. ... ok
+test_11_unaffected_rules_remain_unaffected 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_11_unaffected_rules_remain_unaffected)
+Verify that rules without drift on their dependencies maintain 100% TRUSTED status. ... ok
+test_12_dependency_isolation_is_preserved 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_12_dependency_isolation_is_preserved)
+Verify that drift on 'action.result' does NOT affect rules dependent only on 'dns_query'. ... ok
+test_13_multiple_dependency_evaluation_uses_worst_impact (test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleT
+rust.test_13_multiple_dependency_evaluation_uses_worst_impact)
+Verify worst dependency impact dominates overall rule status. ... ok
+test_14_trust_score_clamped_between_zero_and_one 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_14_trust_score_clamped_between_zero_and_one)
+Verify trust score cannot fall below 0.00 or exceed 1.00 even with stacked deductions. ... ok
+test_15_trust_evaluation_explanations_contain_deductions (test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleT
+rust.test_15_trust_evaluation_explanations_contain_deductions)
+Verify evaluation reasons list contains transparent step-by-step math. ... ok
+test_16_trust_alert_generated_for_at_risk_rule 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_16_trust_alert_generated_for_at_risk_rule)
+Verify DetectionTrustAlert is generated when trust state is AT_RISK. ... ok
+test_17_critical_alert_generated_for_invalid_protected_dependency (test_sprint6b_detection_rule_trust.TestSprint6BDetec
+tionRuleTrust.test_17_critical_alert_generated_for_invalid_protected_dependency)
+Verify CRITICAL severity alert generated for INVALID protected dependency. ... ok
+test_18_duplicate_evaluation_is_idempotent 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_18_duplicate_evaluation_is_idempotent)
+Verify evaluating the exact same context returns existing evaluation record. ... ok
+test_19_rbac_unauthorized_request_returns_401 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_19_rbac_unauthorized_request_returns_401)
+2026-09-07 23:16:47,367 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rules/drule_fw_deny_scan/evaluate-trust "HTTP/1.1 401 Unauthorized"
+Verify unauthenticated requests are rejected with HTTP 401. ... ok
+test_20_rbac_unauthorized_role_returns_403 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_20_rbac_unauthorized_role_returns_403)
+2026-09-07 23:16:47,371 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'Permission.DETECTION_RULE_TRUST_EVALUATE'
+2026-09-07 23:16:47,371 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rules/drule_fw_deny_scan/evaluate-trust "HTTP/1.1 403 Forbidden"
+Verify VIEWER role cannot trigger trust evaluations (HTTP 403). ... ok
+test_21_trust_trace_endpoint_returns_complete_chain 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_21_trust_trace_endpoint_returns_complete_chain)
+2026-09-07 23:16:47,391 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rule-trust/teval_a9771f3cebdf/trace "HTTP/1.1 200 OK"
+Verify /api/v1/detection-rule-trust/{id}/trace returns provenance chain. ... ok
+test_22_trust_history_remains_immutable 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_22_trust_history_remains_immutable)
+2026-09-07 23:16:47,403 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rules/drule_fw_deny_scan/trust-history "HTTP/1.1 200 OK"
+Verify multiple evaluations over time create distinct immutable historical records. ... ok
+test_23_semantic_drift_alert_links_correctly_to_trust_evaluation (test_sprint6b_detection_rule_trust.TestSprint6BDetect
+ionRuleTrust.test_23_semantic_drift_alert_links_correctly_to_trust_evaluation)
+2026-09-07 23:16:47,420 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-drift-alerts/drift_test_sprint6b_01/evaluate-rule-impact "HTTP/1.1 200 OK"
+Verify evaluate-rule-impact on a drift alert links drift_alert_id. ... ok
+test_24_existing_sprint1_evidence_remains_unchanged 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_24_existing_sprint1_evidence_remains_unchanged)
+Architectural verification: Raw evidence vault records are NOT modified by trust evaluation. ... ok
+test_25_existing_normalized_events_remain_unchanged 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_25_existing_normalized_events_remain_unchanged)
+Architectural verification: Normalized events are NOT modified by trust evaluation. ... ok
+test_26_kpis_summary_endpoint 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_26_kpis_summary_endpoint)
+2026-09-07 23:16:47,444 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rule-trust/kpis/summary "HTTP/1.1 200 OK"
+Verify /api/v1/detection-rule-trust/kpis/summary returns accurate statistics. ... ok
+test_27_alert_status_triage_acknowledgement 
+(test_sprint6b_detection_rule_trust.TestSprint6BDetectionRuleTrust.test_27_alert_status_triage_acknowledgement)
+2026-09-07 23:16:47,467 | INFO     | httpx | HTTP Request: PATCH http://testserver/api/v1/detection-trust-alerts/dtalert_d9e2eed578ee/status "HTTP/1.1 200 OK"
+Verify PATCH /api/v1/detection-trust-alerts/{id}/status updates alert status. ... ok
+2026-09-07 23:16:47,468 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-07 23:16:47,481 | INFO     | sentinel.services.detection_rule | Detection rule seeding complete.
+test_01_create_new_draft_version 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_01_create_new_draft_version)
+2026-09-07 23:16:47,562 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rules/drule_fw_deny_scan/versions "HTTP/1.1 201 Created"
+Verify creating a new version creates status DRAFT with SHA-256 hash. ... ok
+test_02_version_numbers_increment_deterministically (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleG
+overnance.test_02_version_numbers_increment_deterministically)
+Verify version numbers strictly increment (v1 -> v2 -> v3...). ... ok
+test_03_version_hash_deterministic 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_03_version_hash_deterministic)
+Verify identical rule content produces the exact same version hash. ... ok
+test_04_version_hash_changes_when_query_changes (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGover
+nance.test_04_version_hash_changes_when_query_changes)
+Verify modifying query signature changes the version hash. ... ok
+test_05_version_hash_changes_when_dependencies_change (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRul
+eGovernance.test_05_version_hash_changes_when_dependencies_change)
+Verify altering declared dependencies changes the version hash. ... ok
+test_06_submitted_version_becomes_immutable (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernanc
+e.test_06_submitted_version_becomes_immutable)
+Verify that submitted versions cannot be re-submitted or modified in place. ... ok
+test_07_author_can_submit_own_draft 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_07_author_can_submit_own_draft)
+2026-09-07 23:16:47,649 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_dcc0a8d36f15/submit "HTTP/1.1 200 OK"
+Verify the author can successfully submit their own draft for review. ... ok
+test_08_non_author_cannot_submit_another_authors_draft (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRu
+leGovernance.test_08_non_author_cannot_submit_another_authors_draft)
+2026-09-07 23:16:47,669 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_a4541eb010f8/submit "HTTP/1.1 403 Forbidden"
+Verify non-author cannot submit another author's draft. ... ok
+test_09_submission_creates_approval_request (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernanc
+e.test_09_submission_creates_approval_request)
+Verify submitting creates a PENDING DetectionRuleApprovalRequest. ... ok
+test_10_submission_generates_impact_analysis (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernan
+ce.test_10_submission_generates_impact_analysis)
+Verify submitting generates stored DetectionRuleVersionImpact analysis. ... ok
+test_11_submission_generates_trust_simulation (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGoverna
+nce.test_11_submission_generates_trust_simulation)
+2026-09-07 23:16:47,762 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rule-versions/drver_873c1798caa7/trust-simulation "HTTP/1.1 200 OK"
+Verify trust simulation endpoint returns simulated score and state. ... ok
+test_12_creator_cannot_approve_own_version (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance
+.test_12_creator_cannot_approve_own_version)
+2026-09-07 23:16:47,806 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_ff08754c7670/review "HTTP/1.1 409 Conflict"
+MAKER-CHECKER ENFORCEMENT: Creator cannot approve own version (returns 409 Conflict). ... ok
+test_13_independent_reviewer_can_approve 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_13_independent_reviewer_can_approve)
+2026-09-07 23:16:47,865 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_255df6bbd7b9/review "HTTP/1.1 200 OK"
+Verify independent reviewer (different user ID) can approve version. ... ok
+test_14_reviewer_can_reject 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_14_reviewer_can_reject)
+2026-09-07 23:16:47,917 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_5e895edf378d/review "HTTP/1.1 200 OK"
+Verify independent reviewer can reject a candidate version. ... ok
+test_15_approved_version_can_activate 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_15_approved_version_can_activate)
+2026-09-07 23:16:47,986 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_5044cc521b6c/activate "HTTP/1.1 200 OK"
+Verify an APPROVED version can be activated in production. ... ok
+test_16_draft_version_cannot_activate 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_16_draft_version_cannot_activate)
+2026-09-07 23:16:48,002 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_135a420694ba/activate "HTTP/1.1 400 Bad Request"
+Verify DRAFT version cannot bypass approval and activate directly. ... ok
+test_17_pending_review_version_cannot_activate (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovern
+ance.test_17_pending_review_version_cannot_activate)
+2026-09-07 23:16:48,046 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_1c8bdcad0ef3/activate "HTTP/1.1 400 Bad Request"
+Verify PENDING_REVIEW version cannot activate before approval. ... ok
+test_18_rejected_version_cannot_activate 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_18_rejected_version_cannot_activate)
+2026-09-07 23:16:48,095 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_28708c997f58/activate "HTTP/1.1 400 Bad Request"
+Verify REJECTED version cannot be activated. ... ok
+test_19_activation_supersedes_previous_active_version (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRul
+eGovernance.test_19_activation_supersedes_previous_active_version)
+Verify activating a new version atomically transitions previous active version to SUPERSEDED. ... ok
+test_20_only_one_active_version_exists 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_20_only_one_active_version_exists)
+INVARIANT: Only one ACTIVE version can exist per rule at any time. ... ok
+test_21_protected_field_addition_produces_critical_impact (test_sprint6c_detection_rule_governance.TestSprint6CDetectio
+nRuleGovernance.test_21_protected_field_addition_produces_critical_impact)
+Verify introducing a protected semantic field generates CRITICAL impact. ... ok
+test_22_query_change_produces_high_impact 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_22_query_change_produces_high_impact)
+Verify query logic change without protected fields produces HIGH impact. ... ok
+test_23_description_only_change_produces_low_impact (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleG
+overnance.test_23_description_only_change_produces_low_impact)
+Verify changing only the description produces LOW impact. ... ok
+test_24_trust_simulation_does_not_mutate_sprint6b_runtime_evaluations (test_sprint6c_detection_rule_governance.TestSpri
+nt6CDetectionRuleGovernance.test_24_trust_simulation_does_not_mutate_sprint6b_runtime_evaluations)
+Verify hypothetical pre-approval simulation does NOT create runtime evaluations. ... ok
+test_25_governance_events_are_generated 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_25_governance_events_are_generated)
+Verify governance operations generate append-only DetectionRuleGovernanceEvent records. ... ok
+test_26_governance_event_hashes_are_deterministic (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGov
+ernance.test_26_governance_event_hashes_are_deterministic)
+Verify governance event SHA-256 hash is deterministic. ... ok
+test_27_historical_version_remains_unchanged (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernan
+ce.test_27_historical_version_remains_unchanged)
+Verify creating a new version does NOT mutate historical versions. ... ok
+test_28_dependency_snapshots_remain_immutable (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGoverna
+nce.test_28_dependency_snapshots_remain_immutable)
+Verify version dependency snapshots persist even if live registry changes. ... ok
+test_29_rbac_prevents_unauthorized_review 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_29_rbac_prevents_unauthorized_review)
+2026-09-07 23:16:48,300 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'Permission.DETECTION_RULE_REVIEW'
+2026-09-07 23:16:48,300 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_cisco_asa_permit_v1/review "HTTP/1.1 403 Forbidden"
+Verify VIEWER or POLICY_AUTHOR cannot perform reviews (HTTP 403). ... ok
+test_30_rbac_prevents_unauthorized_activation (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGoverna
+nce.test_30_rbac_prevents_unauthorized_activation)
+2026-09-07 23:16:48,309 | WARNING  | sentinel.core.auth | Access denied: User 'author_demo' with role 'POLICY_AUTHOR' lacks permission 'Permission.DETECTION_RULE_ACTIVATE'
+2026-09-07 23:16:48,309 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_cisco_asa_permit_v1/activate "HTTP/1.1 403 Forbidden"
+Verify POLICY_AUTHOR cannot activate versions (HTTP 403). ... ok
+test_31_governance_trace_returns_complete_chain (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGover
+nance.test_31_governance_trace_returns_complete_chain)
+2026-09-07 23:16:48,332 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rule-versions/drver_drule_fw_deny_scan_v1/governance-trace "HTTP/1.1 200 OK"
+Verify 15-stage governance trace endpoint returns complete provenance chain. ... ok
+test_32_disable_active_rule_version 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_32_disable_active_rule_version)
+2026-09-07 23:16:48,407 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_28b28232c15e/disable?reason=Maintenance "HTTP/1.1 200 OK"
+Verify disabling an active version transitions status to DISABLED. ... ok
+test_33_list_rule_versions_with_pagination_and_filter (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRul
+eGovernance.test_33_list_rule_versions_with_pagination_and_filter)
+2026-09-07 23:16:48,424 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rule-versions?limit=5&offset=0&status=ACTIVE "HTTP/1.1 200 OK"
+Verify GET /api/v1/detection-rule-versions supports pagination and filtering. ... ok
+test_34_list_rule_versions_filtered_by_creator (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovern
+ance.test_34_list_rule_versions_filtered_by_creator)
+2026-09-07 23:16:48,444 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rule-versions?created_by=usr_author_cisco "HTTP/1.1 200 OK"
+Verify filtering detection rule versions by creator user ID. ... ok
+test_35_list_rule_versions_filtered_by_reviewer (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGover
+nance.test_35_list_rule_versions_filtered_by_reviewer)
+2026-09-07 23:16:48,465 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rule-versions?reviewed_by=usr_reviewer_01 "HTTP/1.1 200 OK"
+Verify filtering detection rule versions by reviewer user ID. ... ok
+test_36_cannot_disable_non_active_version 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_36_cannot_disable_non_active_version)
+2026-09-07 23:16:48,488 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_318f55c63c49/disable?reason=Test "HTTP/1.1 400 Bad Request"
+Verify disabling a DRAFT or APPROVED version raises 400 Bad Request. ... ok
+test_37_cannot_review_already_finalized_version (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGover
+nance.test_37_cannot_review_already_finalized_version)
+2026-09-07 23:16:48,542 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_2c0988a63675/review "HTTP/1.1 400 Bad Request"
+Verify reviewing a version that is already APPROVED returns 400 Bad Request. ... ok
+test_38_stored_impact_analysis_retrieval 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_38_stored_impact_analysis_retrieval)
+2026-09-07 23:16:48,605 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rule-versions/drver_2173cd64b8a0/impact "HTTP/1.1 200 OK"
+Verify GET /api/v1/detection-rule-versions/{version_id}/impact returns stored impact. ... ok
+test_39_pre_approval_trust_simulation_api 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_39_pre_approval_trust_simulation_api)
+2026-09-07 23:16:48,633 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/detection-rule-versions/drver_61d66c947036/trust-simulation "HTTP/1.1 200 OK"
+Verify pre-approval trust simulation accurately reports simulation posture. ... ok
+test_40_review_with_risk_acknowledgment 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_40_review_with_risk_acknowledgment)
+2026-09-07 23:16:48,699 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_7b72756b3d05/review "HTTP/1.1 200 OK"
+Verify reviewer can approve a candidate version with explicit risk acknowledgment. ... ok
+test_41_vendor_scope_change_generates_high_impact (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGov
+ernance.test_41_vendor_scope_change_generates_high_impact)
+Verify altering vendor scope generates HIGH impact in comparison. ... ok
+test_42_mitre_technique_modification_generates_medium_impact (test_sprint6c_detection_rule_governance.TestSprint6CDetec
+tionRuleGovernance.test_42_mitre_technique_modification_generates_medium_impact)
+Verify modifying MITRE technique without query or vendor changes yields MEDIUM impact. ... ok
+test_43_adding_normal_dependency_impact 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_43_adding_normal_dependency_impact)
+Verify adding normal dependency produces LOW or MEDIUM impact. ... ok
+test_44_removing_canonical_dependency_generates_high_impact (test_sprint6c_detection_rule_governance.TestSprint6CDetect
+ionRuleGovernance.test_44_removing_canonical_dependency_generates_high_impact)
+Verify removing a canonical dependency triggers HIGH impact. ... ok
+test_45_multiple_sequential_versions_increment (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovern
+ance.test_45_multiple_sequential_versions_increment)
+Verify successive versions strictly increment version_number (1 -> 2 -> 3). ... ok
+test_46_audit_log_governance_events_full_lifecycle (test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGo
+vernance.test_46_audit_log_governance_events_full_lifecycle)
+Verify immutable governance events recorded across full lifecycle. ... ok
+test_47_viewer_role_is_strictly_read_only 
+(test_sprint6c_detection_rule_governance.TestSprint6CDetectionRuleGovernance.test_47_viewer_role_is_strictly_read_only)
+2026-09-07 23:16:48,945 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'Permission.DETECTION_RULE_VERSION_CREATE'
+2026-09-07 23:16:48,960 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rules/drule_fw_deny_scan/versions "HTTP/1.1 403 Forbidden"
+2026-09-07 23:16:48,961 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'Permission.DETECTION_RULE_SUBMIT_REVIEW'
+2026-09-07 23:16:48,961 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_cisco_asa_permit_v1/submit "HTTP/1.1 403 Forbidden"
+2026-09-07 23:16:48,961 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'Permission.DETECTION_RULE_REVIEW'
+2026-09-07 23:16:48,961 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_cisco_asa_permit_v1/review "HTTP/1.1 403 Forbidden"
+2026-09-07 23:16:48,976 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'Permission.DETECTION_RULE_ACTIVATE'
+2026-09-07 23:16:48,976 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_cisco_asa_permit_v1/activate "HTTP/1.1 403 Forbidden"
+2026-09-07 23:16:48,976 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'Permission.DETECTION_RULE_DISABLE'
+2026-09-07 23:16:48,976 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/detection-rule-versions/drver_cisco_asa_permit_v1/disable "HTTP/1.1 403 Forbidden"
+Verify VIEWER role gets 403 on all mutating governance endpoints. ... ok
+
+----------------------------------------------------------------------
+Ran 210 tests in 7.955s
+
+OK

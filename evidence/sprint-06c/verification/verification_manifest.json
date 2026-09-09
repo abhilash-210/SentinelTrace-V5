@@ -1,0 +1,80 @@
+{
+  "sprint": "Sprint 6C",
+  "title": "Detection Rule Governance, Dual-Control Approval, Rule Versioning, Version Impact Analysis, and Immutable Governance Auditability",
+  "timestamp": "2026-09-07T23:17:00Z",
+  "verified_baseline": {
+    "previous_sprints": ["Sprint 0", "Sprint 1", "Sprint 2", "Sprint 3A", "Sprint 3B", "Sprint 3C", "Sprint 4A", "Sprint 4B", "Sprint 5A", "Sprint 5B", "Sprint 6A", "Sprint 6B"],
+    "total_tests_discovered": 210,
+    "total_tests_passing": 210,
+    "total_tests_failing": 0,
+    "total_errors": 0,
+    "regressions": 0
+  },
+  "invariants_enforced": [
+    {
+      "invariant": "MAKER_CHECKER_SEPARATION",
+      "rule": "creator_user_id != reviewer_user_id",
+      "enforcement": "HTTP 409 Conflict with code SELF_APPROVAL_FORBIDDEN and immutable security event SELF_APPROVAL_BLOCKED",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "IMMUTABLE_VERSION_LIFECYCLE",
+      "rule": "ACTIVE detection rules are never modified in place; modifications instantiate new version records in DRAFT status",
+      "enforcement": "Sequential version numbering (v1 -> v2 -> v3) and SHA-256 version hash seal",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "APPROVAL_IS_NOT_ACTIVATION",
+      "rule": "DRAFT cannot transition directly to ACTIVE. Strict sequence: DRAFT -> PENDING_REVIEW -> APPROVED -> ACTIVE",
+      "enforcement": "State transition validation machine blocks direct or out-of-order activation",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "SINGLE_ACTIVE_VERSION",
+      "rule": "Only one ACTIVE version may exist per logical detection rule",
+      "enforcement": "Activating an APPROVED version atomically supersedes the existing ACTIVE version to SUPERSEDED status in single DB transaction",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "DETERMINISTIC_CRYPTOGRAPHIC_SEALING",
+      "rule": "Version hashes sealed with prefix SENTINELTRACE_RULE_VERSION_V1; Governance events sealed with SENTINELTRACE_DETECTION_GOVERNANCE_V1",
+      "enforcement": "Canonical JSON serialization and SHA-256 integrity checks",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "HYPOTHETICAL_SIMULATION_ISOLATION",
+      "rule": "Pre-approval trust simulation inspects dependencies and drift without mutating runtime Sprint 6B trust tables",
+      "enforcement": "Pure functional simulation returning hypothetically scored state",
+      "status": "VERIFIED"
+    }
+  ],
+  "api_endpoints": [
+    "GET  /api/v1/detection-rule-versions",
+    "GET  /api/v1/detection-rule-versions/{version_id}",
+    "GET  /api/v1/detection-rule-versions/{version_id}/compare/{target_version_id}",
+    "GET  /api/v1/detection-rule-versions/{version_id}/impact",
+    "GET  /api/v1/detection-rule-versions/{version_id}/trust-simulation",
+    "GET  /api/v1/detection-rule-versions/{version_id}/governance-trace",
+    "POST /api/v1/detection-rules/{rule_id}/versions",
+    "POST /api/v1/detection-rule-versions/{version_id}/submit",
+    "POST /api/v1/detection-rule-versions/{version_id}/review",
+    "POST /api/v1/detection-rule-versions/{version_id}/activate",
+    "POST /api/v1/detection-rule-versions/{version_id}/disable",
+    "GET  /api/v1/detection-rule-governance/events"
+  ],
+  "test_breakdown": {
+    "test_sprint1_ingestion": 8,
+    "test_sprint2_normalization": 10,
+    "test_sprint3_semantic_registry": 10,
+    "test_sprint3b_semantic_interpretation": 14,
+    "test_sprint3c_semantic_governance": 5,
+    "test_sprint4a_identity_rbac": 20,
+    "test_sprint4b_dual_control": 15,
+    "test_sprint5a_cryptographic_ledger": 14,
+    "test_sprint5b_merkle_proofs": 20,
+    "test_sprint6a_detection_rules": 20,
+    "test_sprint6b_detection_rule_trust": 27,
+    "test_sprint6c_detection_rule_governance": 47,
+    "total": 210
+  }
+}

@@ -1,0 +1,68 @@
+/* SENTINEL-TRACE — Global Styles */
+
+/* Google Fonts — must precede @tailwind directives */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    @apply h-full;
+  }
+
+  body {
+    @apply bg-sentinel-950 text-slate-100 font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(6, 182, 212, 0.12), transparent),
+      linear-gradient(rgba(6, 182, 212, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(6, 182, 212, 0.04) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+  }
+
+  #root {
+    @apply h-full;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar        { @apply w-1.5; }
+  ::-webkit-scrollbar-track  { @apply bg-sentinel-900; }
+  ::-webkit-scrollbar-thumb  { @apply bg-sentinel-600 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-accent-cyan; }
+}
+
+@layer components {
+  /* Glass card */
+  .glass-card {
+    @apply bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl;
+  }
+
+  /* Neon text */
+  .text-neon-cyan {
+    @apply text-accent-cyan;
+    text-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
+  }
+
+  /* Status badge */
+  .badge-online  { @apply inline-flex items-center gap-1.5 text-xs font-medium text-accent-green; }
+  .badge-pending { @apply inline-flex items-center gap-1.5 text-xs font-medium text-accent-amber; }
+  .badge-offline { @apply inline-flex items-center gap-1.5 text-xs font-medium text-slate-500; }
+
+  /* Nav link */
+  .nav-link {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+           text-slate-400 hover:text-slate-100 hover:bg-white/5
+           transition-all duration-200 cursor-pointer;
+  }
+  .nav-link.active {
+    @apply text-accent-cyan bg-accent-cyan/10 border border-accent-cyan/20;
+  }
+  .nav-link.disabled {
+    @apply opacity-40 cursor-not-allowed hover:bg-transparent hover:text-slate-400;
+  }
+}

@@ -1,0 +1,53 @@
+======================================================================
+SENTINEL-TRACE V5 — SPRINT 3B AUTOMATED TEST EXECUTION SUITE
+======================================================================
+Environment: Docker Container (sentinel-trace-backend / Python 3.11.11 / FastAPI)
+Date: 2026-09-06
+Framework: unittest with FastAPI TestClient (HTTPX)
+Total Test Count: 42 / 42 PASSING (0 Failures, 0 Errors, 0 Regressions)
+
+Test Suites Summary:
+- Sprint 1 (Evidence Vault & Log Ingestion): 8 Tests PASS
+- Sprint 2 (Parsers & OCSF Normalization): 10 Tests PASS
+- Sprint 3A (Semantic Policy Registry): 10 Tests PASS
+- Sprint 3B (Semantic Interpretation Engine & Drift Detection): 14 Tests PASS
+
+----------------------------------------------------------------------
+Sprint 3B Detailed Test Inventory (backend/tests/test_sprint3b_semantic_interpretation.py):
+----------------------------------------------------------------------
+[PASS] test_01_cisco_asa_permit_maps_to_allowed
+       - Verified Cisco ASA raw token 'PERMIT' maps to canonical 'action.result' = 'ALLOWED'
+       - Classification: COMPATIBLE, Risk: LOW, Status: INTERPRETED
+[PASS] test_02_demo_vendor_permit_maps_to_monitored
+       - Verified Demo Vendor raw token 'PERMIT' maps to canonical 'action.result' = 'MONITORED'
+       - Classification: AMBIGUOUS, Risk: MEDIUM, Status: AMBIGUOUS
+[PASS] test_03_same_raw_token_different_vendor_interpretations
+       - Proved identical raw token 'PERMIT' yields vendor-isolated interpretations:
+         Cisco ASA -> ALLOWED vs. Demo Vendor -> MONITORED
+[PASS] test_04_no_global_mapping_fallback_exists
+       - Unregistered vendor 'Unknown Security Vendor' produces UNMAPPED status with no cross-vendor leakage
+[PASS] test_05_unknown_semantic_value_produces_unmapped_status
+       - Source value 'UNKNOWN_CUSTOM_OP' produces UNMAPPED status and explanation
+[PASS] test_06_unmapped_value_creates_drift_alert
+       - Unmapped source value triggers 'UNMAPPED_VALUE' drift alert with MEDIUM severity
+[PASS] test_07_ambiguous_rule_creates_drift_alert
+       - AMBIGUOUS classification rule triggers 'AMBIGUOUS_MAPPING' drift alert
+[PASS] test_08_protected_semantic_field_ambiguity_creates_risk_alert
+       - AMBIGUOUS mapping on protected field 'authentication.outcome' triggers 'PROTECTED_FIELD_RISK' with HIGH severity
+[PASS] test_09_conflicting_rules_create_policy_conflict
+       - Conflicting rule targets trigger 'POLICY_CONFLICT' alert with HIGH severity, confidence = 0.0
+[PASS] test_10_confidence_scoring_is_deterministic
+       - Verified deterministic confidence deductions (COMPATIBLE: 0.90, AMBIGUOUS: 0.60, UNMAPPED: 0.50)
+[PASS] test_11_repeated_interpretation_is_idempotent
+       - Repeated calls return identical interpretation record without duplicate DB growth
+[PASS] test_12_original_normalized_event_remains_unchanged
+       - Normalized event payload is strictly immutable before and after interpretation
+[PASS] test_13_raw_evidence_remains_unchanged
+       - Ingested raw evidence SHA-256 fingerprint remains 100% intact and valid
+[PASS] test_14_trace_endpoint_shows_complete_chain
+       - Trace endpoint returns complete audit chain: Raw Evidence -> Normalized Event -> Source Profile -> Vendor -> Policy -> Rule -> Interpretation -> Alerts
+
+----------------------------------------------------------------------
+Ran 42 tests in 1.615s
+
+OK

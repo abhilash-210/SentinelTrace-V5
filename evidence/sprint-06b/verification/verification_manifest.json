@@ -1,0 +1,45 @@
+{
+  "sprint": "Sprint 6B",
+  "name": "Detection Rule Trust Evaluation & Semantic Drift Binding",
+  "status": "COMPLETE",
+  "timestamp": "2026-09-07T08:25:00Z",
+  "components": {
+    "models": [
+      "backend/app/models/detection_rule_trust.py::DetectionRuleTrustEvaluation",
+      "backend/app/models/detection_rule_trust.py::DetectionTrustAlert"
+    ],
+    "schemas": [
+      "backend/app/schemas/detection_rule_trust.py"
+    ],
+    "services": [
+      "backend/app/services/detection_rule_trust_service.py",
+      "backend/app/services/detection_trust_alert_service.py"
+    ],
+    "routers": [
+      "backend/app/routers/detection_rule_trust.py"
+    ],
+    "rbac": [
+      "DETECTION_RULE_TRUST_EVALUATE",
+      "DETECTION_RULE_TRUST_READ",
+      "DETECTION_TRUST_ALERT_READ"
+    ],
+    "frontend": [
+      "frontend/src/pages/DetectionTrust.jsx"
+    ],
+    "migrations": [
+      "backend/migrations/versions/i9j0k1l2m3n4_create_detection_rule_trust_tables.py"
+    ],
+    "tests": [
+      "backend/tests/test_sprint6b_detection_rule_trust.py"
+    ]
+  },
+  "metrics": {
+    "total_regression_tests": 183,
+    "sprint_tests": 27,
+    "pass_rate": "100%",
+    "regressions": 0,
+    "trust_states": ["TRUSTED", "DEGRADED", "AT_RISK", "INVALID", "UNKNOWN"],
+    "scoring_range": "0.00 - 1.00",
+    "base_score": 1.00
+  }
+}

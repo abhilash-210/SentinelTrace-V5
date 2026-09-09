@@ -1,0 +1,58 @@
+================================================================================
+SENTINEL-TRACE — Sprint 0 Container Logs Summary
+================================================================================
+Verification Timestamp : 2026-09-06T11:41:15Z (17:11:15 IST)
+Docker Engine Version  : 29.7.2 (Docker Desktop 4.87.0 on Windows/WSL2)
+Docker Compose Version : v5.4.0
+Active Containers      : 3 (sentinel-trace-db, sentinel-trace-backend, sentinel-trace-frontend)
+Status                 : ALL CONTAINERS HEALTHY / OPERATIONAL — ZERO RESTART LOOPS
+================================================================================
+
+1. PostgreSQL Database (sentinel-trace-db)
+--------------------------------------------------------------------------------
+- Image: postgres:15-alpine
+- Container Status: Up / Healthy (Port 5432)
+- Initialization Script: /docker-entrypoint-initdb.d/01_init.sql executed cleanly.
+- Database: sentinel_trace created.
+- Schema: sentinel created and permissions granted to user 'sentinel'.
+- Notices:
+    psql: NOTICE: SENTINEL-TRACE database initialized successfully.
+    psql: NOTICE: Schema: sentinel
+    psql: NOTICE: Sprint: 0 — Project Foundation
+- Engine Log: "database system is ready to accept connections"
+- Connection Errors: 0
+- Restart Loops: None.
+
+2. FastAPI Backend (sentinel-trace-backend)
+--------------------------------------------------------------------------------
+- Image: sentinel-trace-backend:latest (Python 3.11-slim)
+- Container Status: Up / Healthy (Port 8000)
+- Reloader: WatchFiles active on /app
+- Lifespan Startup:
+    SENTINEL-TRACE Backend  |  0.1.0
+    Environment : development
+    Database    : db:5432/sentinel_trace
+    [app.main] PostgreSQL connection verified.
+    Application startup complete.
+- Endpoints Serviced:
+    GET /health HTTP/1.1 -> 200 OK (database: connected)
+    GET / HTTP/1.1 -> 200 OK
+    GET /docs HTTP/1.1 -> 200 OK
+- Application Errors: 0
+- Restart Loops: None.
+
+3. React Frontend (sentinel-trace-frontend)
+--------------------------------------------------------------------------------
+- Image: sentinel-trace-frontend:latest (Nginx 1.25.5 Alpine)
+- Container Status: Up (Port 3000 -> 80)
+- Nginx Worker Processes: 16 worker processes spawned cleanly.
+- Serviced Requests:
+    GET / HTTP/1.1 -> 200 OK (Content-Length: 1041, SPA index.html served)
+- Container Errors: 0
+- Restart Loops: None.
+
+================================================================================
+CONCLUSION:
+All 3 containers initialized in correct dependency order (db healthy -> backend healthy -> frontend).
+No crashes, no restart loops, and no connection failures detected across all services.
+================================================================================

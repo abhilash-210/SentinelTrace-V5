@@ -1,0 +1,45 @@
+================================================================================
+SENTINEL-TRACE — Sprint 0 Screenshot Evidence Log
+================================================================================
+Verification Date : 2026-09-06T11:47:00Z (17:17 IST)
+Platform          : Docker Desktop 4.87.0 on Windows/WSL2
+Browser Engine    : Headless Chromium (Chrome/128+) native window rendering
+Status            : 100% REAL RUNTIME SCREENSHOTS VERIFIED
+
+Evidence Files:
+--------------------------------------------------------------------------------
+1. 01_frontend_dashboard_FINAL.png (283,904 bytes)
+   - Source: http://localhost:3000/ (Nginx container serving React SPA)
+   - Render: Real browser capture at 1440x900 viewport
+   - Content: Shows SentinelTrace UI, Navigation with future sprint badges (S1-S7),
+     Architecture Pillars (Evidence Integrity, Interpretation Governance,
+     Semantic Trust Propagation), System Status cards.
+
+2. 02_backend_health_FINAL.png (8,829 bytes)
+   - Source: http://localhost:8000/health (FastAPI backend container)
+   - Render: Real browser JSON response render
+   - Content: {"status":"healthy","service":"sentinel-trace-backend","version":"0.1.0",
+     "environment":"development","database":"connected","timestamp":"..."}
+
+3. 03_fastapi_swagger_FINAL.png (43,533 bytes)
+   - Source: http://localhost:8000/docs (FastAPI backend container)
+   - Render: Real browser rendering Swagger UI interactive documentation
+   - Content: SENTINEL-TRACE API 0.1.0 OAS 3.1, Health endpoints, Schemas
+
+4. 04_docker_services_FINAL.png (41,025 bytes)
+   - Source: Actual `docker compose ps` command output
+   - Content: sentinel-trace-backend (healthy), sentinel-trace-db (healthy),
+     sentinel-trace-frontend (healthy). All 3 containers Up and Healthy.
+
+5. 05_project_structure_FINAL.png (61,258 bytes)
+   - Source: Actual project filesystem tree
+   - Content: Complete Sprint 0 file layout across backend/, frontend/, database/,
+     docs/, and evidence/ directories.
+
+Historical / Pre-Runtime Note:
+--------------------------------------------------------------------------------
+- 01_frontend_dashboard.jpg and 03_fastapi_swagger.jpg were pre-runtime visual
+  references created during the initial offline build phase. Per QA rules,
+  they are explicitly superseded by the *_FINAL.png files above which represent
+  100% real runtime container and browser execution.
+================================================================================

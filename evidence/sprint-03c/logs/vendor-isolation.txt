@@ -1,0 +1,32 @@
+======================================================================
+SENTINEL-TRACE V5 — VENDOR ISOLATION & SEMANTIC GOVERNANCE PROOF
+======================================================================
+Core Principle: SentinelTrace strictly prohibits global semantic assumptions.
+Interpretation is exclusively scoped to Vendor Context, Source Profile, and Policy Version.
+
+Demo Demonstration: "Same Raw Token -> Different Meanings"
+
+Raw Log Value: "PERMIT" (Field: "action")
+
+Cisco ASA Firewall (Policy: spol_cisco_asa_v1 / Profile: sp_firewall_syslog)
+- Canonical Field: action.result
+- Mapped Meaning: ALLOWED
+- Equivalence Classification: COMPATIBLE
+- Risk Level: LOW
+- Confidence Score: 0.90
+- Drift Alert: None (Standard compliant behavior)
+
+Demo Vendor Security Appliance (Policy: spol_demo_vendor_v1 / Profile: sp_demo_vendor)
+- Canonical Field: action.result
+- Mapped Meaning: MONITORED
+- Equivalence Classification: AMBIGUOUS
+- Risk Level: MEDIUM
+- Confidence Score: 0.60
+- Drift Alert: AMBIGUOUS_MAPPING (Shadow observation mode pass-through)
+
+Unregistered Third-Party Device (Vendor: Unknown Security Appliance)
+- Canonical Field: action.result
+- Mapped Meaning: None (UNMAPPED)
+- Risk Level: MEDIUM
+- Confidence Score: 0.50
+- Drift Alert: UNMAPPED_VALUE (Global fallback strictly disabled)

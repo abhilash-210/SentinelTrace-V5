@@ -1,0 +1,18 @@
+# backend/.dockerignore
+# Prevents local venv and cache from polluting the Docker build context
+
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+dist/
+build/
+.env
+.env.*
+!.env.example

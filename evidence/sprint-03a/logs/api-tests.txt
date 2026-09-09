@@ -1,0 +1,198 @@
+{
+  "status": "HEALTHY",
+  "policy_count": 4,
+  "policies": [
+    {
+      "id": 1,
+      "policy_id": "spol_cisco_asa_v1",
+      "policy_name": "Cisco ASA Semantic Policy",
+      "vendor_name": "Cisco ASA",
+      "source_profile_id": "sp_firewall_syslog",
+      "version": 1,
+      "status": "ACTIVE",
+      "description": "Semantic mappings for Cisco ASA syslog telemetry. Interprets PERMIT as ALLOWED.",
+      "supersedes_policy_id": null,
+      "rule_count": 3,
+      "created_at": "2026-09-06T12:43:48.693019Z",
+      "updated_at": "2026-09-06T12:43:48.693032Z"
+    },
+    {
+      "id": 2,
+      "policy_id": "spol_demo_vendor_v1",
+      "policy_name": "Demo Vendor Semantic Policy",
+      "vendor_name": "Demo Vendor",
+      "source_profile_id": "sp_demo_vendor",
+      "version": 1,
+      "status": "ACTIVE",
+      "description": "Semantic mappings for Demo Vendor telemetry. Interprets PERMIT as MONITORED due to vendor observation mode.",
+      "supersedes_policy_id": null,
+      "rule_count": 3,
+      "created_at": "2026-09-06T12:43:48.702391Z",
+      "updated_at": "2026-09-06T12:43:48.702397Z"
+    },
+    {
+      "id": 4,
+      "policy_id": "spol_6961c623f2f2",
+      "policy_name": "Palo Alto Firewall Policy",
+      "vendor_name": "Palo Alto Networks",
+      "source_profile_id": "sp_palo_alto_syslog",
+      "version": 1,
+      "status": "DRAFT",
+      "description": "Initial draft for PAN-OS traffic logs",
+      "supersedes_policy_id": null,
+      "rule_count": 1,
+      "created_at": "2026-09-06T12:45:01.927697Z",
+      "updated_at": "2026-09-06T12:45:01.927703Z"
+    },
+    {
+      "id": 6,
+      "policy_id": "spol_4f38dec52959",
+      "policy_name": "Palo Alto Firewall Policy",
+      "vendor_name": "Palo Alto Networks",
+      "source_profile_id": "sp_palo_alto_syslog",
+      "version": 1,
+      "status": "DRAFT",
+      "description": "Initial draft for PAN-OS traffic logs",
+      "supersedes_policy_id": null,
+      "rule_count": 1,
+      "created_at": "2026-09-06T12:45:23.546976Z",
+      "updated_at": "2026-09-06T12:45:23.546998Z"
+    }
+  ],
+  "protected_fields": [
+    {
+      "id": 2,
+      "field_name": "severity",
+      "criticality": "HIGH",
+      "description": "Standardized event severity classification. Governs alert prioritization and triage urgency.",
+      "is_protected": true,
+      "created_at": "2026-09-06T12:43:48.673466Z"
+    },
+    {
+      "id": 1,
+      "field_name": "action.result",
+      "criticality": "CRITICAL",
+      "description": "Canonical security action outcome (ALLOWED, DENIED, MONITORED, DROPPED). Critical for firewall and access control telemetry.",
+      "is_protected": true,
+      "created_at": "2026-09-06T12:43:48.673460Z"
+    },
+    {
+      "id": 3,
+      "field_name": "authentication.outcome",
+      "criticality": "CRITICAL",
+      "description": "Identity verification result (SUCCESS, FAILURE). Crucial for brute force and anomalous authentication detection.",
+      "is_protected": true,
+      "created_at": "2026-09-06T12:43:48.673467Z"
+    }
+  ],
+  "cisco_policy": {
+    "id": 1,
+    "policy_id": "spol_cisco_asa_v1",
+    "policy_name": "Cisco ASA Semantic Policy",
+    "vendor_name": "Cisco ASA",
+    "source_profile_id": "sp_firewall_syslog",
+    "version": 1,
+    "status": "ACTIVE",
+    "description": "Semantic mappings for Cisco ASA syslog telemetry. Interprets PERMIT as ALLOWED.",
+    "supersedes_policy_id": null,
+    "rule_count": 3,
+    "created_at": "2026-09-06T12:43:48.693019Z",
+    "updated_at": "2026-09-06T12:43:48.693032Z",
+    "rules": [
+      {
+        "source_field": "action",
+        "source_value": "ALLOW",
+        "canonical_field": "action.result",
+        "canonical_value": "ALLOWED",
+        "equivalence_classification": "EQUIVALENT",
+        "risk_level": "LOW",
+        "description": "Direct equivalence: Cisco ALLOW directly maps to canonical ALLOWED",
+        "id": 1,
+        "rule_id": "srule_cisco_01",
+        "policy_id": "spol_cisco_asa_v1",
+        "created_at": "2026-09-06T12:43:48.705110Z"
+      },
+      {
+        "source_field": "action",
+        "source_value": "DENY",
+        "canonical_field": "action.result",
+        "canonical_value": "DENIED",
+        "equivalence_classification": "EQUIVALENT",
+        "risk_level": "LOW",
+        "description": "Direct equivalence: Cisco DENY directly maps to canonical DENIED",
+        "id": 2,
+        "rule_id": "srule_cisco_02",
+        "policy_id": "spol_cisco_asa_v1",
+        "created_at": "2026-09-06T12:43:48.705121Z"
+      },
+      {
+        "source_field": "action",
+        "source_value": "PERMIT",
+        "canonical_field": "action.result",
+        "canonical_value": "ALLOWED",
+        "equivalence_classification": "COMPATIBLE",
+        "risk_level": "LOW",
+        "description": "Compatible mapping: Cisco ASA PERMIT indicates traffic was permitted/allowed",
+        "id": 3,
+        "rule_id": "srule_cisco_03",
+        "policy_id": "spol_cisco_asa_v1",
+        "created_at": "2026-09-06T12:43:48.705123Z"
+      }
+    ]
+  },
+  "demo_vendor_policy": {
+    "id": 2,
+    "policy_id": "spol_demo_vendor_v1",
+    "policy_name": "Demo Vendor Semantic Policy",
+    "vendor_name": "Demo Vendor",
+    "source_profile_id": "sp_demo_vendor",
+    "version": 1,
+    "status": "ACTIVE",
+    "description": "Semantic mappings for Demo Vendor telemetry. Interprets PERMIT as MONITORED due to vendor observation mode.",
+    "supersedes_policy_id": null,
+    "rule_count": 3,
+    "created_at": "2026-09-06T12:43:48.702391Z",
+    "updated_at": "2026-09-06T12:43:48.702397Z",
+    "rules": [
+      {
+        "source_field": "action",
+        "source_value": "PERMIT",
+        "canonical_field": "action.result",
+        "canonical_value": "MONITORED",
+        "equivalence_classification": "AMBIGUOUS",
+        "risk_level": "MEDIUM",
+        "description": "Ambiguous mapping: In Demo Vendor appliances, PERMIT indicates shadow/monitored pass-through without active policy enforcement",
+        "id": 4,
+        "rule_id": "srule_demo_01",
+        "policy_id": "spol_demo_vendor_v1",
+        "created_at": "2026-09-06T12:43:48.711112Z"
+      },
+      {
+        "source_field": "action",
+        "source_value": "BLOCK",
+        "canonical_field": "action.result",
+        "canonical_value": "DENIED",
+        "equivalence_classification": "EQUIVALENT",
+        "risk_level": "LOW",
+        "description": "Direct equivalence: Demo Vendor BLOCK maps to canonical DENIED",
+        "id": 5,
+        "rule_id": "srule_demo_02",
+        "policy_id": "spol_demo_vendor_v1",
+        "created_at": "2026-09-06T12:43:48.711118Z"
+      },
+      {
+        "source_field": "action",
+        "source_value": "PASS",
+        "canonical_field": "action.result",
+        "canonical_value": "ALLOWED",
+        "equivalence_classification": "COMPATIBLE",
+        "risk_level": "LOW",
+        "description": "Compatible mapping: Demo Vendor PASS indicates allowed bypass",
+        "id": 6,
+        "rule_id": "srule_demo_03",
+        "policy_id": "spol_demo_vendor_v1",
+        "created_at": "2026-09-06T12:43:48.711118Z"
+      }
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "sprint": "Sprint 7A",
+  "title": "Real-Time Detection Rule Execution Engine",
+  "timestamp": "2026-09-07T23:40:00Z",
+  "verified_baseline": {
+    "previous_sprints": ["Sprint 0", "Sprint 1", "Sprint 2", "Sprint 3A", "Sprint 3B", "Sprint 3C", "Sprint 4A", "Sprint 4B", "Sprint 5A", "Sprint 5B", "Sprint 6A", "Sprint 6B", "Sprint 6C"],
+    "total_tests_discovered": 245,
+    "total_tests_passing": 245,
+    "total_tests_failing": 0,
+    "total_errors": 0,
+    "regressions": 0
+  },
+  "invariants_enforced": [
+    {
+      "invariant": "ACTIVE_ONLY_EXECUTION",
+      "rule": "Only detection rule versions in status == 'ACTIVE' may execute against normalized events. DRAFT, PENDING_REVIEW, APPROVED, SUPERSEDED, and DISABLED versions are blocked.",
+      "enforcement": "DetectionExecutionService.resolve_active_rule_version returns HTTP 400 if no ACTIVE version exists",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "SINGLE_ACTIVE_GOVERNANCE_INTEGRITY",
+      "rule": "If multiple ACTIVE versions exist for a single rule, execution is blocked as a governance invariant violation.",
+      "enforcement": "DetectionExecutionService returns controlled error and aborts execution",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "IMMUTABLE_EVIDENCE_AND_NORMALIZATION",
+      "rule": "Executing detection rules must never alter raw evidence (IngestedEvent) or canonical normalized events (NormalizedEvent).",
+      "enforcement": "Separate append-only detection_executions and detection_condition_results tables; raw logs and normalized events remain bit-for-bit unchanged.",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "DETERMINISTIC_SAFE_JSON_DSL",
+      "rule": "No arbitrary code execution, eval(), exec(), dynamic Python execution, or shell commands.",
+      "enforcement": "Declarative JSON DSL interpreter supporting AND, OR, EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, CONTAINS, IN, EXISTS, NOT_EXISTS.",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "TELEMETRY_COMPLETENESS_PARTIAL_NOT_NO_MATCH",
+      "rule": "Missing telemetry fields must yield PARTIAL, never false NO_MATCH.",
+      "enforcement": "DetectionFieldResolver returns resolved=False for missing telemetry; condition evaluator sets condition_result='MISSING', producing overall execution_status='PARTIAL'.",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "EXECUTION_IDEMPOTENCY",
+      "rule": "Duplicate executions are prevented via deterministic SHA-256 fingerprint: SHA-256(rule_version_id + ':' + normalized_event_id + ':' + execution_engine_version).",
+      "enforcement": "Unique constraint on detection_executions.execution_fingerprint; existing record returned on duplicate execution.",
+      "status": "VERIFIED"
+    },
+    {
+      "invariant": "END_TO_END_PROVENANCE",
+      "rule": "Every execution preserves full 10-stage traceable lineage from raw evidence vault to governance audit event.",
+      "enforcement": "GET /api/v1/detection-executions/{execution_id}/trace returns complete 10-stage chain.",
+      "status": "VERIFIED"
+    }
+  ],
+  "api_endpoints": [
+    "POST /api/v1/normalized-events/{normalized_event_id}/run-detections",
+    "POST /api/v1/detection-rules/{rule_id}/execute/{normalized_event_id}",
+    "GET  /api/v1/detection-executions",
+    "GET  /api/v1/detection-executions/{execution_id}",
+    "GET  /api/v1/detection-executions/{execution_id}/trace"
+  ],
+  "test_breakdown": {
+    "test_sprint1_ingestion": 8,
+    "test_sprint2_normalization": 10,
+    "test_sprint3_semantic_registry": 10,
+    "test_sprint3b_semantic_interpretation": 14,
+    "test_sprint3c_semantic_governance": 5,
+    "test_sprint4a_identity_rbac": 20,
+    "test_sprint4b_dual_control": 15,
+    "test_sprint5a_cryptographic_ledger": 14,
+    "test_sprint5b_merkle_proofs": 20,
+    "test_sprint6a_detection_rules": 20,
+    "test_sprint6b_detection_rule_trust": 27,
+    "test_sprint6c_detection_rule_governance": 47,
+    "test_sprint7a_detection_execution": 35,
+    "total": 245
+  }
+}

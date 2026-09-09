@@ -1,0 +1,12 @@
+﻿HTTP Status: 200
+Content-Length: 1198 bytes
+Headers: {
+    "Vary":  "Origin",
+    "Connection":  "keep-alive",
+    "Keep-Alive":  "timeout=5",
+    "Content-Length":  "1198",
+    "Cache-Control":  "no-cache",
+    "Content-Type":  "text/html",
+    "Date":  "Sun, 06 Sep 2026 11:22:22 GMT",
+    "ETag":  "W/\"4ae-FxISwJRcxd/Ac9ACeiD+t3m0Jb4\""
+}

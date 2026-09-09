@@ -1,0 +1,405 @@
+======================================================================
+SENTINEL-TRACE SPRINT 5A — FULL REGRESSION & CRYPTOGRAPHIC LEDGER TEST SUITE
+Timestamp: 2026-09-06T18:20:23.819420+00:00
+======================================================================
+
+2026-09-06 18:20:14,034 | INFO     | app.services.event_service | Preserving event: id=evt_c8dd892784ae4967 source='Cisco ASA Firewall' format=text bytes=94 sha256=c09b8ba62bae296fcb08b42dd90ff2823ef2dc2d8291be173a56130ca9b3f831
+2026-09-06 18:20:14,049 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,064 | INFO     | app.services.event_service | Preserving event: id=evt_8eb9bcd015bc4fa5 source='Linux Auth Gateway' format=text bytes=86 sha256=81a6877905193df6734045207b4f25d24952f636e682eb3ee1b9a99d433e5540
+2026-09-06 18:20:14,072 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,085 | INFO     | app.services.event_service | Preserving event: id=evt_f17612a688d1439c source='Endpoint EDR' format=json bytes=61 sha256=9410e922ef261cbfa55d038ae15b85abfc8f78dd98111143ec5899fd6508f3e5
+2026-09-06 18:20:14,095 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,115 | INFO     | app.services.event_service | Preserving event: id=evt_fd850ad9947a4366 source='Exactness Test Device' format=text bytes=59 sha256=d8ce524b309c8a6a3b99a61fd3d8c2ee524007c667fcb204a409c415790414d4
+2026-09-06 18:20:14,124 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,159 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events?limit=10&offset=0 "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,180 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events/evt_fd850ad9947a4366 "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,205 | INFO     | app.services.event_service | Preserving event: id=evt_608ccd1839b64901 source='Integrity Check Node' format=text bytes=49 sha256=139794ed58ca6b9e0b184c2d6ab58bbf14909816ebd8a50a5dfd680443932b3f
+2026-09-06 18:20:14,215 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,233 | INFO     | app.services.event_service | Integrity verified for evt_608ccd1839b64901: hash=139794ed58ca6b9e0b184c2d6ab58bbf14909816ebd8a50a5dfd680443932b3f
+2026-09-06 18:20:14,236 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events/evt_608ccd1839b64901/verify "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,252 | INFO     | app.services.event_service | Preserving event: id=evt_c713aa47b6ff46ff source='Tamper Target' format=text bytes=37 sha256=4252307896f23685491fe76cc1beba425415ea87b4c73fa5688b3de95f92b6aa
+2026-09-06 18:20:14,259 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,279 | WARNING  | app.services.event_service | INTEGRITY MISMATCH DETECTED for evt_c713aa47b6ff46ff: stored=4252307896f23685491fe76cc1beba425415ea87b4c73fa5688b3de95f92b6aa live=04d13ed388883e53781bba2acedaca91f1eef22e7514e796e546531ce2154bd5
+2026-09-06 18:20:14,281 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events/evt_c713aa47b6ff46ff/verify "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,306 | INFO     | app.services.event_service | Preserving event: id=evt_be901da6b03f4a35 source='Test Firewall' format=text bytes=108 sha256=72c7b08714dc219ceedb40a77c108396760bfe8a754ed054e474048844c58bd4
+2026-09-06 18:20:14,313 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,344 | INFO     | app.services.normalization_service | Normalized event evt_be901da6b03f4a35 -> norm_2c5e077007a34cc7 (Class: Network Activity, Action: ALLOW, Confidence: 0.95)
+2026-09-06 18:20:14,347 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_be901da6b03f4a35/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,364 | INFO     | app.services.event_service | Preserving event: id=evt_c2e1d46eb6f24aae source='Test Auth Node' format=json bytes=85 sha256=70fd2f87a73c6c99beae130e9abb4832ddcc61513c58c4d3308734fcd591e831
+2026-09-06 18:20:14,371 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,397 | INFO     | app.services.normalization_service | Normalized event evt_c2e1d46eb6f24aae -> norm_ce28a030a8504a7d (Class: Authentication, Action: SUCCESS, Confidence: 0.98)
+2026-09-06 18:20:14,401 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_c2e1d46eb6f24aae/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,422 | INFO     | app.services.event_service | Preserving event: id=evt_74a9a17519f84d9a source='Incomplete Source' format=text bytes=44 sha256=af51522a722ff6263e5bd068a6385165d363128df950e23e708fdecaeee2db93
+2026-09-06 18:20:14,429 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,455 | INFO     | app.services.normalization_service | Normalized event evt_74a9a17519f84d9a -> norm_bd9ecf735c8c4aa8 (Class: Network Activity, Action: None, Confidence: 0.70)
+2026-09-06 18:20:14,458 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_74a9a17519f84d9a/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,472 | INFO     | app.services.event_service | Preserving event: id=evt_1198e918b50c490d source='Broken JSON Provider' format=json bytes=39 sha256=9cbfec0e2aaad2e14f0cd6f88583af0f34cc129325952842f4615cc357248f7f
+2026-09-06 18:20:14,481 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,513 | INFO     | app.services.normalization_service | Normalized event evt_1198e918b50c490d -> norm_734a5fcb255d4cd7 (Class: Authentication, Action: None, Confidence: 0.20)
+2026-09-06 18:20:14,516 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_1198e918b50c490d/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,531 | INFO     | app.services.event_service | Preserving event: id=evt_9c3cf391ee704e5b source='Full Firewall' format=text bytes=136 sha256=457f2d2337861b632773fdf72eb37d35087edecf4111a3ce73ee87c53c535e05
+2026-09-06 18:20:14,539 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,561 | INFO     | app.services.normalization_service | Normalized event evt_9c3cf391ee704e5b -> norm_9d5bc135fed647fb (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-06 18:20:14,564 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_9c3cf391ee704e5b/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,576 | INFO     | app.services.event_service | Preserving event: id=evt_1691e28017e3455c source='Idempotency Test' format=csv bytes=57 sha256=eb3daf5c62444cfe97192f0ae373a4c3dd722b9b8904751876444a40d018abf7
+2026-09-06 18:20:14,585 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,609 | INFO     | app.services.normalization_service | Normalized event evt_1691e28017e3455c -> norm_44c943efdb704c0e (Class: System Activity, Action: SUCCESS, Confidence: 0.88)
+2026-09-06 18:20:14,613 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_1691e28017e3455c/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,626 | INFO     | app.services.normalization_service | Idempotent normalization: returning existing normalized event norm_44c943efdb704c0e
+2026-09-06 18:20:14,629 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_1691e28017e3455c/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,640 | INFO     | app.services.event_service | Preserving event: id=evt_36b92f7c681c47de source='Evidence Protection Test' format=text bytes=43 sha256=b17d80a119f2448b8fada6a27f7a3463b879ca1bc1e6efd4b28ad4bf3d5ea41d
+2026-09-06 18:20:14,646 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:14,669 | INFO     | app.services.normalization_service | Normalized event evt_36b92f7c681c47de -> norm_84634103031e46eb (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-06 18:20:14,671 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_36b92f7c681c47de/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,695 | INFO     | app.services.event_service | Integrity verified for evt_36b92f7c681c47de: hash=b17d80a119f2448b8fada6a27f7a3463b879ca1bc1e6efd4b28ad4bf3d5ea41d
+2026-09-06 18:20:14,699 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events/evt_36b92f7c681c47de/verify "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,765 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:14,805 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:14,832 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,861 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:14,869 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_cisco_asa_v1 "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,895 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:14,901 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_demo_vendor_v1 "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,924 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:14,929 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_cisco_asa_v1 "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,949 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:14,954 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_demo_vendor_v1 "HTTP/1.1 200 OK"
+2026-09-06 18:20:14,974 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:14,977 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_global "HTTP/1.1 404 Not Found"
+2026-09-06 18:20:15,239 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,243 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/protected-fields "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,264 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,268 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/protected-fields "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,310 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:15,330 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,333 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/protected-fields "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,353 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,364 | INFO     | app.services.event_service | Preserving event: id=evt_576c9f5515dc4c09 source='Cisco ASA Firewall' format=text bytes=152 sha256=e248f80be8812a4b1ac294c0bc06c7c0a0719fb78b8cbf9217724ad05c8c4301
+2026-09-06 18:20:15,370 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:15,387 | INFO     | app.services.normalization_service | Normalized event evt_576c9f5515dc4c09 -> norm_b2974baba0214053 (Class: Network Activity, Action: PERMIT, Confidence: 0.80)
+2026-09-06 18:20:15,390 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_576c9f5515dc4c09/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,410 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,440 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_2571395c2d5f4bf9 for norm_b2974baba0214053: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-06 18:20:15,442 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_b2974baba0214053/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,453 | INFO     | app.services.event_service | Preserving event: id=evt_48d63ab29a924f07 source='Demo Vendor Tap Appliance' format=json bytes=107 sha256=d652854192cca1d621e4fde3de3628f0c7428b6b90786f135139334e7d73311c
+2026-09-06 18:20:15,460 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:15,492 | INFO     | app.services.normalization_service | Normalized event evt_48d63ab29a924f07 -> norm_d1ce6cff3fad4ff7 (Class: Authentication, Action: PERMIT, Confidence: 0.85)
+2026-09-06 18:20:15,494 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_48d63ab29a924f07/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,524 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,543 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_386b7203ce5c470f for norm_d1ce6cff3fad4ff7: status=AMBIGUOUS, value=MONITORED, alerts=2
+2026-09-06 18:20:15,546 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_d1ce6cff3fad4ff7/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,557 | INFO     | app.services.event_service | Preserving event: id=evt_4781f83cf9e84c0f source='Cisco ASA Node' format=text bytes=67 sha256=3a0bffffd2e51793aa1e535522d9c1cd4b54b5f5a4180d65cc08d90905edf5f6
+2026-09-06 18:20:15,562 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:15,580 | INFO     | app.services.normalization_service | Normalized event evt_4781f83cf9e84c0f -> norm_3db9804bc700472b (Class: Network Activity, Action: PERMIT, Confidence: 0.80)
+2026-09-06 18:20:15,583 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_4781f83cf9e84c0f/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,603 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,613 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_a8fdb612353f4d59 for norm_3db9804bc700472b: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-06 18:20:15,615 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_3db9804bc700472b/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,624 | INFO     | app.services.event_service | Preserving event: id=evt_4fd1e650f1f14977 source='Demo Vendor Node' format=json bytes=45 sha256=6c43df756b1fa946e8ad7b5efadb7b8e724a8b6d9b184184aa0efe6290fa4c7f
+2026-09-06 18:20:15,631 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:15,649 | INFO     | app.services.normalization_service | Normalized event evt_4fd1e650f1f14977 -> norm_99c8b826d17749c8 (Class: Authentication, Action: PERMIT, Confidence: 0.85)
+2026-09-06 18:20:15,652 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_4fd1e650f1f14977/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,671 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,684 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_edae29652cd4460a for norm_99c8b826d17749c8: status=AMBIGUOUS, value=MONITORED, alerts=2
+2026-09-06 18:20:15,686 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_99c8b826d17749c8/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,696 | INFO     | app.services.event_service | Preserving event: id=evt_ff201b1547754f36 source='Unregistered Vendor Appliance' format=json bytes=98 sha256=e887fc45fe57f4869cf48cbd97c0da2177695e1ae85ef3fde9db6b7e6ffdab54
+2026-09-06 18:20:15,702 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:15,720 | INFO     | app.services.normalization_service | Normalized event evt_ff201b1547754f36 -> norm_0aa84a185fce4e1b (Class: Authentication, Action: PERMIT, Confidence: 0.85)
+2026-09-06 18:20:15,723 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_ff201b1547754f36/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,744 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,763 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_55f69c9f580e4085 for norm_0aa84a185fce4e1b: status=UNMAPPED, value=None, alerts=1
+2026-09-06 18:20:15,765 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_0aa84a185fce4e1b/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,776 | INFO     | app.services.event_service | Preserving event: id=evt_04b985248c9443be source='Cisco ASA Gateway' format=text bytes=78 sha256=c8b03cceacc5d90c07e8a7e7c130bcc3a7e6b6d36d3b3c670c26c6ca2a03af72
+2026-09-06 18:20:15,781 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:15,800 | INFO     | app.services.normalization_service | Normalized event evt_04b985248c9443be -> norm_7a23e99b45bb40a2 (Class: Network Activity, Action: UNKNOWN_CUSTOM_OP, Confidence: 0.80)
+2026-09-06 18:20:15,802 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_04b985248c9443be/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,823 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,833 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_e05cb0ad5c7a4878 for norm_7a23e99b45bb40a2: status=UNMAPPED, value=None, alerts=1
+2026-09-06 18:20:15,835 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_7a23e99b45bb40a2/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,845 | INFO     | app.services.event_service | Preserving event: id=evt_60ba4806fc7e4ae3 source='Cisco ASA Alert Probe' format=text bytes=80 sha256=7326437b66b297c34218da9abeb65dbb460b2fda5219900be04520a9317e41fd
+2026-09-06 18:20:15,851 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:15,870 | INFO     | app.services.normalization_service | Normalized event evt_60ba4806fc7e4ae3 -> norm_5e9b9e3f47b24f21 (Class: Network Activity, Action: UNRECOGNIZED_ACTION, Confidence: 0.80)
+2026-09-06 18:20:15,872 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_60ba4806fc7e4ae3/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,893 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,903 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_4078ed5168c94b4d for norm_5e9b9e3f47b24f21: status=UNMAPPED, value=None, alerts=1
+2026-09-06 18:20:15,906 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_5e9b9e3f47b24f21/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,915 | INFO     | app.services.event_service | Preserving event: id=evt_3c11d5b1c80b461c source='Demo Vendor Ambiguity Test' format=json bytes=45 sha256=6c43df756b1fa946e8ad7b5efadb7b8e724a8b6d9b184184aa0efe6290fa4c7f
+2026-09-06 18:20:15,921 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:15,939 | INFO     | app.services.normalization_service | Normalized event evt_3c11d5b1c80b461c -> norm_f4eda50ff4d64a1b (Class: Authentication, Action: PERMIT, Confidence: 0.85)
+2026-09-06 18:20:15,942 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_3c11d5b1c80b461c/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,962 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:15,973 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_22a5a91a559a4d24 for norm_f4eda50ff4d64a1b: status=AMBIGUOUS, value=MONITORED, alerts=2
+2026-09-06 18:20:15,976 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_f4eda50ff4d64a1b/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:15,985 | INFO     | app.services.event_service | Preserving event: id=evt_90f8d02e5f374ea8 source='Demo Vendor Protected Risk Test' format=json bytes=45 sha256=6c43df756b1fa946e8ad7b5efadb7b8e724a8b6d9b184184aa0efe6290fa4c7f
+2026-09-06 18:20:15,991 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:16,009 | INFO     | app.services.normalization_service | Normalized event evt_90f8d02e5f374ea8 -> norm_9a1d68156e4b4b08 (Class: Authentication, Action: PERMIT, Confidence: 0.85)
+2026-09-06 18:20:16,012 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_90f8d02e5f374ea8/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,032 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,043 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_6d87be26906946c2 for norm_9a1d68156e4b4b08: status=AMBIGUOUS, value=MONITORED, alerts=2
+2026-09-06 18:20:16,046 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_9a1d68156e4b4b08/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,066 | INFO     | app.services.event_service | Preserving event: id=evt_ff1d448097d64a13 source='Conflict Vendor Device' format=text bytes=62 sha256=6083500aa95237bac2eb81c13f9c245fa424eb6cbee9c67d9d7b2378db8b3b46
+2026-09-06 18:20:16,071 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:16,089 | INFO     | app.services.normalization_service | Normalized event evt_ff1d448097d64a13 -> norm_b30baf6145c14aa5 (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-06 18:20:16,092 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_ff1d448097d64a13/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,110 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,122 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_73f0662a06554966 for norm_b30baf6145c14aa5: status=CONFLICT, value=None, alerts=1
+2026-09-06 18:20:16,125 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_b30baf6145c14aa5/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,134 | INFO     | app.services.event_service | Preserving event: id=evt_30cf575ca7d6426c source='Cisco ASA Det Test' format=text bytes=60 sha256=35b340f11b308bdd22c3a877e827978887f64b4f1d3ea27edd4e1bf7348e1cb1
+2026-09-06 18:20:16,139 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:16,156 | INFO     | app.services.normalization_service | Normalized event evt_30cf575ca7d6426c -> norm_0069cf94c2fe44a1 (Class: Network Activity, Action: DENY, Confidence: 0.80)
+2026-09-06 18:20:16,158 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_30cf575ca7d6426c/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,176 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,186 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_e143a4e960654145 for norm_0069cf94c2fe44a1: status=INTERPRETED, value=DENIED, alerts=0
+2026-09-06 18:20:16,188 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_0069cf94c2fe44a1/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,199 | INFO     | app.services.event_service | Preserving event: id=evt_4779bfaa3e424961 source='Cisco Idempotency Test' format=text bytes=61 sha256=d98e80e196e7c02271001a109c99c9533a2bf4fb3f62b6fe496b7b5e61519281
+2026-09-06 18:20:16,204 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:16,221 | INFO     | app.services.normalization_service | Normalized event evt_4779bfaa3e424961 -> norm_16c5c5402b164161 (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-06 18:20:16,224 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_4779bfaa3e424961/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,242 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,251 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_81a73c191713452e for norm_16c5c5402b164161: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-06 18:20:16,254 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_16c5c5402b164161/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,272 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,278 | INFO     | sentinel.services.semantic_interpretation | Returning existing interpretation interp_81a73c191713452e for normalized event norm_16c5c5402b164161
+2026-09-06 18:20:16,280 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_16c5c5402b164161/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,289 | INFO     | app.services.event_service | Preserving event: id=evt_c16d7527b6cd4773 source='Cisco Immutability Test' format=text bytes=61 sha256=d98e80e196e7c02271001a109c99c9533a2bf4fb3f62b6fe496b7b5e61519281
+2026-09-06 18:20:16,294 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:16,311 | INFO     | app.services.normalization_service | Normalized event evt_c16d7527b6cd4773 -> norm_d1b2fa99c09e48e9 (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-06 18:20:16,313 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_c16d7527b6cd4773/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,333 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,343 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_1a894c5b8abb44df for norm_d1b2fa99c09e48e9: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-06 18:20:16,345 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_d1b2fa99c09e48e9/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,357 | INFO     | app.services.event_service | Preserving event: id=evt_96d1444d7d8549cf source='Cisco Raw Integrity Test' format=text bytes=52 sha256=687f79b71959a6df41370bb0f6e17da8ce666869ca4a5d89d81f774ae76fc8c1
+2026-09-06 18:20:16,362 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:16,380 | INFO     | app.services.normalization_service | Normalized event evt_96d1444d7d8549cf -> norm_98b8ba958d9a47bf (Class: Network Activity, Action: PERMIT, Confidence: 0.80)
+2026-09-06 18:20:16,382 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_96d1444d7d8549cf/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,401 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,411 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_b3cd25b14184476e for norm_98b8ba958d9a47bf: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-06 18:20:16,414 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_98b8ba958d9a47bf/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,429 | INFO     | app.services.event_service | Integrity verified for evt_96d1444d7d8549cf: hash=687f79b71959a6df41370bb0f6e17da8ce666869ca4a5d89d81f774ae76fc8c1
+2026-09-06 18:20:16,434 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/events/evt_96d1444d7d8549cf/verify "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,449 | INFO     | app.services.event_service | Preserving event: id=evt_44b2d2e1fdd342c1 source='Cisco ASA Trace Audit' format=text bytes=62 sha256=30ebd2c118e98f4de2825637f2cc6d0b658188b0731a4bac697e159307be62c3
+2026-09-06 18:20:16,457 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:16,490 | INFO     | app.services.normalization_service | Normalized event evt_44b2d2e1fdd342c1 -> norm_965c25b668be4307 (Class: Network Activity, Action: PERMIT, Confidence: 0.80)
+2026-09-06 18:20:16,494 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_44b2d2e1fdd342c1/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,526 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,540 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_2e7a8b16cf5a4561 for norm_965c25b668be4307: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-06 18:20:16,542 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_965c25b668be4307/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,579 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-interpretations/interp_2e7a8b16cf5a4561/trace "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,604 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,625 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,646 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,667 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,674 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/compare?source_policy_id=spol_cisco_asa_v1&target_policy_id=spol_cisco_asa_v2_draft "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,695 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,701 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/compare?source_policy_id=spol_cisco_asa_v1&target_policy_id=spol_nonexistent_999 "HTTP/1.1 404 Not Found"
+2026-09-06 18:20:16,720 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:16,741 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,744 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/protected-fields "HTTP/1.1 200 OK"
+2026-09-06 18:20:16,765 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:16,773 | WARNING  | passlib.handlers.bcrypt | (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-09-06 18:20:21,254 | INFO     | sentinel.routers.auth | User 'admin_demo' successfully authenticated with role 'ADMIN'
+2026-09-06 18:20:21,256 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 200 OK"
+2026-09-06 18:20:21,457 | WARNING  | sentinel.routers.auth | Failed login attempt for identifier: 'admin_demo'
+2026-09-06 18:20:21,459 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 401 Unauthorized"
+2026-09-06 18:20:21,469 | WARNING  | sentinel.routers.auth | Failed login attempt for identifier: 'nonexistent_user'
+2026-09-06 18:20:21,471 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 401 Unauthorized"
+2026-09-06 18:20:21,539 | WARNING  | sentinel.services.user | Login rejected: user 'deactivated_user' is inactive.
+2026-09-06 18:20:21,539 | WARNING  | sentinel.routers.auth | Failed login attempt for identifier: 'deactivated_user'
+2026-09-06 18:20:21,541 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/auth/login "HTTP/1.1 401 Unauthorized"
+2026-09-06 18:20:21,554 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/auth/me "HTTP/1.1 200 OK"
+2026-09-06 18:20:21,559 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 401 Unauthorized"
+2026-09-06 18:20:21,562 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/auth/me "HTTP/1.1 401 Unauthorized"
+2026-09-06 18:20:21,583 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:21,593 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'SEMANTIC_POLICY_CREATE'
+2026-09-06 18:20:21,595 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 403 Forbidden"
+2026-09-06 18:20:21,607 | INFO     | app.services.event_service | Preserving event: id=evt_e41509f6871e4214 source='Analyst Ingest Test' format=text bytes=63 sha256=4d185cf4eda98159fa1d079558ebe435eba0a91aca1870a4eff5df54143f8bd8
+2026-09-06 18:20:21,613 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:21,623 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'EVIDENCE_INGEST'
+2026-09-06 18:20:21,625 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 403 Forbidden"
+2026-09-06 18:20:21,636 | INFO     | app.services.event_service | Preserving event: id=evt_ae2a40158ce14532 source='Analyst Norm Test' format=text bytes=36 sha256=897ddcb17c8d1db110826390e30a370af0b6d6e85adf0c43ee1bf60c74a480a4
+2026-09-06 18:20:21,641 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:21,660 | INFO     | app.services.normalization_service | Normalized event evt_ae2a40158ce14532 -> norm_6119387c1e074bb9 (Class: Network Activity, Action: ALLOW, Confidence: 0.95)
+2026-09-06 18:20:21,663 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_ae2a40158ce14532/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:21,674 | INFO     | app.services.event_service | Preserving event: id=evt_0584476dd999423e source='Norm Auth Test' format=text bytes=12 sha256=3431838e9ba427094f2be714044e810545fc7c26a0772b2218ce25a25e93ba05
+2026-09-06 18:20:21,679 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:21,690 | WARNING  | sentinel.core.auth | Access denied: User 'author_demo' with role 'POLICY_AUTHOR' lacks permission 'EVENT_NORMALIZE'
+2026-09-06 18:20:21,692 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_0584476dd999423e/normalize "HTTP/1.1 403 Forbidden"
+2026-09-06 18:20:21,702 | INFO     | app.services.event_service | Preserving event: id=evt_92ea8f0d443148cd source='Cisco ASA Analyst' format=text bytes=137 sha256=f4afa890c91616f817e05a718d29e207e271b6e34a10f743c532b82ee573ff92
+2026-09-06 18:20:21,709 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:21,730 | INFO     | app.services.normalization_service | Normalized event evt_92ea8f0d443148cd -> norm_5165dccf29f54e88 (Class: Network Activity, Action: ALLOW, Confidence: 0.80)
+2026-09-06 18:20:21,733 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_92ea8f0d443148cd/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:21,755 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:21,765 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_f5ead3380b774411 for norm_5165dccf29f54e88: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-06 18:20:21,769 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_5165dccf29f54e88/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:21,780 | INFO     | app.services.event_service | Preserving event: id=evt_a3d8dcc594f14f46 source='Cisco ASA Auditor' format=text bytes=138 sha256=c800c26f26050a8e09ddda2e2cc7824e141f7ac19c94b3d36741b885778b5057
+2026-09-06 18:20:21,786 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/ingest "HTTP/1.1 201 Created"
+2026-09-06 18:20:21,804 | INFO     | app.services.normalization_service | Normalized event evt_a3d8dcc594f14f46 -> norm_f654c838cd7d4c31 (Class: Network Activity, Action: PERMIT, Confidence: 0.80)
+2026-09-06 18:20:21,807 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/events/evt_a3d8dcc594f14f46/normalize "HTTP/1.1 200 OK"
+2026-09-06 18:20:21,827 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:21,837 | INFO     | sentinel.services.semantic_interpretation | Created semantic interpretation interp_47ea10d72bc94b00 for norm_f654c838cd7d4c31: status=INTERPRETED, value=ALLOWED, alerts=0
+2026-09-06 18:20:21,839 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/normalized-events/norm_f654c838cd7d4c31/interpret "HTTP/1.1 200 OK"
+2026-09-06 18:20:21,857 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-interpretations/interp_47ea10d72bc94b00/trace "HTTP/1.1 200 OK"
+2026-09-06 18:20:21,866 | WARNING  | sentinel.core.auth | Access denied: User 'analyst_demo' with role 'SECURITY_ANALYST' lacks permission 'USER_MANAGE'
+2026-09-06 18:20:21,868 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/users "HTTP/1.1 403 Forbidden"
+2026-09-06 18:20:21,890 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/users "HTTP/1.1 200 OK"
+2026-09-06 18:20:21,913 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/users "HTTP/1.1 200 OK"
+2026-09-06 18:20:21,930 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/users/usr_admin_001 "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,145 | INFO     | sentinel.services.ledger | Governance Ledger [#51] USER_CREATED appended by 'ops_7e265b' (Hash: b1f2ccf2d3ea...)
+2026-09-06 18:20:22,149 | INFO     | sentinel.routers.user | User 'ops_7e265b' created by admin 'admin_demo'
+2026-09-06 18:20:22,152 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/users "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,168 | INFO     | sentinel.services.ledger | Governance Ledger [#52] ROLE_CHANGED appended by 'ops_7e265b' (Hash: 33b38753c178...)
+2026-09-06 18:20:22,173 | INFO     | sentinel.routers.user | User 'ops_7e265b' updated by admin 'admin_demo'
+2026-09-06 18:20:22,175 | INFO     | httpx | HTTP Request: PATCH http://testserver/api/v1/users/usr_cdfa6a930c63 "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,197 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:22,220 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,238 | INFO     | sentinel.services.ledger | Governance Ledger [#53] POLICY_SUBMITTED appended by 'author_demo' (Hash: 6f3d978810c4...)
+2026-09-06 18:20:22,239 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_0daea891dc18
+2026-09-06 18:20:22,247 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_0daea891dc18/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,264 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,277 | INFO     | sentinel.services.ledger | Governance Ledger [#54] POLICY_SUBMITTED appended by 'author_demo' (Hash: dfa0198fd57f...)
+2026-09-06 18:20:22,278 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_3f023483800f
+2026-09-06 18:20:22,284 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_3f023483800f/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,303 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,316 | INFO     | sentinel.services.ledger | Governance Ledger [#55] POLICY_SUBMITTED appended by 'author_demo' (Hash: 9259d27b677c...)
+2026-09-06 18:20:22,316 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_4fba7cd69d4e
+2026-09-06 18:20:22,322 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_4fba7cd69d4e/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,338 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/policy-approvals/approval_2f4d0331f204 "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,360 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,375 | INFO     | sentinel.services.ledger | Governance Ledger [#56] POLICY_SUBMITTED appended by 'author_demo' (Hash: 6fb3d7dce371...)
+2026-09-06 18:20:22,375 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_0409fbcc2a6f
+2026-09-06 18:20:22,382 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_0409fbcc2a6f/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,390 | WARNING  | sentinel.core.auth | Access denied: User 'author_demo' with role 'POLICY_AUTHOR' lacks permission 'POLICY_APPROVE'
+2026-09-06 18:20:22,392 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_f7e10fc29426/approve "HTTP/1.1 403 Forbidden"
+2026-09-06 18:20:22,410 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,424 | INFO     | sentinel.services.ledger | Governance Ledger [#57] POLICY_SUBMITTED appended by 'admin_demo' (Hash: 02ed91dad19e...)
+2026-09-06 18:20:22,424 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'admin_demo' (ADMIN) on SEMANTIC_POLICY:spol_701a7ee172d4
+2026-09-06 18:20:22,430 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_701a7ee172d4/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,440 | WARNING  | sentinel.services.governance | SECURITY VIOLATION: User 'admin_demo' attempted self-approval of ticket approval_01699d5822dc
+2026-09-06 18:20:22,442 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_01699d5822dc/approve "HTTP/1.1 403 Forbidden"
+2026-09-06 18:20:22,459 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,472 | INFO     | sentinel.services.ledger | Governance Ledger [#58] POLICY_SUBMITTED appended by 'author_demo' (Hash: cd047d7a2c34...)
+2026-09-06 18:20:22,472 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_64fb9ed638c4
+2026-09-06 18:20:22,479 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_64fb9ed638c4/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,494 | INFO     | sentinel.services.ledger | Governance Ledger [#59] POLICY_APPROVED appended by 'reviewer_demo' (Hash: e31746d195d2...)
+2026-09-06 18:20:22,495 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_64fb9ed638c4
+2026-09-06 18:20:22,502 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_8ece7c5afafc/approve "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,519 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,534 | INFO     | sentinel.services.ledger | Governance Ledger [#60] POLICY_SUBMITTED appended by 'author_demo' (Hash: d2673de2c718...)
+2026-09-06 18:20:22,534 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_0f0595ce59f8
+2026-09-06 18:20:22,542 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_0f0595ce59f8/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,557 | INFO     | sentinel.services.ledger | Governance Ledger [#61] POLICY_REJECTED appended by 'reviewer_demo' (Hash: d1e7a79a6ccb...)
+2026-09-06 18:20:22,557 | INFO     | sentinel.services.governance | Governance Audit [POLICY_REJECTED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_0f0595ce59f8
+2026-09-06 18:20:22,563 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_28cac1684369/reject "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,582 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,592 | WARNING  | sentinel.services.governance | Invalid policy state transition attempted: DRAFT -> ACTIVE
+2026-09-06 18:20:22,594 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_e96392ba622e/activate "HTTP/1.1 409 Conflict"
+2026-09-06 18:20:22,613 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,627 | INFO     | sentinel.services.ledger | Governance Ledger [#62] POLICY_SUBMITTED appended by 'author_demo' (Hash: 36387acd5f4a...)
+2026-09-06 18:20:22,627 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_f406a50b0da3
+2026-09-06 18:20:22,634 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_f406a50b0da3/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,650 | INFO     | sentinel.services.ledger | Governance Ledger [#63] POLICY_APPROVED appended by 'reviewer_demo' (Hash: b4f5010b1e8a...)
+2026-09-06 18:20:22,650 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_f406a50b0da3
+2026-09-06 18:20:22,656 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_ff7c46684f9f/approve "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,676 | INFO     | sentinel.services.ledger | Governance Ledger [#64] POLICY_SUPERSEDED appended by 'reviewer_demo' (Hash: d262d4bf1259...)
+2026-09-06 18:20:22,676 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUPERSEDED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_9145b82653bd
+2026-09-06 18:20:22,679 | INFO     | sentinel.services.ledger | Governance Ledger [#65] POLICY_ACTIVATED appended by 'reviewer_demo' (Hash: 46cf91b5b3a6...)
+2026-09-06 18:20:22,679 | INFO     | sentinel.services.governance | Governance Audit [POLICY_ACTIVATED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_f406a50b0da3
+2026-09-06 18:20:22,684 | INFO     | sentinel.services.governance | Policy 'spol_f406a50b0da3' v1 successfully ACTIVATED by 'reviewer_demo'
+2026-09-06 18:20:22,689 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_f406a50b0da3/activate "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,708 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,723 | INFO     | sentinel.services.ledger | Governance Ledger [#66] POLICY_SUBMITTED appended by 'author_demo' (Hash: 85c3ac34068c...)
+2026-09-06 18:20:22,723 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_93dff238d16b
+2026-09-06 18:20:22,730 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_93dff238d16b/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,745 | INFO     | sentinel.services.ledger | Governance Ledger [#67] POLICY_APPROVED appended by 'reviewer_demo' (Hash: 8fdcdd1108a0...)
+2026-09-06 18:20:22,745 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_93dff238d16b
+2026-09-06 18:20:22,751 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_cf6916989cd8/approve "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,766 | INFO     | sentinel.services.ledger | Governance Ledger [#68] POLICY_ACTIVATED appended by 'reviewer_demo' (Hash: 764e4f1aaf44...)
+2026-09-06 18:20:22,766 | INFO     | sentinel.services.governance | Governance Audit [POLICY_ACTIVATED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_93dff238d16b
+2026-09-06 18:20:22,770 | INFO     | sentinel.services.governance | Policy 'spol_93dff238d16b' v1 successfully ACTIVATED by 'reviewer_demo'
+2026-09-06 18:20:22,773 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_93dff238d16b/activate "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,792 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,808 | INFO     | sentinel.services.ledger | Governance Ledger [#69] POLICY_SUBMITTED appended by 'author_demo' (Hash: 02def023f941...)
+2026-09-06 18:20:22,808 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_40b56aab1d96
+2026-09-06 18:20:22,815 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_40b56aab1d96/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,831 | INFO     | sentinel.services.ledger | Governance Ledger [#70] POLICY_APPROVED appended by 'reviewer_demo' (Hash: f3173bfc359e...)
+2026-09-06 18:20:22,831 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_40b56aab1d96
+2026-09-06 18:20:22,838 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_54bff325c948/approve "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,853 | INFO     | sentinel.services.ledger | Governance Ledger [#71] POLICY_SUPERSEDED appended by 'reviewer_demo' (Hash: cf40c9a1af50...)
+2026-09-06 18:20:22,853 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUPERSEDED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_93dff238d16b
+2026-09-06 18:20:22,857 | INFO     | sentinel.services.ledger | Governance Ledger [#72] POLICY_ACTIVATED appended by 'reviewer_demo' (Hash: 7d51b9293dcd...)
+2026-09-06 18:20:22,857 | INFO     | sentinel.services.governance | Governance Audit [POLICY_ACTIVATED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_40b56aab1d96
+2026-09-06 18:20:22,862 | INFO     | sentinel.services.governance | Policy 'spol_40b56aab1d96' v1 successfully ACTIVATED by 'reviewer_demo'
+2026-09-06 18:20:22,865 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_40b56aab1d96/activate "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,886 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,901 | INFO     | sentinel.services.ledger | Governance Ledger [#73] POLICY_SUBMITTED appended by 'author_demo' (Hash: 41493d342a5e...)
+2026-09-06 18:20:22,901 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_a29d21e3429e
+2026-09-06 18:20:22,908 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_a29d21e3429e/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,929 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:22,945 | INFO     | sentinel.services.ledger | Governance Ledger [#74] POLICY_SUBMITTED appended by 'author_demo' (Hash: 4325be0c8ac8...)
+2026-09-06 18:20:22,945 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_0e3d6dae0952
+2026-09-06 18:20:22,952 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_0e3d6dae0952/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,967 | INFO     | sentinel.services.ledger | Governance Ledger [#75] POLICY_APPROVED appended by 'reviewer_demo' (Hash: 4feda3e06b01...)
+2026-09-06 18:20:22,967 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_0e3d6dae0952
+2026-09-06 18:20:22,974 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_3d7b5e120cb8/approve "HTTP/1.1 200 OK"
+2026-09-06 18:20:22,994 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:23,009 | INFO     | sentinel.services.ledger | Governance Ledger [#76] POLICY_SUBMITTED appended by 'author_demo' (Hash: c9c85a829b44...)
+2026-09-06 18:20:23,009 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_73cc9f0e9d28
+2026-09-06 18:20:23,015 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_73cc9f0e9d28/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,030 | INFO     | sentinel.services.ledger | Governance Ledger [#77] POLICY_APPROVED appended by 'reviewer_demo' (Hash: e1932ee4924c...)
+2026-09-06 18:20:23,030 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_73cc9f0e9d28
+2026-09-06 18:20:23,037 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_85ef77f1a8b1/approve "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,053 | INFO     | sentinel.services.ledger | Governance Ledger [#78] POLICY_SUPERSEDED appended by 'reviewer_demo' (Hash: ce3f0e020f8b...)
+2026-09-06 18:20:23,053 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUPERSEDED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_c69dd164737b
+2026-09-06 18:20:23,056 | INFO     | sentinel.services.ledger | Governance Ledger [#79] POLICY_ACTIVATED appended by 'reviewer_demo' (Hash: 49fa18e3dc81...)
+2026-09-06 18:20:23,056 | INFO     | sentinel.services.governance | Governance Audit [POLICY_ACTIVATED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_73cc9f0e9d28
+2026-09-06 18:20:23,061 | INFO     | sentinel.services.governance | Policy 'spol_73cc9f0e9d28' v1 successfully ACTIVATED by 'reviewer_demo'
+2026-09-06 18:20:23,064 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_73cc9f0e9d28/activate "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,079 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/semantic-policies/spol_73cc9f0e9d28/governance-history "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,097 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:23,112 | INFO     | sentinel.services.ledger | Governance Ledger [#80] POLICY_SUBMITTED appended by 'author_demo' (Hash: e1d4465962b6...)
+2026-09-06 18:20:23,112 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_b33fa943d124
+2026-09-06 18:20:23,119 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_b33fa943d124/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,128 | WARNING  | sentinel.core.auth | Access denied: User 'analyst_demo' with role 'SECURITY_ANALYST' lacks permission 'POLICY_APPROVE'
+2026-09-06 18:20:23,130 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_673a01d044b2/approve "HTTP/1.1 403 Forbidden"
+2026-09-06 18:20:23,140 | WARNING  | sentinel.core.auth | Access denied: User 'viewer_demo' with role 'VIEWER' lacks permission 'POLICY_APPROVE'
+2026-09-06 18:20:23,141 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_673a01d044b2/approve "HTTP/1.1 403 Forbidden"
+2026-09-06 18:20:23,158 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:23,174 | INFO     | sentinel.services.ledger | Governance Ledger [#81] POLICY_SUBMITTED appended by 'admin_demo' (Hash: cb07d76e3487...)
+2026-09-06 18:20:23,174 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'admin_demo' (ADMIN) on SEMANTIC_POLICY:spol_56b49f070bc3
+2026-09-06 18:20:23,182 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_56b49f070bc3/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,193 | WARNING  | sentinel.services.governance | SECURITY VIOLATION: User 'admin_demo' attempted self-approval of ticket approval_b367510fe42f
+2026-09-06 18:20:23,195 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_b367510fe42f/approve "HTTP/1.1 403 Forbidden"
+2026-09-06 18:20:23,210 | INFO     | sentinel.services.ledger | Governance Ledger [#82] POLICY_APPROVED appended by 'reviewer_demo' (Hash: 0bf1e84a19eb...)
+2026-09-06 18:20:23,210 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_56b49f070bc3
+2026-09-06 18:20:23,218 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_b367510fe42f/approve "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,338 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/policy-approvals "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,350 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:23,370 | INFO     | sentinel.services.semantic_policy | Semantic registry seeding complete: 0 fields, 0 policies, 0 rules
+2026-09-06 18:20:23,377 | INFO     | sentinel.services.ledger | Governance Ledger [#83] GENESIS_TEST appended by 'admin_demo' (Hash: cf2e116bad28...)
+2026-09-06 18:20:23,383 | INFO     | sentinel.services.ledger | Governance Ledger [#84] POLICY_CREATED appended by 'author_demo' (Hash: 867216e6d452...)
+2026-09-06 18:20:23,389 | INFO     | sentinel.services.ledger | Governance Ledger [#85] POLICY_SUBMITTED appended by 'author_demo' (Hash: 39d888171f63...)
+2026-09-06 18:20:23,392 | INFO     | sentinel.services.ledger | Governance Ledger [#86] POLICY_APPROVED appended by 'reviewer_demo' (Hash: a418572ff120...)
+2026-09-06 18:20:23,403 | INFO     | sentinel.services.ledger | Governance Ledger [#87] TAMPER_TEST appended by 'admin_demo' (Hash: 71ece74d38ef...)
+2026-09-06 18:20:23,418 | INFO     | sentinel.services.ledger | Governance Ledger [#88] HASH_TAMPER_TEST appended by 'admin_demo' (Hash: 819751c6dd8a...)
+2026-09-06 18:20:23,434 | INFO     | sentinel.services.ledger | Governance Ledger [#89] PREV_HASH_TEST appended by 'admin_demo' (Hash: c71d4b372b16...)
+2026-09-06 18:20:23,461 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/governance-ledger "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,475 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/governance-ledger/verify "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,489 | INFO     | httpx | HTTP Request: GET http://testserver/api/v1/governance-ledger/gledger_c0df5f2f21bf "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,505 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies "HTTP/1.1 201 Created"
+2026-09-06 18:20:23,520 | INFO     | sentinel.services.ledger | Governance Ledger [#90] POLICY_SUBMITTED appended by 'author_demo' (Hash: 36452509a66f...)
+2026-09-06 18:20:23,520 | INFO     | sentinel.services.governance | Governance Audit [POLICY_SUBMITTED] by 'author_demo' (POLICY_AUTHOR) on SEMANTIC_POLICY:spol_82297c2f28cc
+2026-09-06 18:20:23,526 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/semantic-policies/spol_82297c2f28cc/submit "HTTP/1.1 200 OK"
+2026-09-06 18:20:23,540 | INFO     | sentinel.services.ledger | Governance Ledger [#91] POLICY_APPROVED appended by 'reviewer_demo' (Hash: 18230ad51a71...)
+2026-09-06 18:20:23,541 | INFO     | sentinel.services.governance | Governance Audit [POLICY_APPROVED] by 'reviewer_demo' (POLICY_REVIEWER) on SEMANTIC_POLICY:spol_82297c2f28cc
+2026-09-06 18:20:23,547 | INFO     | httpx | HTTP Request: POST http://testserver/api/v1/policy-approvals/approval_cf80521bde2e/approve "HTTP/1.1 200 OK"
+
+................................................................................................
+----------------------------------------------------------------------
+Ran 96 tests in 9.593s
+
+OK

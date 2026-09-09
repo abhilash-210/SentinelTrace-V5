@@ -1,0 +1,21 @@
+=== SENTINEL-TRACE V5 — BIDIRECTIONAL TRACEABILITY TEST ===
+
+Endpoint: GET http://localhost:8000/api/v1/events/evt_30760a6876fe4d9a/normalization
+HTTP Status: 200
+Traceability Mapping:
+{
+  "original_event_id": "evt_30760a6876fe4d9a",
+  "raw_content_hash": "f7c3f3e9b06d82e241037a7c0bcd2cdcae4b108bdf9597f5978e07b61e489737",
+  "normalized_event_id": "norm_abbbdc9f151a4285",
+  "parser_name": "SyslogParser",
+  "parser_version": "1.0.0",
+  "source_profile_id": "sp_firewall_syslog",
+  "class_name": "Network Activity",
+  "activity_name": "Network Traffic",
+  "normalization_status": "NORMALIZED",
+  "normalization_confidence": 0.95,
+  "confidence_reasons": [
+    "Syslog RFC / Cisco header pattern matched"
+  ],
+  "normalized_at": "2026-09-06T12:39:23.267797Z"
+}

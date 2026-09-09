@@ -1,0 +1,12 @@
+=== SENTINEL-TRACE V5 — INTEGRITY VERIFICATION TEST ===
+
+Endpoint: GET http://localhost:8000/api/v1/events/evt_5615a5b825d2437e/verify
+HTTP Status: 200
+Response Body:
+{
+  "event_id": "evt_5615a5b825d2437e",
+  "stored_hash": "6f94248190a3ab9742378bede281c9c25acd1b8712ccb981ebf003ff4f870954",
+  "calculated_hash": "6f94248190a3ab9742378bede281c9c25acd1b8712ccb981ebf003ff4f870954",
+  "integrity_status": "VERIFIED",
+  "checked_at": "2026-09-06T12:21:39.481346Z"
+}

@@ -1,0 +1,53 @@
+{
+  "sprint": "4A",
+  "sprint_name": "Identity & Role-Based Access Control (RBAC)",
+  "status": "PASS",
+  "architecture_version": "V5",
+  "timestamp": "2026-09-06T17:21:00Z",
+  "test_metrics": {
+    "total_tests": 67,
+    "passed_tests": 67,
+    "failed_tests": 0,
+    "errors": 0,
+    "baseline_regression_sprint1_to_3c": "47/47 PASS",
+    "new_sprint4a_rbac_tests": "20/20 PASS"
+  },
+  "roles_implemented": [
+    "ADMIN",
+    "POLICY_AUTHOR",
+    "POLICY_REVIEWER",
+    "SECURITY_ANALYST",
+    "AUDITOR",
+    "VIEWER"
+  ],
+  "permission_matrix": [
+    "USER_READ",
+    "USER_MANAGE",
+    "EVIDENCE_INGEST",
+    "EVIDENCE_READ",
+    "EVENT_NORMALIZE",
+    "NORMALIZED_EVENT_READ",
+    "SEMANTIC_INTERPRET",
+    "SEMANTIC_POLICY_CREATE",
+    "SEMANTIC_POLICY_EDIT_DRAFT",
+    "SEMANTIC_POLICY_READ",
+    "SEMANTIC_POLICY_COMPARE",
+    "DRIFT_ALERT_READ",
+    "AUDIT_READ"
+  ],
+  "security_controls": {
+    "password_hashing": "Bcrypt (Passlib)",
+    "token_type": "JWT Bearer (python-jose)",
+    "signature_algorithm": "HS256",
+    "token_expiration_minutes": 480,
+    "access_control": "Dependency-based require_permission() with 401/403 differentiation",
+    "database_schema": "sentinel.users (Alembic stamped)",
+    "no_skip_auth_bypasses": true,
+    "password_hash_never_exposed": true
+  },
+  "docker_services": {
+    "db": "sentinel-trace-db (healthy)",
+    "backend": "sentinel-trace-backend (healthy)",
+    "frontend": "sentinel-trace-frontend (healthy)"
+  }
+}

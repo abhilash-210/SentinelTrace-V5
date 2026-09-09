@@ -1,0 +1,69 @@
+{
+  "sprint": "Sprint 10B",
+  "title": "End-to-End Security Scenario Orchestration, Demonstration Validation & Cross-Domain Evidence Replay",
+  "timestamp": "2026-09-08T15:17:40.758185+00:00",
+  "previous_test_baseline": 515,
+  "final_test_baseline": 577,
+  "new_tests_added": 62,
+  "failures": 0,
+  "errors": 0,
+  "regressions": 0,
+  "migrations": [
+    "r8s9t0u1v2w3_create_security_scenario_tables.py"
+  ],
+  "models": [
+    "SecurityScenario",
+    "SecurityScenarioVersion",
+    "ScenarioExecution",
+    "ScenarioStageExecution",
+    "ScenarioArtifactBinding",
+    "ScenarioVerificationResult",
+    "ScenarioExecutiveImpact"
+  ],
+  "services": [
+    "SecurityScenarioOrchestrationService",
+    "ScenarioArtifactBindingService",
+    "SecurityScenarioVerificationService",
+    "SecurityScenarioReplayService",
+    "ScenarioExecutiveImpactService",
+    "SecurityScenarioProvenanceService"
+  ],
+  "routers": [
+    "backend/app/routers/security_scenarios.py"
+  ],
+  "frontend": [
+    "frontend/src/pages/SecurityScenarioCommandCenter.jsx"
+  ],
+  "seeded_scenarios": [
+    "SCN_CREDENTIAL_COMPROMISE",
+    "SCN_MALWARE_PROPAGATION",
+    "SCN_DETECTION_TRUST_FAILURE",
+    "SCN_CRYPTOGRAPHIC_INTEGRITY_FAILURE"
+  ],
+  "provenance_stages": 21,
+  "evidence_logs": [
+    "01_pre_sprint_baseline.log",
+    "02_scenario_registry_and_versioning.log",
+    "03_credential_compromise_execution.log",
+    "04_malware_propagation_execution.log",
+    "05_detection_trust_failure_execution.log",
+    "06_cryptographic_integrity_failure.log",
+    "07_cross_domain_artifact_binding.log",
+    "08_end_to_end_verification.log",
+    "09_historical_replay.log",
+    "10_execution_comparison.log",
+    "11_executive_impact_analysis.log",
+    "12_21_stage_provenance.log",
+    "13_rbac_verification.log",
+    "14_api_validation.log",
+    "15_full_regression_tests.log"
+  ],
+  "cryptographic_invariants": {
+    "canonical_serialization": "json.dumps(sort_keys=True, separators=(',', ':'), ensure_ascii=True)",
+    "scenario_version_domain_prefix": "SENTINELTRACE_SCENARIO_VERSION_V1",
+    "scenario_execution_domain_prefix": "SENTINELTRACE_SCENARIO_EXECUTION_V1",
+    "scenario_artifact_binding_prefix": "SENTINELTRACE_SCENARIO_ARTIFACT_BINDING_V1",
+    "scenario_verification_prefix": "SENTINELTRACE_SCENARIO_VERIFICATION_V1",
+    "crypto_failure_dominance": "Forced score 0.0, Posture CRITICAL, Status FAILED on Merkle/Ledger breach"
+  }
+}

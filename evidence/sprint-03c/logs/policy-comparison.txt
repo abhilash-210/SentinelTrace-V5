@@ -1,0 +1,37 @@
+======================================================================
+SENTINEL-TRACE V5 — POLICY VERSION COMPARISON AUDIT LOG
+======================================================================
+Evaluation: Cisco ASA Policy Version 1 (ACTIVE) vs Version 2 (CANDIDATE DRAFT)
+Endpoint: GET /api/v1/semantic-policies/compare?source_policy_id=spol_cisco_asa_v1&target_policy_id=spol_cisco_asa_v2_draft
+
+Comparison Summary:
+- Total Rules in Source (v1): 3
+- Total Rules in Target (v2): 4
+- Unchanged Rules: 2
+- Changed Semantic Meanings: 1
+- Added Rules: 1
+- Removed Rules: 0
+- High Impact Alert: TRUE
+
+Detailed Diff Breakdown:
+
+1. Unchanged Rules:
+   - action="ALLOW" -> canonical="ALLOWED" (Classification: EQUIVALENT, Risk: LOW)
+   - action="DENY"  -> canonical="DENIED"  (Classification: EQUIVALENT, Risk: LOW)
+
+2. Changed Semantic Meanings:
+   - Source Value: "PERMIT" (Field: "action")
+   - Old Canonical Meaning (v1): "ALLOWED" (Classification: COMPATIBLE, Risk: LOW)
+   - New Canonical Meaning (v2): "MONITORED" (Classification: AMBIGUOUS, Risk: MEDIUM)
+   - Calculated Semantic Impact: HIGH
+   - Protected Field Trigger: TRUE (affects protected field "action.result")
+   - Rationale: "Reclassifies PERMIT to MONITORED for deep zero-trust inspection observation mode."
+
+3. Added Rules:
+   - Source Value: "BYPASS" (Field: "action")
+   - New Canonical Meaning: "ALLOWED" (Classification: COMPATIBLE, Risk: LOW)
+   - Rationale: "New rule: Explicit bypass rules allowed under zero-trust inspection."
+
+Governance Enforcement:
+- Candidate policy 'spol_cisco_asa_v2_draft' remains in forced DRAFT state.
+- Activation requires formal dual-control administrative approval workflow (Sprint 4).

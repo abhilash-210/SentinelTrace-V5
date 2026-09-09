@@ -1,0 +1,24 @@
+======================================================================
+SPRINT 4B — MAKER-CHECKER SEPARATION OF DUTIES SECURITY AUDIT
+Timestamp: 2026-09-06T18:00:33.970942+00:00
+======================================================================
+
+1. Policy Author 'author_demo' created Policy: spol_c1b1f258c793
+   HTTP Status: 201
+
+2. Policy Author 'author_demo' submitted Policy for Review: Ticket approval_e4fab26af926
+   HTTP Status: 200
+   Payload: {
+  "policy_id": "spol_c1b1f258c793",
+  "policy_status": "PENDING_REVIEW",
+  "approval_id": "approval_e4fab26af926",
+  "approval_status": "PENDING",
+  "requested_by": "author_demo",
+  "requested_at": "2026-09-06T18:00:33.910722+00:00"
+}
+
+3. Policy Author 'author_demo' attempted SELF-APPROVAL on Ticket approval_e4fab26af926
+   HTTP Status: 403 (Expected 403 Forbidden)
+   Response Body: {"detail":"ACCESS RESTRICTED: Role 'POLICY_AUTHOR' lacks required permission 'POLICY_APPROVE'."}
+
+SECURITY VERIFICATION: MAKER-CHECKER SEPARATION OF DUTIES STRICTLY ENFORCED.

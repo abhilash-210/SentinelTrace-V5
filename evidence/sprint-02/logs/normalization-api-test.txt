@@ -1,0 +1,157 @@
+=== SENTINEL-TRACE V5 — NORMALIZATION API TEST (3 FORMATS) ===
+
+--- FORMAT 1: Plain Text / Syslog Firewall ---
+Raw Event ID: evt_30760a6876fe4d9a
+Normalized Output:
+{
+  "id": 15,
+  "normalized_event_id": "norm_abbbdc9f151a4285",
+  "original_event_id": "evt_30760a6876fe4d9a",
+  "class_uid": 4001,
+  "class_name": "Network Activity",
+  "activity_id": 1,
+  "activity_name": "Network Traffic",
+  "event_time": "2026-09-06T12:00:01.120000Z",
+  "source_name": "perimeter-fw-01",
+  "source_type": "firewall",
+  "action": "ALLOW",
+  "src_ip": "198.51.100.45",
+  "src_port": 443,
+  "dst_ip": "10.0.10.14",
+  "dst_port": 52140,
+  "protocol": "TCP",
+  "severity": "Informational",
+  "user_name": null,
+  "hostname": "perimeter-fw-01",
+  "process_name": null,
+  "process_id": null,
+  "raw_data": {
+    "action": "ALLOW",
+    "dst_ip": "10.0.10.14",
+    "src_ip": "198.51.100.45",
+    "message": "- - %ASA-6-302013: Built inbound TCP connection 982103 for outside:198.51.100.45/443 (198.51.100.45/443) to inside:10.0.10.14/52140 (10.0.10.14/52140)",
+    "app_name": "cisco-asa",
+    "dst_port": 52140,
+    "hostname": "perimeter-fw-01",
+    "priority": 134,
+    "protocol": "TCP",
+    "severity": "Informational",
+    "src_port": 443,
+    "raw_timestamp": "2026-09-06T12:00:01.120Z"
+  },
+  "parser_name": "SyslogParser",
+  "parser_version": "1.0.0",
+  "source_profile_id": "sp_firewall_syslog",
+  "normalization_status": "NORMALIZED",
+  "normalization_confidence": 0.95,
+  "confidence_reasons": [
+    "Syslog RFC / Cisco header pattern matched"
+  ],
+  "normalized_at": "2026-09-06T12:39:23.267797Z"
+}
+
+--- FORMAT 2: Structured JSON Application Auth ---
+Raw Event ID: evt_69f1c1ceae06475f
+Normalized Output:
+{
+  "id": 16,
+  "normalized_event_id": "norm_37bc51c45a1a48af",
+  "original_event_id": "evt_69f1c1ceae06475f",
+  "class_uid": 3001,
+  "class_name": "Authentication",
+  "activity_id": 2,
+  "activity_name": "Logon Activity",
+  "event_time": "2026-09-06T12:05:30.450000Z",
+  "source_name": "auth-gateway-01",
+  "source_type": "authentication",
+  "action": "FAILURE",
+  "src_ip": "198.51.100.77",
+  "src_port": null,
+  "dst_ip": null,
+  "dst_port": null,
+  "protocol": null,
+  "severity": null,
+  "user_name": "svc_monitoring",
+  "hostname": null,
+  "process_name": null,
+  "process_id": null,
+  "raw_data": {
+    "action": "FAILURE",
+    "src_ip": "198.51.100.77",
+    "service": "auth-gateway",
+    "app_name": "auth-gateway",
+    "metadata": {
+      "datacenter": "asia-south1",
+      "geo_country": "IN",
+      "attempts_count": 3
+    },
+    "username": "svc_monitoring",
+    "client_ip": "198.51.100.77",
+    "timestamp": "2026-09-06T12:05:30.450Z",
+    "user_name": "svc_monitoring",
+    "error_code": "AUTH_INVALID_TOKEN",
+    "event_type": "AUTHENTICATION_FAILURE",
+    "session_id": "sess_8f912c4b7d10e23a",
+    "auth_method": "mfa_push",
+    "raw_timestamp": "2026-09-06T12:05:30.450Z"
+  },
+  "parser_name": "JSONParser",
+  "parser_version": "1.0.0",
+  "source_profile_id": "sp_app_json",
+  "normalization_status": "NORMALIZED",
+  "normalization_confidence": 0.98,
+  "confidence_reasons": [
+    "Valid JSON syntax confirmed",
+    "Source matches authentication profile"
+  ],
+  "normalized_at": "2026-09-06T12:39:23.318295Z"
+}
+
+--- FORMAT 3: Tabular CSV System Audit ---
+Raw Event ID: evt_69385d8b59b94b99
+Normalized Output:
+{
+  "id": 17,
+  "normalized_event_id": "norm_dec31bb2f417412c",
+  "original_event_id": "evt_69385d8b59b94b99",
+  "class_uid": 1001,
+  "class_name": "System Activity",
+  "activity_id": 1,
+  "activity_name": "Process Activity",
+  "event_time": "2026-09-06T12:10:00Z",
+  "source_name": "srv-app-prod-01",
+  "source_type": "system",
+  "action": "SUCCESS",
+  "src_ip": null,
+  "src_port": null,
+  "dst_ip": null,
+  "dst_port": null,
+  "protocol": null,
+  "severity": null,
+  "user_name": "root",
+  "hostname": "srv-app-prod-01",
+  "process_name": "sshd",
+  "process_id": 4120,
+  "raw_data": {
+    "user": "root",
+    "action": "SUCCESS",
+    "status": "0",
+    "hostname": "srv-app-prod-01",
+    "timestamp": "2026-09-06T12:10:00Z",
+    "user_name": "root",
+    "process_id": 4120,
+    "process_name": "sshd",
+    "raw_timestamp": "2026-09-06T12:10:00Z",
+    "parent_process": "systemd"
+  },
+  "parser_name": "CSVParser",
+  "parser_version": "1.0.0",
+  "source_profile_id": "sp_system_csv",
+  "normalization_status": "NORMALIZED",
+  "normalization_confidence": 0.98,
+  "confidence_reasons": [
+    "CSV header delimiter detected",
+    "Source matches system audit profile"
+  ],
+  "normalized_at": "2026-09-06T12:39:23.366085Z"
+}

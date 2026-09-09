@@ -1,0 +1,6 @@
+timestamp,hostname,process_name,process_id,parent_process,user,action,status
+2026-09-06T12:10:00Z,srv-app-prod-01,sshd,4120,systemd,root,LOGIN_SUCCESS,0
+2026-09-06T12:10:15Z,srv-app-prod-01,sudo,4128,sshd,secops,COMMAND_EXEC,0
+2026-09-06T12:10:18Z,srv-app-prod-01,systemctl,4130,sudo,root,SERVICE_RESTART,0
+2026-09-06T12:11:02Z,srv-app-prod-01,curl,4145,bash,secops,OUTBOUND_HTTP,0
+2026-09-06T12:12:44Z,srv-app-prod-01,sshd,4120,systemd,secops,SESSION_CLOSE,0

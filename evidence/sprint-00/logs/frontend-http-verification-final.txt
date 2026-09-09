@@ -1,0 +1,34 @@
+﻿HTTP/1.1 200 OK
+Server: nginx/1.25.5
+Date: Sun, 06 Sep 2026 11:41:15 GMT
+Content-Type: text/html
+Content-Length: 1041
+Last-Modified: Sun, 06 Sep 2026 11:38:48 GMT
+Connection: keep-alive
+ETag: "6a9d50c8-411"
+Accept-Ranges: bytes
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO -->
+    <title>SENTINEL-TRACE | Security Log Normalization Platform</title>
+    <meta name="description"
+      content="SENTINEL-TRACE — Verifiable Security Log Normalization & Semantic Trust Governance Platform. Offline-first cybersecurity platform for SIH 2026." />
+    <meta name="keywords"
+      content="cybersecurity, log normalization, OCSF, semantic governance, STIG, audit ledger, SIH 2026" />
+
+    <!-- Preconnect Google Fonts for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script type="module" crossorigin src="/assets/index-BKKb-lBZ.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-53Reb14e.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

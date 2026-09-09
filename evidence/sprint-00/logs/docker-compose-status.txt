@@ -1,0 +1,38 @@
+﻿Docker Compose Status — Sprint 0 QA Verification
+Timestamp: 2026-09-06 16:52:37 +05:30
+==================================================
+
+Docker Installation: VERIFIED
+  Docker Version: 29.7.2
+  Docker Compose Version: v5.4.0
+  Docker BuildKit (buildx): v0.36.1-desktop.1
+
+Docker Engine Status: NOT RUNNING
+  Reason: Docker Desktop application was not started during this verification run.
+  Context attempted: desktop-linux (npipe:////./pipe/dockerDesktopLinuxEngine)
+  Context attempted: default      (npipe:////./pipe/docker_engine)
+  Both contexts: ENGINE OFFLINE
+
+Impact on Verification:
+  - docker compose up --build: SKIPPED (engine offline)
+  - PostgreSQL container:      NOT VERIFIED via Docker
+  - Backend container:         NOT VERIFIED via Docker
+  - Frontend container:        NOT VERIFIED via Docker
+
+Manual Verification Performed Instead:
+  - Frontend dev server (npm run dev): RUNNING on port 5173
+  - Frontend HTTP 200:                 PASS
+  - SENTINEL-TRACE title in HTML:      PASS
+  - Frontend production build:         PASS (dist/ generated, 200KB JS)
+  - Backend Python imports:            BLOCKED (Python 3.15 / pydantic-core wheel issue)
+
+How to Run with Docker (correct procedure):
+  1. Open Docker Desktop application
+  2. Wait for engine to start (system tray icon turns green)
+  3. cd to project root
+  4. docker compose up --build
+  5. Services:
+     - Frontend  -> http://localhost:3000
+     - Backend   -> http://localhost:8000
+     - Swagger   -> http://localhost:8000/docs
+     - Postgres  -> localhost:5432
