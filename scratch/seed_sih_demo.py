@@ -58,6 +58,8 @@ from app.services.security_analytics_service import SecurityAnalyticsService
 from app.services.security_reporting_service import SecurityReportingService
 from app.services.security_evidence_package_service import SecurityEvidencePackageService
 from app.services.security_analytics_provenance_service import SecurityAnalyticsProvenanceService
+from app.services.incident_service import IncidentService
+from app.services.investigation_artifact_service import InvestigationArtifactService
 
 
 def seed_demo_environment():
@@ -129,71 +131,52 @@ def seed_demo_environment():
     print("[4/10] Seeding Correlated Security Incident...")
     inc = db.query(SecurityIncident).filter_by(incident_number="INC-2026-000001").first()
     if not inc:
-        inc = SecurityIncident(
-            id="inc-demo-sih-001",
-            incident_number="INC-2026-000001",
-            title="Adversarial Reconnaissance & C2 Ingress Attempt",
-            description="Correlated multi-source network intrusion attempt against internal infrastructure.",
-            severity="HIGH",
-            status="INVESTIGATING",
-            priority="P1",
-            confidence_score=94.5,
-            incident_hash=compute_canonical_hash("SENTINELTRACE_INCIDENT_V1", {"number": "INC-2026-000001"}),
-            created_at=now - timedelta(hours=1),
-        )
-        db.add(inc)
-        db.commit()
+        inc = IncidentService.seed_demo_scenarios(db)[0]
 
     # 5. Seed SOC Investigation Case & Findings
     print("[5/10] Seeding SOC Investigation Workspace Case...")
     case = db.query(SecurityInvestigationCase).filter_by(case_number="SIC-2026-001").first()
     if not case:
         case = SecurityInvestigationCase(
-            id="sic-demo-sih-001",
             case_number="SIC-2026-001",
             title="Investigation: Adversarial Ingress on Gateway fw01",
             description="Detailed SOC case investigating repeated targeted probes from APT-SILVER-HYDRA C2 IP.",
-            lead_investigator_id="analyst_demo",
-            assigned_team="TIER_2_SOC",
-            status="IN_INVESTIGATION",
+            created_by="analyst_demo",
+            assigned_to="analyst_demo",
+            status="INVESTIGATING",
             priority="HIGH",
-            overall_severity="HIGH",
+            severity="HIGH",
             source_domain="DETECTION",
-            source_incident_id=inc.id,
-            case_hash=compute_canonical_hash("SENTINELTRACE_INVESTIGATION_CASE_V1", {"number": "SIC-2026-001"}),
-            created_by_user_id="analyst_demo",
-            created_at=now - timedelta(minutes=45),
+            investigation_type="SECURITY_INCIDENT",
+            priority_score=85.0,
+            priority_drivers=["THREAT_INTEL_IOC_MATCH", "SEVERITY_HIGH"],
+            hard_failure_override=False,
+            canonical_hash="",
         )
+        case.canonical_hash = case.compute_case_hash()
         db.add(case)
-        db.commit()
+        db.flush()
 
         # Bind Evidence Artifact
-        binding = InvestigationArtifactBinding(
-            id="iab-demo-001",
+        InvestigationArtifactService.bind_artifact(
+            db=db,
             case_id=case.id,
-            artifact_domain="EVIDENCE",
             artifact_type="INGESTED_EVENT",
             artifact_id=evt.event_id,
-            artifact_hash=evt.raw_content_hash,
-            source_reference=f"/api/v1/events/{evt.event_id}",
-            binding_reason="Direct initial raw firewall log trigger",
-            binding_hash=compute_canonical_hash("SENTINELTRACE_INVESTIGATION_BINDING_V1", {"case_id": case.id, "art_id": evt.event_id}),
-            created_by_user_id="analyst_demo",
-            created_at=now - timedelta(minutes=40),
+            source_domain="EVIDENCE",
+            canonical_hash=evt.raw_content_hash,
+            summary="Direct initial raw firewall log trigger",
         )
-        db.add(binding)
 
         # Add Hypothesis
         hyp = InvestigationHypothesis(
-            id="hyp-demo-001",
             case_id=case.id,
-            statement="Hostile external reconnaissance prior to credential stuffing attack",
+            hypothesis_title="Hostile external reconnaissance prior to credential stuffing attack",
+            hypothesis_statement="Threat actor executed targeted port scan against edge perimeter.",
             status="SUPPORTED",
-            confidence_score=90.0,
-            supporting_evidence_json=[evt.event_id, ioc.id],
-            hypothesis_hash=compute_canonical_hash("SENTINELTRACE_HYPOTHESIS_V1", {"case_id": case.id, "stmt": "recon"}),
-            created_by_user_id="analyst_demo",
-            created_at=now - timedelta(minutes=35),
+            confidence_score=0.9,
+            supporting_evidence_ids=[evt.event_id, ioc.id],
+            created_by="analyst_demo",
         )
         db.add(hyp)
         db.commit()
