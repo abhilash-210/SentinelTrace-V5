@@ -1,0 +1,1761 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="8" failures="0" skipped="0" tests="8" time="7.388" timestamp="2026-09-24T22:25:57.989531+05:30" hostname="LAPTOP-Q2QMOC99"><testcase classname="tests.test_sprint6d_source_profiles.TestSourceProfiles" name="test_01_create_draft_profile" time="0.008"><error message="failed on setup with &quot;sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel&#10;[SQL: &#10;CREATE TABLE sentinel.source_profiles (&#10;&#09;id INTEGER NOT NULL, &#10;&#09;source_profile_id VARCHAR(64) NOT NULL, &#10;&#09;profile_name VARCHAR(255) NOT NULL, &#10;&#09;source_type VARCHAR(100) NOT NULL, &#10;&#09;supported_format VARCHAR(50) NOT NULL, &#10;&#09;parser_type VARCHAR(50) NOT NULL, &#10;&#09;version VARCHAR(32) NOT NULL, &#10;&#09;is_active BOOLEAN NOT NULL, &#10;&#09;status VARCHAR(32) NOT NULL, &#10;&#09;created_by VARCHAR(64), &#10;&#09;approved_by VARCHAR(64), &#10;&#09;created_at DATETIME NOT NULL, &#10;&#09;configuration JSON NOT NULL, &#10;&#09;PRIMARY KEY (id), &#10;&#09;UNIQUE (source_profile_id)&#10;)&#10;&#10;]&#10;(Background on this error at: https://sqlalche.me/e/20/e3q8)&quot;">self = &lt;sqlalchemy.engine.base.Connection object at 0x0000025E6EFBB1A0&gt;
+dialect = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+statement = &lt;sqlalchemy.dialects.sqlite.base.SQLiteDDLCompiler object at 0x0000025E6F334BC0&gt;
+parameters = [()]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlite3.OperationalError: unknown database sentinel
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+cls = &lt;class 'test_sprint6d_source_profiles.TestSourceProfiles'&gt;
+
+    @classmethod
+    def setUpClass(cls):
+        Base.metadata.drop_all(bind=engine)
+&gt;       Base.metadata.create_all(bind=engine)
+
+tests\test_sprint6d_source_profiles.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5857: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3251: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2457: in _run_ddl_visitor
+    visitorcallable(self.dialect, self, **kwargs).traverse_single(element)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:918: in visit_metadata
+    self.traverse_single(
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:956: in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:314: in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:180: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1529: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel
+E       [SQL: 
+E       CREATE TABLE sentinel.source_profiles (
+E       	id INTEGER NOT NULL, 
+E       	source_profile_id VARCHAR(64) NOT NULL, 
+E       	profile_name VARCHAR(255) NOT NULL, 
+E       	source_type VARCHAR(100) NOT NULL, 
+E       	supported_format VARCHAR(50) NOT NULL, 
+E       	parser_type VARCHAR(50) NOT NULL, 
+E       	version VARCHAR(32) NOT NULL, 
+E       	is_active BOOLEAN NOT NULL, 
+E       	status VARCHAR(32) NOT NULL, 
+E       	created_by VARCHAR(64), 
+E       	approved_by VARCHAR(64), 
+E       	created_at DATETIME NOT NULL, 
+E       	configuration JSON NOT NULL, 
+E       	PRIMARY KEY (id), 
+E       	UNIQUE (source_profile_id)
+E       )
+E       
+E       ]
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError</error></testcase><testcase classname="tests.test_sprint6d_source_profiles.TestSourceProfiles" name="test_02_update_draft_profile" time="0.001"><error message="failed on setup with &quot;sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel&#10;[SQL: &#10;CREATE TABLE sentinel.source_profiles (&#10;&#09;id INTEGER NOT NULL, &#10;&#09;source_profile_id VARCHAR(64) NOT NULL, &#10;&#09;profile_name VARCHAR(255) NOT NULL, &#10;&#09;source_type VARCHAR(100) NOT NULL, &#10;&#09;supported_format VARCHAR(50) NOT NULL, &#10;&#09;parser_type VARCHAR(50) NOT NULL, &#10;&#09;version VARCHAR(32) NOT NULL, &#10;&#09;is_active BOOLEAN NOT NULL, &#10;&#09;status VARCHAR(32) NOT NULL, &#10;&#09;created_by VARCHAR(64), &#10;&#09;approved_by VARCHAR(64), &#10;&#09;created_at DATETIME NOT NULL, &#10;&#09;configuration JSON NOT NULL, &#10;&#09;PRIMARY KEY (id), &#10;&#09;UNIQUE (source_profile_id)&#10;)&#10;&#10;]&#10;(Background on this error at: https://sqlalche.me/e/20/e3q8)&quot;">self = &lt;sqlalchemy.engine.base.Connection object at 0x0000025E6EFBB1A0&gt;
+dialect = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+statement = &lt;sqlalchemy.dialects.sqlite.base.SQLiteDDLCompiler object at 0x0000025E6F334BC0&gt;
+parameters = [()]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlite3.OperationalError: unknown database sentinel
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+cls = &lt;class 'test_sprint6d_source_profiles.TestSourceProfiles'&gt;
+
+    @classmethod
+    def setUpClass(cls):
+        Base.metadata.drop_all(bind=engine)
+&gt;       Base.metadata.create_all(bind=engine)
+
+tests\test_sprint6d_source_profiles.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5857: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3251: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2457: in _run_ddl_visitor
+    visitorcallable(self.dialect, self, **kwargs).traverse_single(element)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:918: in visit_metadata
+    self.traverse_single(
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:956: in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:314: in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:180: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1529: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel
+E       [SQL: 
+E       CREATE TABLE sentinel.source_profiles (
+E       	id INTEGER NOT NULL, 
+E       	source_profile_id VARCHAR(64) NOT NULL, 
+E       	profile_name VARCHAR(255) NOT NULL, 
+E       	source_type VARCHAR(100) NOT NULL, 
+E       	supported_format VARCHAR(50) NOT NULL, 
+E       	parser_type VARCHAR(50) NOT NULL, 
+E       	version VARCHAR(32) NOT NULL, 
+E       	is_active BOOLEAN NOT NULL, 
+E       	status VARCHAR(32) NOT NULL, 
+E       	created_by VARCHAR(64), 
+E       	approved_by VARCHAR(64), 
+E       	created_at DATETIME NOT NULL, 
+E       	configuration JSON NOT NULL, 
+E       	PRIMARY KEY (id), 
+E       	UNIQUE (source_profile_id)
+E       )
+E       
+E       ]
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError</error></testcase><testcase classname="tests.test_sprint6d_source_profiles.TestSourceProfiles" name="test_03_test_profile_sample" time="0.001"><error message="failed on setup with &quot;sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel&#10;[SQL: &#10;CREATE TABLE sentinel.source_profiles (&#10;&#09;id INTEGER NOT NULL, &#10;&#09;source_profile_id VARCHAR(64) NOT NULL, &#10;&#09;profile_name VARCHAR(255) NOT NULL, &#10;&#09;source_type VARCHAR(100) NOT NULL, &#10;&#09;supported_format VARCHAR(50) NOT NULL, &#10;&#09;parser_type VARCHAR(50) NOT NULL, &#10;&#09;version VARCHAR(32) NOT NULL, &#10;&#09;is_active BOOLEAN NOT NULL, &#10;&#09;status VARCHAR(32) NOT NULL, &#10;&#09;created_by VARCHAR(64), &#10;&#09;approved_by VARCHAR(64), &#10;&#09;created_at DATETIME NOT NULL, &#10;&#09;configuration JSON NOT NULL, &#10;&#09;PRIMARY KEY (id), &#10;&#09;UNIQUE (source_profile_id)&#10;)&#10;&#10;]&#10;(Background on this error at: https://sqlalche.me/e/20/e3q8)&quot;">self = &lt;sqlalchemy.engine.base.Connection object at 0x0000025E6EFBB1A0&gt;
+dialect = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+statement = &lt;sqlalchemy.dialects.sqlite.base.SQLiteDDLCompiler object at 0x0000025E6F334BC0&gt;
+parameters = [()]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlite3.OperationalError: unknown database sentinel
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+cls = &lt;class 'test_sprint6d_source_profiles.TestSourceProfiles'&gt;
+
+    @classmethod
+    def setUpClass(cls):
+        Base.metadata.drop_all(bind=engine)
+&gt;       Base.metadata.create_all(bind=engine)
+
+tests\test_sprint6d_source_profiles.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5857: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3251: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2457: in _run_ddl_visitor
+    visitorcallable(self.dialect, self, **kwargs).traverse_single(element)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:918: in visit_metadata
+    self.traverse_single(
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:956: in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:314: in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:180: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1529: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel
+E       [SQL: 
+E       CREATE TABLE sentinel.source_profiles (
+E       	id INTEGER NOT NULL, 
+E       	source_profile_id VARCHAR(64) NOT NULL, 
+E       	profile_name VARCHAR(255) NOT NULL, 
+E       	source_type VARCHAR(100) NOT NULL, 
+E       	supported_format VARCHAR(50) NOT NULL, 
+E       	parser_type VARCHAR(50) NOT NULL, 
+E       	version VARCHAR(32) NOT NULL, 
+E       	is_active BOOLEAN NOT NULL, 
+E       	status VARCHAR(32) NOT NULL, 
+E       	created_by VARCHAR(64), 
+E       	approved_by VARCHAR(64), 
+E       	created_at DATETIME NOT NULL, 
+E       	configuration JSON NOT NULL, 
+E       	PRIMARY KEY (id), 
+E       	UNIQUE (source_profile_id)
+E       )
+E       
+E       ]
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError</error></testcase><testcase classname="tests.test_sprint6d_source_profiles.TestSourceProfiles" name="test_04_submit_for_approval" time="0.001"><error message="failed on setup with &quot;sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel&#10;[SQL: &#10;CREATE TABLE sentinel.source_profiles (&#10;&#09;id INTEGER NOT NULL, &#10;&#09;source_profile_id VARCHAR(64) NOT NULL, &#10;&#09;profile_name VARCHAR(255) NOT NULL, &#10;&#09;source_type VARCHAR(100) NOT NULL, &#10;&#09;supported_format VARCHAR(50) NOT NULL, &#10;&#09;parser_type VARCHAR(50) NOT NULL, &#10;&#09;version VARCHAR(32) NOT NULL, &#10;&#09;is_active BOOLEAN NOT NULL, &#10;&#09;status VARCHAR(32) NOT NULL, &#10;&#09;created_by VARCHAR(64), &#10;&#09;approved_by VARCHAR(64), &#10;&#09;created_at DATETIME NOT NULL, &#10;&#09;configuration JSON NOT NULL, &#10;&#09;PRIMARY KEY (id), &#10;&#09;UNIQUE (source_profile_id)&#10;)&#10;&#10;]&#10;(Background on this error at: https://sqlalche.me/e/20/e3q8)&quot;">self = &lt;sqlalchemy.engine.base.Connection object at 0x0000025E6EFBB1A0&gt;
+dialect = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+statement = &lt;sqlalchemy.dialects.sqlite.base.SQLiteDDLCompiler object at 0x0000025E6F334BC0&gt;
+parameters = [()]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlite3.OperationalError: unknown database sentinel
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+cls = &lt;class 'test_sprint6d_source_profiles.TestSourceProfiles'&gt;
+
+    @classmethod
+    def setUpClass(cls):
+        Base.metadata.drop_all(bind=engine)
+&gt;       Base.metadata.create_all(bind=engine)
+
+tests\test_sprint6d_source_profiles.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5857: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3251: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2457: in _run_ddl_visitor
+    visitorcallable(self.dialect, self, **kwargs).traverse_single(element)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:918: in visit_metadata
+    self.traverse_single(
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:956: in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:314: in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:180: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1529: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel
+E       [SQL: 
+E       CREATE TABLE sentinel.source_profiles (
+E       	id INTEGER NOT NULL, 
+E       	source_profile_id VARCHAR(64) NOT NULL, 
+E       	profile_name VARCHAR(255) NOT NULL, 
+E       	source_type VARCHAR(100) NOT NULL, 
+E       	supported_format VARCHAR(50) NOT NULL, 
+E       	parser_type VARCHAR(50) NOT NULL, 
+E       	version VARCHAR(32) NOT NULL, 
+E       	is_active BOOLEAN NOT NULL, 
+E       	status VARCHAR(32) NOT NULL, 
+E       	created_by VARCHAR(64), 
+E       	approved_by VARCHAR(64), 
+E       	created_at DATETIME NOT NULL, 
+E       	configuration JSON NOT NULL, 
+E       	PRIMARY KEY (id), 
+E       	UNIQUE (source_profile_id)
+E       )
+E       
+E       ]
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError</error></testcase><testcase classname="tests.test_sprint6d_source_profiles.TestSourceProfiles" name="test_05_approve_profile_self_forbidden" time="0.001"><error message="failed on setup with &quot;sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel&#10;[SQL: &#10;CREATE TABLE sentinel.source_profiles (&#10;&#09;id INTEGER NOT NULL, &#10;&#09;source_profile_id VARCHAR(64) NOT NULL, &#10;&#09;profile_name VARCHAR(255) NOT NULL, &#10;&#09;source_type VARCHAR(100) NOT NULL, &#10;&#09;supported_format VARCHAR(50) NOT NULL, &#10;&#09;parser_type VARCHAR(50) NOT NULL, &#10;&#09;version VARCHAR(32) NOT NULL, &#10;&#09;is_active BOOLEAN NOT NULL, &#10;&#09;status VARCHAR(32) NOT NULL, &#10;&#09;created_by VARCHAR(64), &#10;&#09;approved_by VARCHAR(64), &#10;&#09;created_at DATETIME NOT NULL, &#10;&#09;configuration JSON NOT NULL, &#10;&#09;PRIMARY KEY (id), &#10;&#09;UNIQUE (source_profile_id)&#10;)&#10;&#10;]&#10;(Background on this error at: https://sqlalche.me/e/20/e3q8)&quot;">self = &lt;sqlalchemy.engine.base.Connection object at 0x0000025E6EFBB1A0&gt;
+dialect = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+statement = &lt;sqlalchemy.dialects.sqlite.base.SQLiteDDLCompiler object at 0x0000025E6F334BC0&gt;
+parameters = [()]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlite3.OperationalError: unknown database sentinel
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+cls = &lt;class 'test_sprint6d_source_profiles.TestSourceProfiles'&gt;
+
+    @classmethod
+    def setUpClass(cls):
+        Base.metadata.drop_all(bind=engine)
+&gt;       Base.metadata.create_all(bind=engine)
+
+tests\test_sprint6d_source_profiles.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5857: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3251: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2457: in _run_ddl_visitor
+    visitorcallable(self.dialect, self, **kwargs).traverse_single(element)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:918: in visit_metadata
+    self.traverse_single(
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:956: in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:314: in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:180: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1529: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel
+E       [SQL: 
+E       CREATE TABLE sentinel.source_profiles (
+E       	id INTEGER NOT NULL, 
+E       	source_profile_id VARCHAR(64) NOT NULL, 
+E       	profile_name VARCHAR(255) NOT NULL, 
+E       	source_type VARCHAR(100) NOT NULL, 
+E       	supported_format VARCHAR(50) NOT NULL, 
+E       	parser_type VARCHAR(50) NOT NULL, 
+E       	version VARCHAR(32) NOT NULL, 
+E       	is_active BOOLEAN NOT NULL, 
+E       	status VARCHAR(32) NOT NULL, 
+E       	created_by VARCHAR(64), 
+E       	approved_by VARCHAR(64), 
+E       	created_at DATETIME NOT NULL, 
+E       	configuration JSON NOT NULL, 
+E       	PRIMARY KEY (id), 
+E       	UNIQUE (source_profile_id)
+E       )
+E       
+E       ]
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError</error></testcase><testcase classname="tests.test_sprint6d_source_profiles.TestSourceProfiles" name="test_06_approve_profile_reviewer" time="0.001"><error message="failed on setup with &quot;sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel&#10;[SQL: &#10;CREATE TABLE sentinel.source_profiles (&#10;&#09;id INTEGER NOT NULL, &#10;&#09;source_profile_id VARCHAR(64) NOT NULL, &#10;&#09;profile_name VARCHAR(255) NOT NULL, &#10;&#09;source_type VARCHAR(100) NOT NULL, &#10;&#09;supported_format VARCHAR(50) NOT NULL, &#10;&#09;parser_type VARCHAR(50) NOT NULL, &#10;&#09;version VARCHAR(32) NOT NULL, &#10;&#09;is_active BOOLEAN NOT NULL, &#10;&#09;status VARCHAR(32) NOT NULL, &#10;&#09;created_by VARCHAR(64), &#10;&#09;approved_by VARCHAR(64), &#10;&#09;created_at DATETIME NOT NULL, &#10;&#09;configuration JSON NOT NULL, &#10;&#09;PRIMARY KEY (id), &#10;&#09;UNIQUE (source_profile_id)&#10;)&#10;&#10;]&#10;(Background on this error at: https://sqlalche.me/e/20/e3q8)&quot;">self = &lt;sqlalchemy.engine.base.Connection object at 0x0000025E6EFBB1A0&gt;
+dialect = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+statement = &lt;sqlalchemy.dialects.sqlite.base.SQLiteDDLCompiler object at 0x0000025E6F334BC0&gt;
+parameters = [()]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlite3.OperationalError: unknown database sentinel
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+cls = &lt;class 'test_sprint6d_source_profiles.TestSourceProfiles'&gt;
+
+    @classmethod
+    def setUpClass(cls):
+        Base.metadata.drop_all(bind=engine)
+&gt;       Base.metadata.create_all(bind=engine)
+
+tests\test_sprint6d_source_profiles.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5857: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3251: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2457: in _run_ddl_visitor
+    visitorcallable(self.dialect, self, **kwargs).traverse_single(element)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:918: in visit_metadata
+    self.traverse_single(
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:956: in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:314: in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:180: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1529: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel
+E       [SQL: 
+E       CREATE TABLE sentinel.source_profiles (
+E       	id INTEGER NOT NULL, 
+E       	source_profile_id VARCHAR(64) NOT NULL, 
+E       	profile_name VARCHAR(255) NOT NULL, 
+E       	source_type VARCHAR(100) NOT NULL, 
+E       	supported_format VARCHAR(50) NOT NULL, 
+E       	parser_type VARCHAR(50) NOT NULL, 
+E       	version VARCHAR(32) NOT NULL, 
+E       	is_active BOOLEAN NOT NULL, 
+E       	status VARCHAR(32) NOT NULL, 
+E       	created_by VARCHAR(64), 
+E       	approved_by VARCHAR(64), 
+E       	created_at DATETIME NOT NULL, 
+E       	configuration JSON NOT NULL, 
+E       	PRIMARY KEY (id), 
+E       	UNIQUE (source_profile_id)
+E       )
+E       
+E       ]
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError</error></testcase><testcase classname="tests.test_sprint6d_source_profiles.TestSourceProfiles" name="test_07_activate_profile" time="0.001"><error message="failed on setup with &quot;sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel&#10;[SQL: &#10;CREATE TABLE sentinel.source_profiles (&#10;&#09;id INTEGER NOT NULL, &#10;&#09;source_profile_id VARCHAR(64) NOT NULL, &#10;&#09;profile_name VARCHAR(255) NOT NULL, &#10;&#09;source_type VARCHAR(100) NOT NULL, &#10;&#09;supported_format VARCHAR(50) NOT NULL, &#10;&#09;parser_type VARCHAR(50) NOT NULL, &#10;&#09;version VARCHAR(32) NOT NULL, &#10;&#09;is_active BOOLEAN NOT NULL, &#10;&#09;status VARCHAR(32) NOT NULL, &#10;&#09;created_by VARCHAR(64), &#10;&#09;approved_by VARCHAR(64), &#10;&#09;created_at DATETIME NOT NULL, &#10;&#09;configuration JSON NOT NULL, &#10;&#09;PRIMARY KEY (id), &#10;&#09;UNIQUE (source_profile_id)&#10;)&#10;&#10;]&#10;(Background on this error at: https://sqlalche.me/e/20/e3q8)&quot;">self = &lt;sqlalchemy.engine.base.Connection object at 0x0000025E6EFBB1A0&gt;
+dialect = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+statement = &lt;sqlalchemy.dialects.sqlite.base.SQLiteDDLCompiler object at 0x0000025E6F334BC0&gt;
+parameters = [()]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlite3.OperationalError: unknown database sentinel
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+cls = &lt;class 'test_sprint6d_source_profiles.TestSourceProfiles'&gt;
+
+    @classmethod
+    def setUpClass(cls):
+        Base.metadata.drop_all(bind=engine)
+&gt;       Base.metadata.create_all(bind=engine)
+
+tests\test_sprint6d_source_profiles.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5857: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3251: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2457: in _run_ddl_visitor
+    visitorcallable(self.dialect, self, **kwargs).traverse_single(element)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:918: in visit_metadata
+    self.traverse_single(
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:956: in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:314: in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:180: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1529: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel
+E       [SQL: 
+E       CREATE TABLE sentinel.source_profiles (
+E       	id INTEGER NOT NULL, 
+E       	source_profile_id VARCHAR(64) NOT NULL, 
+E       	profile_name VARCHAR(255) NOT NULL, 
+E       	source_type VARCHAR(100) NOT NULL, 
+E       	supported_format VARCHAR(50) NOT NULL, 
+E       	parser_type VARCHAR(50) NOT NULL, 
+E       	version VARCHAR(32) NOT NULL, 
+E       	is_active BOOLEAN NOT NULL, 
+E       	status VARCHAR(32) NOT NULL, 
+E       	created_by VARCHAR(64), 
+E       	approved_by VARCHAR(64), 
+E       	created_at DATETIME NOT NULL, 
+E       	configuration JSON NOT NULL, 
+E       	PRIMARY KEY (id), 
+E       	UNIQUE (source_profile_id)
+E       )
+E       
+E       ]
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError</error></testcase><testcase classname="tests.test_sprint6d_source_profiles.TestSourceProfiles" name="test_08_deactivate_profile" time="0.001"><error message="failed on setup with &quot;sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel&#10;[SQL: &#10;CREATE TABLE sentinel.source_profiles (&#10;&#09;id INTEGER NOT NULL, &#10;&#09;source_profile_id VARCHAR(64) NOT NULL, &#10;&#09;profile_name VARCHAR(255) NOT NULL, &#10;&#09;source_type VARCHAR(100) NOT NULL, &#10;&#09;supported_format VARCHAR(50) NOT NULL, &#10;&#09;parser_type VARCHAR(50) NOT NULL, &#10;&#09;version VARCHAR(32) NOT NULL, &#10;&#09;is_active BOOLEAN NOT NULL, &#10;&#09;status VARCHAR(32) NOT NULL, &#10;&#09;created_by VARCHAR(64), &#10;&#09;approved_by VARCHAR(64), &#10;&#09;created_at DATETIME NOT NULL, &#10;&#09;configuration JSON NOT NULL, &#10;&#09;PRIMARY KEY (id), &#10;&#09;UNIQUE (source_profile_id)&#10;)&#10;&#10;]&#10;(Background on this error at: https://sqlalche.me/e/20/e3q8)&quot;">self = &lt;sqlalchemy.engine.base.Connection object at 0x0000025E6EFBB1A0&gt;
+dialect = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+statement = &lt;sqlalchemy.dialects.sqlite.base.SQLiteDDLCompiler object at 0x0000025E6F334BC0&gt;
+parameters = [()]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlite3.OperationalError: unknown database sentinel
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError
+
+The above exception was the direct cause of the following exception:
+
+cls = &lt;class 'test_sprint6d_source_profiles.TestSourceProfiles'&gt;
+
+    @classmethod
+    def setUpClass(cls):
+        Base.metadata.drop_all(bind=engine)
+&gt;       Base.metadata.create_all(bind=engine)
+
+tests\test_sprint6d_source_profiles.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5857: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:3251: in _run_ddl_visitor
+    conn._run_ddl_visitor(visitorcallable, element, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2457: in _run_ddl_visitor
+    visitorcallable(self.dialect, self, **kwargs).traverse_single(element)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:918: in visit_metadata
+    self.traverse_single(
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+           ^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:956: in visit_table
+    )._invoke_with(self.connection)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:314: in _invoke_with
+    return bind.execute(self)
+           ^^^^^^^^^^^^^^^^^^
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:180: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1529: in _execute_ddl
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x0000025E704FF440&gt;
+cursor = &lt;sqlite3.Cursor object at 0x0000025E70527340&gt;
+statement = '\nCREATE TABLE sentinel.source_profiles (\n\tid INTEGER NOT NULL, \n\tsource_profile_id VARCHAR(64) NOT NULL, \n\tpro...ted_at DATETIME NOT NULL, \n\tconfiguration JSON NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (source_profile_id)\n)\n\n'
+parameters = ()
+context = &lt;sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x0000025E6F0A2D80&gt;
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+&gt;       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unknown database sentinel
+E       [SQL: 
+E       CREATE TABLE sentinel.source_profiles (
+E       	id INTEGER NOT NULL, 
+E       	source_profile_id VARCHAR(64) NOT NULL, 
+E       	profile_name VARCHAR(255) NOT NULL, 
+E       	source_type VARCHAR(100) NOT NULL, 
+E       	supported_format VARCHAR(50) NOT NULL, 
+E       	parser_type VARCHAR(50) NOT NULL, 
+E       	version VARCHAR(32) NOT NULL, 
+E       	is_active BOOLEAN NOT NULL, 
+E       	status VARCHAR(32) NOT NULL, 
+E       	created_by VARCHAR(64), 
+E       	approved_by VARCHAR(64), 
+E       	created_at DATETIME NOT NULL, 
+E       	configuration JSON NOT NULL, 
+E       	PRIMARY KEY (id), 
+E       	UNIQUE (source_profile_id)
+E       )
+E       
+E       ]
+E       (Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: OperationalError</error></testcase></testsuite></testsuites>

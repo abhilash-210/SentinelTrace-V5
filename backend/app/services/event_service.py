@@ -10,6 +10,7 @@ import hashlib
 import json
 import logging
 import uuid
+import os
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -109,6 +110,67 @@ class EventService:
         db.refresh(event)
 
         return event
+
+    @staticmethod
+    def get_pipeline_stats(db: Session) -> Dict[str, Any]:
+        """Retrieve ULPF pipeline dashboard statistics."""
+        from app.models.normalized_event import NormalizedEvent
+        from app.models.quarantined_event import QuarantinedEvent
+        from app.services.log_forwarder_service import SIEM_STREAM_FILE
+        from sqlalchemy import desc
+        
+        received = db.execute(select(func.count()).select_from(IngestedEvent)).scalar_one() or 0
+        normalized = db.execute(select(func.count()).select_from(NormalizedEvent)).scalar_one() or 0
+        quarantined = db.execute(select(func.count()).select_from(QuarantinedEvent)).scalar_one() or 0
+        replayed = db.execute(select(func.count()).select_from(QuarantinedEvent).where(QuarantinedEvent.status == "REPLAYED")).scalar_one() or 0
+        
+        forwarded = 0
+        if os.path.exists(SIEM_STREAM_FILE):
+            with open(SIEM_STREAM_FILE, "r", encoding="utf-8") as sf:
+                forwarded = sum(1 for line in sf if line.strip())
+                
+        recent_norm = db.execute(
+            select(NormalizedEvent).order_by(desc(NormalizedEvent.normalized_at)).limit(5)
+        ).scalars().all()
+        
+        recent_quar = db.execute(
+            select(QuarantinedEvent).order_by(desc(QuarantinedEvent.quarantined_at)).limit(5)
+        ).scalars().all()
+        
+        recent_events = []
+        for n in recent_norm:
+            recent_events.append({
+                "time": n.normalized_at.strftime("%H:%M:%S"),
+                "sort_time": n.normalized_at,
+                "source": n.source_name,
+                "format": n.source_type.upper(),
+                "status": n.normalization_status
+            })
+            
+        for q in recent_quar:
+            recent_events.append({
+                "time": q.quarantined_at.strftime("%H:%M:%S"),
+                "sort_time": q.quarantined_at,
+                "source": q.source_name,
+                "format": q.source_type.upper(),
+                "status": q.status
+            })
+            
+        recent_events.sort(key=lambda x: x["sort_time"], reverse=True)
+        recent_events = recent_events[:5]
+        
+        for e in recent_events:
+            del e["sort_time"]
+            
+        return {
+            "received": received,
+            "parsed": normalized + quarantined,
+            "normalized": normalized,
+            "quarantined": quarantined,
+            "replayed": replayed,
+            "forwarded": forwarded,
+            "recent_events": recent_events
+        }
 
     @staticmethod
     def get_event_by_id(db: Session, event_id: str) -> Optional[IngestedEvent]:

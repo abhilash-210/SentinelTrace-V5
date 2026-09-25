@@ -169,3 +169,19 @@ class EventVerificationResponse(BaseModel):
         default_factory=lambda: datetime.now(timezone.utc),
         description="UTC timestamp of the verification check",
     )
+
+class RecentEventResponse(BaseModel):
+    time: str
+    source: str
+    format: str
+    status: str
+
+class PipelineStatsResponse(BaseModel):
+    received: int
+    parsed: int
+    normalized: int
+    quarantined: int
+    replayed: int
+    forwarded: int
+    recent_events: List[RecentEventResponse]
+

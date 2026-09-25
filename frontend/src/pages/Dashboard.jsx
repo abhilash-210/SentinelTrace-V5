@@ -1,199 +1,166 @@
-/**
- * Dashboard.jsx
- * -------------
- * Main dashboard page for SENTINEL-TRACE.
- *
- * Sprint 0: UI shell only — no backend calls.
- * Sprint 1+ will wire up live data from the API.
- */
-
+import React, { useState, useEffect } from "react";
 import StatusCard from "../components/StatusCard";
 
-const PILLARS = [
-  {
-    number: "01",
-    title: "Evidence Integrity",
-    description:
-      "Every raw log is SHA-256 hashed and stored immutably before any transformation. The original evidence is never mutated.",
-    icon: "🔒",
-    color: "accent-cyan",
-  },
-  {
-    number: "02",
-    title: "Interpretation Governance",
-    description:
-      "Changes to how log fields are interpreted require versioned semantic policies with dual-control human approval workflows.",
-    icon: "📋",
-    color: "accent-purple",
-  },
-  {
-    number: "03",
-    title: "Semantic Trust Propagation",
-    description:
-      "When a semantic policy changes, the platform automatically identifies and flags all affected detection rules for re-validation.",
-    icon: "🕸",
-    color: "accent-green",
-  },
-];
+export default function Dashboard({ onNavigate }) {
+  const [stats, setStats] = useState({
+    received: 0,
+    parsed: 0,
+    normalized: 0,
+    quarantined: 0,
+    replayed: 0,
+    forwarded: 0,
+    recent_events: [],
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-const SYSTEM_CARDS = [
-  {
-    title: "Evidence Vault",
-    description: "Immutable raw log store with SHA-256 integrity proofs.",
-    icon: "🔒",
-    status: "future",
-    sprint: 1,
-  },
-  {
-    title: "Semantic Policies",
-    description: "Active field interpretation registry and versioning.",
-    icon: "📋",
-    status: "future",
-    sprint: 3,
-  },
-  {
-    title: "Active Interpretations",
-    description: "Currently approved semantic mappings in effect.",
-    icon: "⚡",
-    status: "future",
-    sprint: 3,
-  },
-  {
-    title: "Detection Rules",
-    description: "STIG-bound detection rules and impact analysis.",
-    icon: "🛡",
-    status: "future",
-    sprint: 7,
-  },
-  {
-    title: "System Status",
-    description: "Backend API and database connectivity.",
-    icon: "📊",
-    status: "online",
-    value: "Sprint 0",
-  },
-];
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem("sentinel_token");
+        const res = await fetch("http://localhost:8000/api/v1/events/pipeline-stats", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) {
+          throw new Error("Failed to fetch pipeline stats");
+        }
+        const data = await res.json();
+        setStats(data);
+        setError(null);
+      } catch (err) {
+        console.error(err);
+        setError("Backend unreachable or unauthorized.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-export default function Dashboard() {
+    fetchStats();
+    const interval = setInterval(fetchStats, 3000); // Auto-refresh every 3s
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <main className="flex-1 overflow-y-auto">
+    <main className="flex-1 overflow-y-auto bg-slate-950 text-slate-200">
       <div className="max-w-6xl mx-auto px-6 py-8 space-y-10 animate-fade-in">
-
         {/* ── Hero Section ─────────────────────────────────── */}
         <section className="text-center space-y-4 pt-6">
-          {/* Glowing badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-                          border border-accent-cyan/30 bg-accent-cyan/5 text-xs
-                          text-accent-cyan font-mono tracking-widest uppercase">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent-cyan/30 bg-accent-cyan/5 text-xs text-accent-cyan font-mono tracking-widest uppercase">
             <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse" />
-            Sprint 0 · Project Foundation
+            Production Engine · Live ULPF Dashboard
           </div>
-
-          {/* Title */}
           <h1 className="text-5xl font-extrabold tracking-tight">
             <span className="text-neon-cyan">SENTINEL</span>
             <span className="text-slate-300">-TRACE</span>
           </h1>
-
-          {/* Subtitle */}
           <p className="text-slate-400 text-lg font-light leading-relaxed max-w-2xl mx-auto">
-            Verifiable Security Log Normalization
-            <br />
-            &amp; Semantic Trust Governance Platform
+            Universal Log Pre-processing Framework (ULPF)
           </p>
-
-          {/* Divider */}
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <div className="h-px w-20 bg-gradient-to-r from-transparent to-accent-cyan/40" />
-            <span className="text-accent-cyan/60 text-xs font-mono">SIH 2026</span>
-            <div className="h-px w-20 bg-gradient-to-l from-transparent to-accent-cyan/40" />
-          </div>
         </section>
 
-        {/* ── Architecture Pillars ─────────────────────────── */}
+        {error && (
+          <div className="p-4 bg-red-900/50 border border-red-500/50 rounded-lg text-red-200 text-sm">
+            {error}
+          </div>
+        )}
+
+        {/* ── LIVE ULPF PIPELINE STATS ───────────────────── */}
         <section>
           <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-4">
-            Architecture Pillars
+            LIVE ULPF PIPELINE
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {PILLARS.map((pillar) => (
-              <div
-                key={pillar.number}
-                className="glass-card p-5 border-white/10 hover:border-accent-cyan/20
-                           transition-all duration-300 hover:-translate-y-1
-                           hover:shadow-lg hover:shadow-accent-cyan/5 group"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="text-2xl mt-0.5">{pillar.icon}</div>
-                  <div>
-                    <p className="text-[10px] font-mono text-accent-cyan/60 mb-1">
-                      PILLAR {pillar.number}
-                    </p>
-                    <h3 className="text-sm font-semibold text-slate-100 mb-2">
-                      {pillar.title}
-                    </h3>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      {pillar.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <StatCard label="Received" value={stats.received} color="text-blue-400" />
+            <StatCard label="Parsed" value={stats.parsed} color="text-indigo-400" />
+            <StatCard label="Normalized" value={stats.normalized} color="text-green-400" />
+            <StatCard label="Quarantined" value={stats.quarantined} color="text-red-400" />
+            <StatCard label="Replayed" value={stats.replayed} color="text-yellow-400" />
+            <StatCard label="Forwarded" value={stats.forwarded} color="text-accent-cyan" />
           </div>
         </section>
 
-        {/* ── System Status Cards ──────────────────────────── */}
+        {/* ── RECENT EVENTS TABLE ───────────────────────── */}
         <section>
           <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-4">
-            System Status
+            RECENT EVENTS
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {SYSTEM_CARDS.map((card) => (
-              <StatusCard key={card.title} {...card} />
-            ))}
-          </div>
-        </section>
-
-        {/* ── Sprint Info Banner ───────────────────────────── */}
-        <section>
-          <div className="glass-card border-accent-amber/20 p-5">
-            <div className="flex items-start gap-4">
-              <span className="text-2xl">🚧</span>
-              <div>
-                <h3 className="text-sm font-semibold text-accent-amber mb-1">
-                  Sprint 0 — Project Foundation
-                </h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  This sprint establishes the project structure, technology stack, and
-                  infrastructure. Feature modules are planned for upcoming sprints.
-                  All disabled navigation items are clearly marked with their target sprint number.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {["Evidence Vault (S1)", "Log Ingestion (S1)", "OCSF Normalization (S2)",
-                    "Semantic Policies (S3)", "Approvals (S4)", "Ledger (S5)",
-                    "Auth (S6)", "STIG Propagation (S7)"].map((item) => (
-                    <span
-                      key={item}
-                      className="text-[10px] font-mono px-2 py-0.5 rounded
-                                 bg-slate-800 border border-slate-700 text-slate-500"
+          <div className="glass-card border-white/10 overflow-hidden">
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-slate-900/50 text-slate-400 border-b border-white/5">
+                <tr>
+                  <th className="px-6 py-3 font-semibold">Time</th>
+                  <th className="px-6 py-3 font-semibold">Source</th>
+                  <th className="px-6 py-3 font-semibold">Format</th>
+                  <th className="px-6 py-3 font-semibold">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {stats.recent_events.length > 0 ? (
+                  stats.recent_events.map((evt, idx) => (
+                    <tr
+                      key={idx}
+                      className="hover:bg-slate-800/30 transition-colors cursor-pointer"
+                      onClick={() => {
+                        if (evt.status === "QUARANTINED" || evt.status === "FAILED") {
+                          onNavigate("quarantine");
+                        } else {
+                          onNavigate("normalization");
+                        }
+                      }}
                     >
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
+                      <td className="px-6 py-4 font-mono text-xs text-slate-300">{evt.time}</td>
+                      <td className="px-6 py-4 text-slate-200">{evt.source}</td>
+                      <td className="px-6 py-4 font-mono text-xs text-slate-400">{evt.format}</td>
+                      <td className="px-6 py-4">
+                        <StatusBadge status={evt.status} />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="px-6 py-8 text-center text-slate-500">
+                      {loading ? "Loading live telemetry..." : "No events processed yet."}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </section>
 
-        {/* ── Footer ───────────────────────────────────────── */}
         <footer className="text-center pt-4 pb-8">
-          <p className="text-xs text-slate-700 font-mono">
-            SENTINEL-TRACE v0.1.0 · Offline-First · Zero Trust · SIH 2026
+          <p className="text-xs text-slate-500 font-mono">
+            SENTINEL-TRACE v1.0.0 · Auto-refresh active
           </p>
         </footer>
-
       </div>
     </main>
+  );
+}
+
+function StatCard({ label, value, color }) {
+  return (
+    <div className="glass-card p-4 border-white/10 hover:border-white/20 transition-all text-center flex flex-col justify-center items-center h-24 rounded-lg bg-slate-900/60 shadow-lg">
+      <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">
+        {label}
+      </div>
+      <div className={`text-3xl font-bold font-mono ${color}`}>
+        {value.toLocaleString()}
+      </div>
+    </div>
+  );
+}
+
+function StatusBadge({ status }) {
+  let bg = "bg-slate-500/10 border-slate-500/20 text-slate-400";
+  if (status === "NORMALIZED") bg = "bg-green-500/10 border-green-500/20 text-green-400";
+  if (status === "QUARANTINED" || status === "FAILED") bg = "bg-red-500/10 border-red-500/20 text-red-400";
+  if (status === "PARTIAL") bg = "bg-yellow-500/10 border-yellow-500/20 text-yellow-400";
+  if (status === "FORWARDED") bg = "bg-blue-500/10 border-blue-500/20 text-blue-400";
+
+  return (
+    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono border ${bg}`}>
+      {status}
+    </span>
   );
 }

@@ -36,6 +36,7 @@ class NormalizedEventResponse(BaseModel):
     process_name: Optional[str] = Field(None, description="Extracted process name")
     process_id: Optional[int] = Field(None, description="Extracted process ID")
     raw_data: Dict[str, Any] = Field(default_factory=dict, description="Extracted key-value pairs")
+    unmapped_data: Dict[str, Any] = Field(default_factory=dict, description="Vendor-specific unmapped fields")
     parser_name: str = Field(..., description="Parser module used")
     parser_version: str = Field(..., description="Parser release version")
     source_profile_id: Optional[str] = Field(None, description="Applied source profile")

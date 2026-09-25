@@ -213,5 +213,102 @@ class TestSprint2Normalization(unittest.TestCase):
         self.assertEqual(verify_res["integrity_status"], "VERIFIED")
 
 
+    def test_11_loss_aware_normalization_mapped_only(self):
+        """TEST 11: Event containing only mapped fields results in empty unmapped_data."""
+        ingest_payload = {
+            "source_name": "Mapped Only Source",
+            "source_type": "authentication",
+            "file_format": "json",
+            "raw_content": json.dumps({"action": "SUCCESS", "src_ip": "10.0.0.1", "user_name": "admin"}),
+        }
+        raw_id = client.post("/api/v1/ingest", json=ingest_payload).json()["event_id"]
+        norm_data = client.post(f"/api/v1/events/{raw_id}/normalize").json()
+        
+        self.assertEqual(norm_data["action"], "SUCCESS")
+        self.assertEqual(norm_data["src_ip"], "10.0.0.1")
+        self.assertEqual(norm_data["user_name"], "admin")
+        self.assertEqual(norm_data["unmapped_data"], {})
+
+    def test_12_loss_aware_normalization_mapped_and_unmapped(self):
+        """TEST 12: Event containing mapped + unmapped fields properly separates them."""
+        ingest_payload = {
+            "source_name": "Mixed Source",
+            "source_type": "authentication",
+            "file_format": "json",
+            "raw_content": json.dumps({
+                "action": "FAILURE",
+                "src_ip": "192.168.1.5",
+                "user_name": "jdoe",
+                "vendor_specific_reason": "password_expired",
+                "custom_correlation_id": "ABC-123"
+            }),
+        }
+        raw_id = client.post("/api/v1/ingest", json=ingest_payload).json()["event_id"]
+        norm_data = client.post(f"/api/v1/events/{raw_id}/normalize").json()
+        
+        self.assertEqual(norm_data["action"], "FAILURE")
+        self.assertEqual(norm_data["src_ip"], "192.168.1.5")
+        self.assertEqual(norm_data["user_name"], "jdoe")
+        self.assertIn("vendor_specific_reason", norm_data["unmapped_data"])
+        self.assertEqual(norm_data["unmapped_data"]["vendor_specific_reason"], "password_expired")
+        self.assertIn("custom_correlation_id", norm_data["unmapped_data"])
+        self.assertEqual(norm_data["unmapped_data"]["custom_correlation_id"], "ABC-123")
+
+    def test_13_loss_aware_normalization_multiple_vendor_fields(self):
+        """TEST 13: Event containing multiple vendor-specific fields preserves all of them."""
+        ingest_payload = {
+            "source_name": "Heavy Vendor Source",
+            "source_type": "firewall",
+            "file_format": "json",
+            "raw_content": json.dumps({
+                "action": "ALLOW",
+                "v_field_1": 100,
+                "v_field_2": [1, 2, 3],
+                "v_field_3": {"nested": "value"}
+            }),
+        }
+        raw_id = client.post("/api/v1/ingest", json=ingest_payload).json()["event_id"]
+        norm_data = client.post(f"/api/v1/events/{raw_id}/normalize").json()
+        
+        self.assertEqual(norm_data["unmapped_data"]["v_field_1"], 100)
+        self.assertEqual(norm_data["unmapped_data"]["v_field_2"], [1, 2, 3])
+        self.assertEqual(norm_data["unmapped_data"]["v_field_3"], {"nested": "value"})
+
+    def test_14_empty_unmapped_data_case(self):
+        """TEST 14: Empty unmapped_data case explicitly handled."""
+        ingest_payload = {
+            "source_name": "Empty Unmapped",
+            "source_type": "authentication",
+            "file_format": "json",
+            "raw_content": json.dumps({}),
+        }
+        raw_id = client.post("/api/v1/ingest", json=ingest_payload).json()["event_id"]
+        norm_data = client.post(f"/api/v1/events/{raw_id}/normalize").json()
+        
+        self.assertEqual(norm_data["unmapped_data"], {})
+
+    def test_15_raw_evidence_unchanged_with_unmapped(self):
+        """TEST 15: Raw evidence remains unchanged even with heavy unmapped data processing."""
+        raw_payload = json.dumps({"action": "SUCCESS", "weird_field": "X"})
+        ingest_payload = {
+            "source_name": "Immutability Source",
+            "source_type": "authentication",
+            "file_format": "json",
+            "raw_content": raw_payload,
+        }
+        ingest_res = client.post("/api/v1/ingest", json=ingest_payload).json()
+        raw_id = ingest_res["event_id"]
+        initial_hash = ingest_res["raw_content_hash"]
+        
+        client.post(f"/api/v1/events/{raw_id}/normalize")
+        
+        verify_res = client.get(f"/api/v1/events/{raw_id}/verify").json()
+        self.assertEqual(verify_res["integrity_status"], "VERIFIED")
+        
+        with SessionLocal() as db:
+            raw_db = EventService.get_event_by_id(db, raw_id)
+            self.assertEqual(raw_db.raw_content, raw_payload)
+            self.assertEqual(raw_db.raw_content_hash, initial_hash)
+
 if __name__ == "__main__":
     unittest.main()

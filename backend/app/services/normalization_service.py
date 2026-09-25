@@ -56,7 +56,7 @@ class NormalizationService:
         return list(db.execute(stmt).scalars().all())
 
     @staticmethod
-    def normalize_event(db: Session, event_id: str) -> Optional[NormalizedEvent]:
+    def normalize_event(db: Session, event_id: str, is_replay: bool = False) -> Optional[NormalizedEvent]:
         """
         Normalize a preserved raw security event into an OCSF-aligned canonical event.
 
@@ -77,14 +77,15 @@ class NormalizationService:
             return None
 
         # Step 2: Idempotency check
-        existing = db.execute(
-            select(NormalizedEvent)
-            .where(NormalizedEvent.original_event_id == event_id)
-            .order_by(NormalizedEvent.id.desc())
-        ).scalar_one_or_none()
-        if existing:
-            logger.info("Idempotent normalization: returning existing normalized event %s", existing.normalized_event_id)
-            return existing
+        if not is_replay:
+            existing = db.execute(
+                select(NormalizedEvent)
+                .where(NormalizedEvent.original_event_id == event_id)
+                .order_by(NormalizedEvent.id.desc())
+            ).scalar_one_or_none()
+            if existing and existing.normalization_status == "NORMALIZED":
+                logger.info("Idempotent normalization: returning existing normalized event %s", existing.normalized_event_id)
+                return existing
 
         # Ensure seed profiles exist
         NormalizationService.ensure_default_source_profiles(db)
@@ -128,6 +129,16 @@ class NormalizationService:
         if not parse_result.get("success"):
             confidence = 0.20
             norm_status = "FAILED"
+            from app.services.quarantine_service import QuarantineService
+            QuarantineService.quarantine_event(
+                db=db,
+                source_name=raw_event.source_name,
+                source_type=raw_event.source_type,
+                raw_content=raw_event.raw_content,
+                failure_reason=parse_result.get("error", "Failed to parse log structure"),
+                metadata=raw_event.metadata_,
+                original_event_id=raw_event.event_id
+            )
         else:
             # Deduct for missing key attributes
             if not fields.get("action"):
@@ -149,6 +160,13 @@ class NormalizationService:
         # Step 7: Construct & persist NormalizedEvent
         norm_event_id = f"norm_{uuid.uuid4().hex[:16]}"
         now = datetime.now(timezone.utc)
+
+        mapped_keys = {
+            "action", "src_ip", "src_port", "dst_ip", "dst_port",
+            "protocol", "severity", "user_name", "hostname",
+            "process_name", "process_id"
+        }
+        unmapped_data = {k: v for k, v in fields.items() if k not in mapped_keys}
 
         normalized = NormalizedEvent(
             normalized_event_id=norm_event_id,
@@ -172,6 +190,7 @@ class NormalizationService:
             process_name=fields.get("process_name"),
             process_id=fields.get("process_id"),
             raw_data=fields,
+            unmapped_data=unmapped_data,
             parser_name=parser.name,
             parser_version=parser.version,
             source_profile_id=profile_id,
@@ -181,6 +200,25 @@ class NormalizationService:
             normalized_at=now,
         )
 
+        # Step 8: Validate the Normalized Event
+        from app.services.validation_service import ValidationService, EventValidationException
+        validation_result = ValidationService.validate_normalized_event(normalized)
+        
+        if not validation_result["valid"]:
+            normalized.normalization_status = "INVALID"
+            
+            # Quarantine the invalid event
+            from app.services.quarantine_service import QuarantineService
+            QuarantineService.quarantine_event(
+                db=db,
+                source_name=raw_event.source_name,
+                source_type=raw_event.source_type,
+                raw_content=raw_event.raw_content,
+                failure_reason=f"Validation failed: {validation_result.get('errors')}",
+                metadata=raw_event.metadata_,
+                original_event_id=raw_event.event_id
+            )
+            
         db.add(normalized)
         db.commit()
         db.refresh(normalized)
@@ -193,6 +231,13 @@ class NormalizationService:
             normalized.action,
             normalized.normalization_confidence,
         )
+
+        if not validation_result["valid"]:
+            raise EventValidationException(validation_result)
+
+        if norm_status != "FAILED":
+            from app.services.log_forwarder_service import LogForwarderService
+            LogForwarderService.forward_event(normalized)
 
         return normalized
 

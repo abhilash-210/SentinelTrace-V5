@@ -8,7 +8,7 @@ Sprint 12B — Security Analytics, Reporting & Evidence Intelligence.
 
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from pydantic import ConfigDict, BaseModel, Field
 
 
 # ── Metric Schemas ───────────────────────────────────────────────────────────
@@ -27,8 +27,7 @@ class SecurityMetricDefinitionResponse(BaseModel):
     is_active: bool
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SecurityMetricEvaluationResponse(BaseModel):
@@ -45,8 +44,7 @@ class SecurityMetricEvaluationResponse(BaseModel):
     evaluation_hash: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Snapshot Schemas ─────────────────────────────────────────────────────────
@@ -75,8 +73,7 @@ class SecurityAnalyticsSnapshotResponse(BaseModel):
     created_at: datetime
     created_by: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Trend Schemas ────────────────────────────────────────────────────────────
@@ -95,8 +92,7 @@ class SecurityTrendResponse(BaseModel):
     reasoning_json: Dict[str, Any]
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Insight Schemas ──────────────────────────────────────────────────────────
@@ -117,8 +113,7 @@ class SecurityAnalyticsInsightResponse(BaseModel):
     insight_hash: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Report Schemas ───────────────────────────────────────────────────────────
@@ -147,8 +142,7 @@ class SecurityReportSectionResponse(BaseModel):
     section_hash: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SecurityReportResponse(BaseModel):
@@ -169,8 +163,7 @@ class SecurityReportResponse(BaseModel):
     merkle_reference: Optional[str]
     sections: Optional[List[SecurityReportSectionResponse]] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Evidence Package Schemas ─────────────────────────────────────────────────
@@ -195,8 +188,7 @@ class EvidencePackageArtifactResponse(BaseModel):
     binding_hash: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SecurityEvidencePackageResponse(BaseModel):
@@ -215,8 +207,7 @@ class SecurityEvidencePackageResponse(BaseModel):
     created_at: datetime
     artifacts: Optional[List[EvidencePackageArtifactResponse]] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Verification & Provenance Schemas ────────────────────────────────────────
@@ -262,8 +253,7 @@ class SecurityAnalyticsProvenanceRecordResponse(BaseModel):
     verification_status: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SecurityAnalyticsProvenanceChainResponse(BaseModel):

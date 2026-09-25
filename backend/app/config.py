@@ -29,7 +29,8 @@ class Settings(BaseSettings):
     @property
     def DATABASE_URL(self) -> str:
         """Construct the SQLAlchemy-compatible PostgreSQL connection URL."""
-        return (
+        import os
+        return os.environ.get("DATABASE_URL") or (
             f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
             f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         )

@@ -7,7 +7,7 @@ Sprint 5B — Merkle Tree Proofs & Independent Auditor Verification.
 """
 
 from typing import Any, Dict, List, Literal, Optional
-from pydantic import BaseModel, Field
+from pydantic import ConfigDict, BaseModel, Field
 
 
 class ProofStep(BaseModel):
@@ -45,8 +45,7 @@ class MerkleBatchResponse(BaseModel):
     created_at: Optional[str] = None
     sealed_at: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MerkleProofResponse(BaseModel):
@@ -61,8 +60,7 @@ class MerkleProofResponse(BaseModel):
     merkle_root: Optional[str] = None
     created_at: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MerkleVerifyRequest(BaseModel):

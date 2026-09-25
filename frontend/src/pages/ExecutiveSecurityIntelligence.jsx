@@ -12,7 +12,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const API_BASE = "http://localhost:8000/api/v1";
+const API_BASE = "/api/v1";
 
 const POSTURE_COLORS = {
   HEALTHY: {
@@ -298,7 +298,7 @@ export default function ExecutiveSecurityIntelligence() {
   }, [latestEval]);
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-sentinel-950 text-slate-100 overflow-hidden font-sans">
+    <div className="flex-1 flex flex-col h-full bg-sentinel-950 text-slate-100 overflow-y-auto font-sans">
       {/* ── Top Header & Tab Navigation ─────────────────────────────────── */}
       <header className="px-6 py-4 border-b border-white/10 bg-sentinel-900/60 backdrop-blur-md flex flex-wrap items-center justify-between gap-4 z-10 shrink-0">
         <div className="flex items-center gap-3">
@@ -623,19 +623,19 @@ export default function ExecutiveSecurityIntelligence() {
                         </h4>
                         <div className="flex items-center justify-between text-[11px] font-mono">
                           <span className="text-slate-400">Score:</span>
-                          <span className="text-white font-bold">{dom.score.toFixed(1)} / 100</span>
+                          <span className="text-white font-bold">{dom.final_score?.toFixed(1) ?? "0.0"} / 100</span>
                         </div>
                         {/* Progress bar */}
                         <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                           <div
                             className={`h-full ${statusConf.bar}`}
-                            style={{ width: `${Math.max(dom.score, 5)}%` }}
+                            style={{ width: `${Math.max(dom.final_score ?? 0, 5)}%` }}
                           />
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-1 border-t border-white/5">
-                        <span>Weight: {(dom.weight * 100).toFixed(0)}%</span>
+                        <span>Weight: {((dom.risk_weight ?? 0) * 100).toFixed(0)}%</span>
                         <span className={dom.telemetry_missing ? "text-rose-400" : "text-emerald-400"}>
                           {dom.telemetry_missing ? "Telemetry Missing" : "Active"}
                         </span>
@@ -705,9 +705,9 @@ export default function ExecutiveSecurityIntelligence() {
 
                         <div className="text-right font-mono shrink-0">
                           <span className="text-xs font-bold text-amber-400">
-                            Impact: {driver.impact_score.toFixed(1)}
+                            Impact: {driver.risk_points?.toFixed(1) ?? "0.0"}
                           </span>
-                          <p className="text-[10px] text-slate-500">Weight: {(driver.driver_weight * 100).toFixed(0)}%</p>
+                          <p className="text-[10px] text-slate-500">Rank: #{driver.rank ?? "N/A"}</p>
                         </div>
                       </div>
                     ))
@@ -865,8 +865,8 @@ export default function ExecutiveSecurityIntelligence() {
                   </h4>
                   <div className="space-y-2">
                     {(latestEval?.domain_scores || []).map((dom) => {
-                      const contribution = dom.score * dom.weight;
-                      const deduction = (100 - dom.score) * dom.weight;
+                      const contribution = dom.weighted_contribution ?? 0;
+                      const deduction = dom.deduction_total ?? 0;
                       return (
                         <div
                           key={dom.domain_name}
@@ -875,10 +875,10 @@ export default function ExecutiveSecurityIntelligence() {
                           <div className="flex items-center gap-3">
                             <span className="w-2 h-2 rounded-full bg-cyan-400" />
                             <span className="font-bold text-slate-200">{dom.domain_name}</span>
-                            <span className="text-slate-500">Weight: {(dom.weight * 100).toFixed(0)}%</span>
+                            <span className="text-slate-500">Weight: {((dom.risk_weight ?? 0) * 100).toFixed(0)}%</span>
                           </div>
                           <div className="flex items-center gap-4">
-                            <span className="text-slate-400">Score: <strong className="text-white">{dom.score.toFixed(1)}</strong></span>
+                            <span className="text-slate-400">Score: <strong className="text-white">{dom.final_score?.toFixed(1) ?? "0.0"}</strong></span>
                             <span className="text-emerald-400 font-bold">+{contribution.toFixed(1)} pts</span>
                             {deduction > 0 && (
                               <span className="text-rose-400 font-bold">-{deduction.toFixed(1)} pts</span>
@@ -905,7 +905,7 @@ export default function ExecutiveSecurityIntelligence() {
                           <span className="font-bold text-white">
                             #{driver.rank} [{driver.domain_name}] {driver.title}
                           </span>
-                          <span className="text-amber-400 font-bold">Impact: {driver.impact_score.toFixed(1)}</span>
+                          <span className="text-amber-400 font-bold">Impact: {driver.risk_points?.toFixed(1) ?? "0.0"}</span>
                         </div>
                         <p className="text-slate-400">{driver.mitigation_recommendation || driver.description}</p>
                       </div>
@@ -1032,7 +1032,7 @@ export default function ExecutiveSecurityIntelligence() {
                       <div className="space-y-1.5 font-mono text-xs">
                         <div className="flex items-center justify-between">
                           <span className="text-slate-400">Score:</span>
-                          <strong className="text-white">{domScore?.score.toFixed(1) ?? "100.0"} / 100</strong>
+                          <strong className="text-white">{domScore?.final_score?.toFixed(1) ?? "100.0"} / 100</strong>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-slate-400">Weight:</span>
@@ -1114,20 +1114,20 @@ export default function ExecutiveSecurityIntelligence() {
                       >
                         <div className="flex items-center gap-3">
                           <span className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold uppercase ${evalStatusStyle.badge}`}>
-                            {evalItem.overall_posture_status}
+                            {evalItem.overall_posture_status ?? "UNKNOWN"}
                           </span>
                           <div>
                             <p className="text-xs font-bold text-white">
-                              Score: {evalItem.overall_security_score.toFixed(1)}/100 · Risk: {evalItem.executive_risk_level}
+                              Score: {evalItem.overall_security_score?.toFixed(1) ?? "0.0"}/100 · Risk: {evalItem.executive_risk_score?.toFixed(1) ?? "N/A"}
                             </p>
                             <p className="text-[10px] font-mono text-slate-400">
-                              {new Date(evalItem.evaluated_at).toLocaleString()} by @{evalItem.evaluated_by_username}
+                              {evalItem.evaluation_timestamp ? new Date(evalItem.evaluation_timestamp).toLocaleString() : "N/A"}
                             </p>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-3 text-xs font-mono text-slate-400">
-                          <span>Payload Hash: <strong className="text-slate-300">{evalItem.evaluation_payload_hash.slice(0, 12)}...</strong></span>
+                          <span>Payload Hash: <strong className="text-slate-300">{evalItem.evaluation_hash?.slice(0, 12) ?? "N/A"}...</strong></span>
                           {isCurrent && (
                             <span className="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[10px]">
                               ACTIVE
@@ -1258,7 +1258,7 @@ export default function ExecutiveSecurityIntelligence() {
                 </div>
               )}
               <div className="flex items-center justify-between text-slate-400 pt-2 border-t border-white/10">
-                <span>Impact Score: <strong className="text-amber-400">{selectedDriver.impact_score.toFixed(1)}</strong></span>
+                <span>Impact Score: <strong className="text-amber-400">{selectedDriver.risk_points?.toFixed(1) ?? "0.0"}</strong></span>
                 <span>Source: <strong className="text-white">{selectedDriver.source_entity_type} #{selectedDriver.source_entity_id}</strong></span>
               </div>
             </div>
@@ -1297,8 +1297,8 @@ export default function ExecutiveSecurityIntelligence() {
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span>Score: <strong className="text-white text-sm">{selectedDomain.score.toFixed(1)} / 100</strong></span>
-                <span>Weight: <strong className="text-cyan-400">{(selectedDomain.weight * 100).toFixed(0)}%</strong></span>
+                <span>Score: <strong className="text-white text-sm">{selectedDomain.final_score?.toFixed(1) ?? "0.0"} / 100</strong></span>
+                <span>Weight: <strong className="text-cyan-400">{((selectedDomain.risk_weight ?? 0) * 100).toFixed(0)}%</strong></span>
               </div>
 
               <div>

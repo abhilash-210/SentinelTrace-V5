@@ -9,8 +9,9 @@ A Source Profile structurally describes how known security log formats should be
 
 from datetime import datetime, timezone
 from typing import Any, Dict
+import uuid
 
-from sqlalchemy import Boolean, Column, DateTime, Index, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.types import JSON
 
@@ -84,6 +85,25 @@ class SourceProfile(Base):
         comment="Whether the profile is active for automated selection",
     )
 
+    status = Column(
+        String(32),
+        nullable=False,
+        default="DRAFT",
+        comment="Lifecycle status: DRAFT, TESTING, PENDING_APPROVAL, APPROVED, ACTIVE",
+    )
+
+    created_by = Column(
+        String(64),
+        nullable=True,
+        comment="User who created the profile",
+    )
+
+    approved_by = Column(
+        String(64),
+        nullable=True,
+        comment="User who approved the profile",
+    )
+
     created_at = Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
@@ -109,6 +129,83 @@ class SourceProfile(Base):
             "parser_type": self.parser_type,
             "version": self.version,
             "is_active": self.is_active,
+            "status": self.status,
+            "created_by": self.created_by,
+            "approved_by": self.approved_by,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "configuration": self.configuration or {},
         }
+
+class SourceProfileApprovalRequest(Base):
+    """
+    Tracks formal maker-checker dual-control approval requests for source profiles.
+    """
+
+    __tablename__ = "source_profile_approvals"
+    __table_args__ = (
+        Index("ix_sp_approvals_status", "status"),
+        Index("ix_sp_approvals_profile_id", "source_profile_id"),
+        {"schema": "sentinel"},
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    approval_id = Column(
+        String(64),
+        unique=True,
+        nullable=False,
+        index=True,
+        default=lambda: f"sp_apprv_{uuid.uuid4().hex[:12]}",
+    )
+    source_profile_id = Column(
+        String(64),
+        ForeignKey("sentinel.source_profiles.source_profile_id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    requested_by_user_id = Column(
+        String(64),
+        nullable=False,
+    )
+    requested_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+    status = Column(
+        String(32),
+        nullable=False,
+        default="PENDING",
+        doc="PENDING, APPROVED, REJECTED, CANCELLED",
+    )
+    reviewed_by_user_id = Column(
+        String(64),
+        nullable=True,
+    )
+    reviewed_at = Column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    review_comment = Column(
+        Text,
+        nullable=True,
+    )
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "approval_id": self.approval_id,
+            "source_profile_id": self.source_profile_id,
+            "requested_by_user_id": self.requested_by_user_id,
+            "requested_at": self.requested_at.isoformat() if self.requested_at else None,
+            "status": self.status,
+            "reviewed_by_user_id": self.reviewed_by_user_id,
+            "reviewed_at": self.reviewed_at.isoformat() if self.reviewed_at else None,
+            "review_comment": self.review_comment,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+

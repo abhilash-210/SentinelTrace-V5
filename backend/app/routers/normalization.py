@@ -15,6 +15,7 @@ import logging
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.core.auth import require_permission
@@ -30,6 +31,7 @@ from app.schemas.source_profile import (
     SourceProfileResponse,
 )
 from app.services.normalization_service import NormalizationService
+from app.services.validation_service import EventValidationException
 
 logger = logging.getLogger(__name__)
 
@@ -72,6 +74,12 @@ def normalize_event(
                 detail=f"Preserved event '{event_id}' not found in Evidence Vault.",
             )
         return NormalizedEventResponse(**normalized.to_dict())
+    except EventValidationException as exc:
+        logger.warning("Validation failed for event %s: %s", event_id, exc.validation_result)
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content=exc.validation_result
+        )
     except HTTPException:
         raise
     except Exception as exc:

@@ -9,8 +9,11 @@ Sprint 2: SourceProfile and NormalizedEvent for OCSF-aligned canonical normaliza
 Sprint 6A: DetectionRule and DetectionRuleDependency for detection rule registry
 """
 
+from app.models.source_profile import SourceProfile, SourceProfileApprovalRequest
 from app.models.event import IngestedEvent
 from app.models.normalized_event import NormalizedEvent
+from app.models.quarantined_event import QuarantinedEvent
+from app.models.replay_operation import ReplayOperation
 from app.models.semantic_interpretation import (
     SemanticDriftAlert,
     SemanticInterpretation,
@@ -87,7 +90,6 @@ from app.models.executive_security_intelligence import (
     ExecutivePostureTrendSnapshot,
     ExecutiveSecurityInsight,
 )
-from app.models.source_profile import SourceProfile
 from app.models.user import User
 from app.models.security_scenario import (
     SecurityScenario,
@@ -151,6 +153,8 @@ from app.models.security_analytics import (
 __all__ = [
     "IngestedEvent",
     "NormalizedEvent",
+    "QuarantinedEvent",
+    "ReplayOperation",
     "SemanticInterpretation",
     "SemanticDriftAlert",
     "SemanticPolicy",
@@ -162,6 +166,7 @@ __all__ = [
     "MerkleBatch",
     "MerkleProof",
     "SourceProfile",
+    "SourceProfileApprovalRequest",
     "User",
     "DetectionRule",
     "DetectionRuleDependency",

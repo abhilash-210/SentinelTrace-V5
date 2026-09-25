@@ -7,7 +7,7 @@ Remediation & Recovery Verification.
 
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field, field_validator
+from pydantic import ConfigDict, BaseModel, Field, field_validator
 
 
 # ── Root Cause Analysis Schemas ───────────────────────────────────────────────
@@ -64,8 +64,7 @@ class RootCauseAnalysisResponse(BaseModel):
     created_at: Optional[datetime] = None
     reviewed_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Recommendation Schemas ────────────────────────────────────────────────────
@@ -85,8 +84,7 @@ class RemediationRecommendationResponse(BaseModel):
     recommendation_hash: str
     created_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Remediation Plan Schemas ──────────────────────────────────────────────────
@@ -142,8 +140,7 @@ class RemediationPlanResponse(BaseModel):
     created_at: Optional[datetime] = None
     submitted_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Execution Attestation Schemas ─────────────────────────────────────────────
@@ -183,8 +180,7 @@ class ExecutionAttestationResponse(BaseModel):
     attestation: Dict[str, Any] = Field(default_factory=dict)
     created_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Recovery Verification Schemas ─────────────────────────────────────────────
@@ -206,8 +202,7 @@ class RecoveryVerificationResponse(BaseModel):
     verification_hash: str
     verified_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class RecoveryConfirmationRequest(BaseModel):
@@ -231,8 +226,7 @@ class AssuranceRecoveryRecordResponse(BaseModel):
     confirmed_by_user_id: str
     created_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Case Schemas ──────────────────────────────────────────────────────────────
@@ -277,8 +271,7 @@ class AssuranceRemediationCaseResponse(BaseModel):
     timeline: List[Any] = Field(default_factory=list)
     created_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Analytics & KPI Schemas ───────────────────────────────────────────────────

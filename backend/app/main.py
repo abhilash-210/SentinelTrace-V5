@@ -81,6 +81,10 @@ from app.routers import policy_governance as policy_governance_router
 from app.routers import semantic_interpretation as semantic_interpretation_router
 from app.routers import semantic_policy as semantic_policy_router
 from app.routers import user as user_router
+from app.routers import quarantine as quarantine_router
+from app.routers import source_profiles as source_profiles_router
+from app.routers import forwarder as forwarder_router
+from app.routers import export as export_router
 from app.services.detection_rule_service import DetectionRuleService
 from app.services.detection_rule_trust_service import DetectionRuleTrustService
 from app.services.detection_rule_governance_service import DetectionRuleGovernanceService
@@ -216,6 +220,10 @@ app.include_router(compliance_intelligence_router.router)
 app.include_router(threat_intelligence_router.router)
 app.include_router(security_investigations_router.router)
 app.include_router(security_analytics_router.router)
+app.include_router(quarantine_router.router)
+app.include_router(source_profiles_router.router)
+app.include_router(forwarder_router.router)
+app.include_router(export_router.router)
 
 
 

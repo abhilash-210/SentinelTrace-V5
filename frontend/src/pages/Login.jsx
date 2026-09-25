@@ -66,7 +66,7 @@ export default function Login({ onLoginSuccess }) {
   const [password, setPassword] = useState("SentinelDemo!2026");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [showDemoAccounts, setShowDemoAccounts] = useState(true);
+  const [showDemoAccounts, setShowDemoAccounts] = useState(false);
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
@@ -104,8 +104,9 @@ export default function Login({ onLoginSuccess }) {
       <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-12 gap-8 z-10 items-center">
         
         {/* Left / Main Login Form */}
-        <div className="lg:col-span-6 bg-sentinel-900/90 border border-white/10 rounded-2xl p-8 backdrop-blur-2xl shadow-2xl space-y-6 relative">
-          <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-accent-cyan/50 to-transparent" />
+        <div className="lg:col-span-6 bg-sentinel-950/80 border border-white/10 rounded-2xl p-8 backdrop-blur-3xl shadow-[0_0_40px_rgba(0,0,0,0.8)] space-y-6 relative overflow-hidden ring-1 ring-white/5">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent-cyan to-transparent opacity-50" />
+          <div className="absolute -top-32 -left-32 w-64 h-64 bg-accent-cyan/10 rounded-full blur-[80px] pointer-events-none" />
 
           {/* Logo & Branding */}
           <div className="space-y-2">
@@ -173,7 +174,7 @@ export default function Login({ onLoginSuccess }) {
               id="sign-in-btn"
               type="submit"
               disabled={isLoading}
-              className="w-full mt-2 py-3 px-4 bg-gradient-to-r from-accent-cyan to-accent-blue hover:opacity-90 disabled:opacity-50 text-sentinel-950 font-semibold font-mono text-sm rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-accent-cyan/20 cursor-pointer"
+              className="w-full mt-4 py-3.5 px-4 bg-gradient-to-r from-accent-cyan to-accent-blue hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 text-sentinel-950 font-bold font-mono text-sm rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] hover:-translate-y-0.5 cursor-pointer"
             >
               {isLoading ? (
                 <>
@@ -202,55 +203,69 @@ export default function Login({ onLoginSuccess }) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-base">👥</span>
-                <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider">
-                  Demo Accounts (Development Only)
+                <h2 className="text-sm font-bold text-white font-mono uppercase tracking-wider flex items-center gap-2">
+                  <span className="text-accent-cyan">◆</span> Access Control Roles
                 </h2>
               </div>
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Select an identity profile to authenticate with the associated permissions. Each role enforces strict Zero Trust boundaries:
+            </p>
+
+            <div className="relative pt-1">
               <button
                 type="button"
                 onClick={() => setShowDemoAccounts(!showDemoAccounts)}
-                className="text-xs text-accent-cyan hover:underline font-mono"
+                className="w-full text-left p-3.5 rounded-xl border border-white/10 bg-sentinel-950/80 hover:bg-sentinel-950 hover:border-accent-cyan/50 focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 transition flex items-center justify-between cursor-pointer"
               >
-                {showDemoAccounts ? "Collapse" : "Expand"}
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-sm font-semibold text-accent-cyan">
+                    {DEMO_ACCOUNTS.find(a => a.username === username)?.title || "Select your role..."}
+                  </span>
+                  <span className="text-[10px] text-slate-500 line-clamp-1 pr-4">
+                    {DEMO_ACCOUNTS.find(a => a.username === username)?.desc || "Choose an account type to view its capabilities."}
+                  </span>
+                </div>
+                <span className="text-slate-400 shrink-0">
+                  {showDemoAccounts ? "▲" : "▼"}
+                </span>
               </button>
-            </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Click any role to load pre-seeded hackathon test credentials. Each account demonstrates distinct RBAC access boundaries:
-            </p>
 
-            {showDemoAccounts && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                {DEMO_ACCOUNTS.map((acc) => {
-                  const isSelected = username === acc.username;
-                  return (
-                    <button
-                      key={acc.role}
-                      type="button"
-                      onClick={() => selectDemoAccount(acc)}
-                      className={`text-left p-3 rounded-xl border transition group cursor-pointer ${
-                        isSelected
-                          ? "bg-accent-cyan/10 border-accent-cyan/60 ring-1 ring-accent-cyan/50"
-                          : "bg-sentinel-950/60 border-white/5 hover:border-white/20 hover:bg-sentinel-950"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-1 mb-1">
-                        <span className="text-xs font-semibold text-slate-200 group-hover:text-white truncate">
-                          {acc.title}
-                        </span>
-                        <span
-                          className={`text-[9px] font-mono px-1.5 py-0.5 rounded border uppercase shrink-0 ${acc.badgeColor}`}
-                        >
-                          {acc.role}
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-slate-500 line-clamp-2 leading-tight">
-                        {acc.desc}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+              {showDemoAccounts && (
+                <div className="absolute z-50 mt-2 w-full bg-sentinel-950 border border-white/10 rounded-xl shadow-2xl overflow-hidden max-h-[320px] overflow-y-auto">
+                  {DEMO_ACCOUNTS.map((acc) => {
+                    const isSelected = username === acc.username;
+                    return (
+                      <button
+                        key={acc.role}
+                        type="button"
+                        onClick={() => {
+                          selectDemoAccount(acc);
+                          setShowDemoAccounts(false);
+                        }}
+                        className={`w-full text-left p-3 border-b border-white/5 last:border-b-0 transition hover:bg-sentinel-900 cursor-pointer ${
+                          isSelected ? "bg-accent-cyan/10" : ""
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-1 mb-1">
+                          <span className={`text-xs font-semibold ${isSelected ? "text-white" : "text-slate-300"}`}>
+                            {acc.title}
+                          </span>
+                          <span
+                            className={`text-[9px] font-mono px-1.5 py-0.5 rounded border uppercase shrink-0 ${acc.badgeColor}`}
+                          >
+                            {acc.role}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 line-clamp-2 leading-tight">
+                          {acc.desc}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="p-4 rounded-xl bg-accent-cyan/5 border border-accent-cyan/15 text-[11px] text-slate-400 font-mono space-y-1">

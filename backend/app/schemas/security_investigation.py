@@ -8,7 +8,7 @@ Sprint 12A — Unified SOC Investigation & Security Case Management.
 
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from pydantic import ConfigDict, BaseModel, Field
 
 
 # ── Case Schemas ─────────────────────────────────────────────────────────────
@@ -58,8 +58,7 @@ class InvestigationCaseResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Artifact Binding Schemas ─────────────────────────────────────────────────
@@ -83,8 +82,7 @@ class ArtifactBindingResponse(BaseModel):
     binding_timestamp: datetime
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Hypothesis Schemas ───────────────────────────────────────────────────────
@@ -123,8 +121,7 @@ class HypothesisResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Finding Schemas ──────────────────────────────────────────────────────────
@@ -151,8 +148,7 @@ class FindingResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Timeline Event Schemas ───────────────────────────────────────────────────
@@ -179,8 +175,7 @@ class TimelineEventResponse(BaseModel):
     sequence_order: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Impact Assessment Schemas ────────────────────────────────────────────────
@@ -210,8 +205,7 @@ class ImpactAssessmentResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Governance Review & Resolution Schemas ───────────────────────────────────
@@ -239,8 +233,7 @@ class InvestigationReviewResponse(BaseModel):
     governance_hash: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class InvestigationResolutionResponse(BaseModel):
@@ -258,8 +251,7 @@ class InvestigationResolutionResponse(BaseModel):
     resolved_at: datetime
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ── Provenance Schemas ───────────────────────────────────────────────────────

@@ -58,11 +58,11 @@ const SAMPLE_PRESETS = [
 
 export default function EvidenceVault() {
   // Ingestion Form State
-  const [sourceName, setSourceName] = useState("perimeter-fw-01");
-  const [sourceType, setSourceType] = useState("firewall");
+  const [sourceName, setSourceName] = useState("");
+  const [sourceType, setSourceType] = useState("");
   const [fileFormat, setFileFormat] = useState("text");
-  const [rawContent, setRawContent] = useState(SAMPLE_PRESETS[0].content);
-  const [metadataJson, setMetadataJson] = useState('{"environment": "production", "zone": "perimeter"}');
+  const [rawContent, setRawContent] = useState("");
+  const [metadataJson, setMetadataJson] = useState("");
   
   // App State
   const [events, setEvents] = useState([]);
@@ -247,7 +247,7 @@ export default function EvidenceVault() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="px-2.5 py-1 rounded-md text-[10px] font-mono tracking-wider font-semibold bg-accent-cyan/10 border border-accent-cyan/30 text-accent-cyan uppercase">
-                Sprint 1 · Active Module
+                Phase 1 · Evidence Integrity Active
               </span>
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-cyan opacity-75"></span>
@@ -255,10 +255,10 @@ export default function EvidenceVault() {
               </span>
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-100">
-              Event Ingestion &amp; Integrity Vault
+              Evidence Vault &amp; Ingestion Engine
             </h1>
             <p className="text-slate-400 text-sm mt-1">
-              Deterministic SHA-256 fingerprinting &amp; immutable raw log preservation.
+              Multi-format log ingestion, deterministic SHA-256 fingerprinting &amp; immutable raw log preservation.
             </p>
           </div>
 

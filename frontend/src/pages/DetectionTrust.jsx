@@ -226,7 +226,8 @@ export default function DetectionTrust() {
   });
 
   return (
-    <div className="p-8 space-y-8 max-w-7xl mx-auto min-h-screen">
+    <main className="flex-1 overflow-y-auto">
+    <div className="p-8 space-y-8 max-w-7xl mx-auto">
       {/* ── SECTION A: HERO HEADER & PIPELINE ───────────────────────────────── */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-indigo-950/40 border border-slate-800 p-8 shadow-2xl backdrop-blur-md">
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
@@ -837,5 +838,6 @@ export default function DetectionTrust() {
         </div>
       )}
     </div>
+    </main>
   );
 }

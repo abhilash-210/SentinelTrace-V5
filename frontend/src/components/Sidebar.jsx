@@ -6,227 +6,209 @@
  * Sprint 4A — Identity & Role-Based Access Control (RBAC).
  */
 
-import React, { useState } from "react";
+import React from "react";
 import { useAuth } from "../context/AuthContext";
 
-const ALL_NAV_ITEMS = [
+const NAV_GROUPS = [
   {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: "⬡",
-    sprint: 0,
-    description: "System overview",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+    group: "Overview",
+    phaseNum: null,
+    color: "slate",
+    subtitle: "System overview",
+    items: [
+      {
+        id: "dashboard",
+        label: "Architecture Dashboard",
+        icon: "⬡",
+        description: "System overview & core pillars",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+    ],
   },
   {
-    id: "evidence-vault",
-    label: "Evidence Vault",
-    icon: "🔒",
-    sprint: 1,
-    description: "Raw log preservation & verification",
-    roles: ["ADMIN", "SECURITY_ANALYST", "AUDITOR"],
+    group: "Ingestion & Evidence",
+    phaseNum: "1",
+    color: "cyan",
+    subtitle: "SHA-256 raw log vault",
+    items: [
+      {
+        id: "evidence-vault",
+        label: "Evidence Vault & Ingest",
+        icon: "🔒",
+        description: "Raw log multi-format ingestion, SHA-256 preservation & integrity verification",
+        roles: ["ADMIN", "SECURITY_ANALYST", "AUDITOR"],
+      },
+      {
+        id: "quarantine",
+        label: "Quarantine (DLQ)",
+        icon: "🏥",
+        description: "Dead letter queue for malformed and unmapped events",
+        roles: ["ADMIN", "SECURITY_ANALYST"],
+      },
+    ],
   },
   {
-    id: "log-ingestion",
-    label: "Log Ingestion",
-    icon: "📥",
-    sprint: 1,
-    description: "Multi-format ingest",
-    roles: ["ADMIN", "SECURITY_ANALYST"],
+    group: "Normalization & Drift",
+    phaseNum: "2",
+    color: "violet",
+    subtitle: "OCSF v1.1.0 alignment",
+    items: [
+      {
+        id: "normalization",
+        label: "OCSF Normalization",
+        icon: "⚙",
+        description: "OCSF canonical alignment & parsing",
+        roles: ["ADMIN", "SECURITY_ANALYST", "AUDITOR"],
+      },
+      {
+        id: "semantic-intelligence",
+        label: "Semantic Drift Detection",
+        icon: "🧠",
+        description: "Interpretation & vendor drift detection",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_REVIEWER", "AUDITOR"],
+      },
+      {
+        id: "semantic-policies",
+        label: "Semantic Policies",
+        icon: "📋",
+        description: "Policy registry & versioning",
+        roles: ["ADMIN", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR"],
+      },
+    ],
   },
   {
-    id: "normalization",
-    label: "Normalization",
-    icon: "⚙",
-    sprint: 2,
-    description: "OCSF canonical alignment & parsing",
-    roles: ["ADMIN", "SECURITY_ANALYST", "AUDITOR"],
+    group: "Zero-Trust Detection",
+    phaseNum: "3",
+    color: "amber",
+    subtitle: "Telemetry trust scoring",
+    items: [
+      {
+        id: "detection-trust",
+        label: "Detection Trust Score",
+        icon: "🛡️",
+        description: "Rule trust evaluation & semantic drift binding",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+      {
+        id: "detection-execution",
+        label: "Rule Execution Engine",
+        icon: "⚡",
+        description: "Real-time deterministic rule execution engine",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+      {
+        id: "detection-rules",
+        label: "Detection Rule Catalog",
+        icon: "🎯",
+        description: "Detection rule registry & field dependencies",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+      {
+        id: "risk-remediation",
+        label: "Risk & Posture",
+        icon: "📊",
+        description: "Risk correlation & prioritized remediation",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+    ],
   },
   {
-    id: "semantic-policies",
-    label: "Semantic Policies",
-    icon: "📋",
-    sprint: 3,
-    description: "Policy registry & versioning",
-    roles: ["ADMIN", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR"],
+    group: "Cryptographic Ledger",
+    phaseNum: "4",
+    color: "emerald",
+    subtitle: "Merkle proof & governance",
+    items: [
+      {
+        id: "cryptographic-ledger",
+        label: "Cryptographic Ledger",
+        icon: "⛓",
+        description: "Hash-chained audit trail",
+        roles: ["ADMIN", "AUDITOR", "SECURITY_ANALYST", "POLICY_REVIEWER", "POLICY_AUTHOR"],
+      },
+      {
+        id: "merkle-audit",
+        label: "Merkle Inclusion Proofs",
+        icon: "🌲",
+        description: "Merkle proofs & auditor verification",
+        roles: ["ADMIN", "AUDITOR", "SECURITY_ANALYST", "POLICY_REVIEWER", "POLICY_AUTHOR", "VIEWER"],
+      },
+      {
+        id: "approvals",
+        label: "Maker-Checker Approval",
+        icon: "⚖️",
+        description: "Dual-control approval workflow",
+        roles: ["ADMIN", "POLICY_REVIEWER", "POLICY_AUTHOR", "AUDITOR"],
+      },
+    ],
   },
   {
-    id: "semantic-intelligence",
-    label: "Semantic Intelligence",
-    icon: "🧠",
-    sprint: 3,
-    description: "Interpretation & drift detection",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_REVIEWER", "AUDITOR"],
-  },
-  {
-    id: "users",
-    label: "User Management",
-    icon: "👥",
-    sprint: 4,
-    description: "Identity & RBAC governance",
-    roles: ["ADMIN"],
-  },
-  {
-    id: "approvals",
-    label: "Policy Governance",
-    icon: "⚖️",
-    sprint: 4,
-    description: "Dual-control maker-checker workflow (Sprint 4B)",
-    roles: ["ADMIN", "POLICY_REVIEWER", "POLICY_AUTHOR", "AUDITOR"],
-  },
-  {
-    id: "cryptographic-ledger",
-    label: "Cryptographic Ledger",
-    icon: "⛓",
-    sprint: 5,
-    description: "Hash-chained audit trail (Sprint 5A)",
-    roles: ["ADMIN", "AUDITOR", "SECURITY_ANALYST", "POLICY_REVIEWER", "POLICY_AUTHOR"],
-  },
-  {
-    id: "merkle-audit",
-    label: "Merkle Audit",
-    icon: "🌲",
-    sprint: 5,
-    description: "Merkle proofs & auditor verification (Sprint 5B)",
-    roles: ["ADMIN", "AUDITOR", "SECURITY_ANALYST", "POLICY_REVIEWER", "POLICY_AUTHOR", "VIEWER"],
-  },
-  {
-    id: "detection-rules",
-    label: "Detection Rules",
-    icon: "🎯",
-    sprint: 6,
-    description: "Detection rule registry & field dependencies (Sprint 6A)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "detection-trust",
-    label: "Detection Trust",
-    icon: "🛡️",
-    sprint: 6,
-    description: "Rule trust evaluation & semantic drift binding (Sprint 6B)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "detection-rule-governance",
-    label: "Rule Governance",
-    icon: "🏛️",
-    sprint: 6,
-    description: "Dual-control approval, versioning & audit (Sprint 6C)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "detection-execution",
-    label: "Rule Execution",
-    icon: "⚡",
-    sprint: 7,
-    description: "Real-time deterministic rule execution engine (Sprint 7A)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "risk-remediation",
-    label: "Risk & Remediation",
-    icon: "🛡️",
-    sprint: 7,
-    description: "Risk correlation, concentration & prioritized remediation (Sprint 7B)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "incidents",
-    label: "Security Incidents",
-    icon: "🚨",
-    sprint: 8,
-    description: "Incident correlation, evidence linking & investigation workspace (Sprint 8A)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "incident-response",
-    label: "Incident Response",
-    icon: "🛑",
-    sprint: 8,
-    description: "Containment decision engine, maker-checker authorization & response verification (Sprint 8B)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "security-assurance",
-    label: "Security Assurance",
-    icon: "💎",
-    sprint: 9,
-    description: "Continuous security assurance & platform health intelligence (Sprint 9A)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "assurance-remediation",
-    label: "Assurance Recovery",
-    icon: "🔄",
-    sprint: 9,
-    description: "Continuous assurance governance, remediation & recovery verification (Sprint 9B)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "executive-security",
-    label: "Executive Command",
-    icon: "👑",
-    sprint: 10,
-    description: "Unified security intelligence & executive risk posture command center (Sprint 10A)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "security-scenarios",
-    label: "Scenario Replay",
-    icon: "🎬",
-    sprint: 10,
-    description: "End-to-end security scenario orchestration & cross-domain evidence replay (Sprint 10B)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "compliance-intelligence",
-    label: "Compliance SOC",
-    icon: "⚖️",
-    sprint: 11,
-    description: "Compliance intelligence, security control governance & evidence-backed assurance (Sprint 11A)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "threat-intelligence",
-    label: "Threat Intelligence",
-    icon: "🌐",
-    sprint: 11,
-    description: "Threat feeds, IOC normalization, trust scoring, adversary context & event correlation (Sprint 11B)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "investigations",
-    label: "SOC Investigations",
-    icon: "🔍",
-    sprint: 12,
-    description: "Unified SOC case management, cross-domain evidence binding & maker-checker governance (Sprint 12A)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "security-analytics",
-    label: "Security Analytics",
-    icon: "📈",
-    sprint: 12,
-    description: "Cross-domain security analytics, reporting, evidence packages & 17-stage provenance (Sprint 12B)",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
-  },
-  {
-    id: "alerts",
-    label: "Drift & Security Alerts",
-    icon: "🔔",
-    sprint: 3,
-    description: "Semantic drift & risk alerts",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_REVIEWER", "AUDITOR"],
-  },
-  {
-    id: "system-health",
-    label: "System Health",
-    icon: "📊",
-    sprint: 0,
-    description: "Infrastructure status",
-    roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+    group: "SOC Operations",
+    phaseNum: null,
+    color: "rose",
+    subtitle: "Response & compliance",
+    items: [
+      {
+        id: "incidents",
+        label: "Security Incidents",
+        icon: "🚨",
+        description: "Incident correlation & investigation workspace",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+      {
+        id: "incident-response",
+        label: "Incident Response",
+        icon: "🛑",
+        description: "Containment decision engine & response authorization",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+      {
+        id: "executive-security",
+        label: "Executive Command",
+        icon: "👑",
+        description: "Unified security intelligence & executive risk posture",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+      {
+        id: "security-scenarios",
+        label: "Scenario Replay",
+        icon: "🎬",
+        description: "End-to-end evidence scenario orchestration & replay",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+      {
+        id: "compliance-intelligence",
+        label: "Compliance Controls",
+        icon: "⚖️",
+        description: "Compliance intelligence & evidence-backed assurance",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+      {
+        id: "security-analytics",
+        label: "Provenance Analytics",
+        icon: "📈",
+        description: "Security analytics & cryptographic evidence packages",
+        roles: ["ADMIN", "SECURITY_ANALYST", "POLICY_AUTHOR", "POLICY_REVIEWER", "AUDITOR", "VIEWER"],
+      },
+      {
+        id: "users",
+        label: "User RBAC",
+        icon: "👥",
+        description: "Identity & RBAC governance",
+        roles: ["ADMIN"],
+      },
+    ],
   },
 ];
+
+// Color mappings for each phase
+const phaseColors = {
+  cyan:    { pill: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40",    dot: "bg-cyan-400",    header: "text-cyan-300",    border: "border-l-cyan-500/60" },
+  violet:  { pill: "bg-violet-500/20 text-violet-300 border-violet-500/40", dot: "bg-violet-400", header: "text-violet-300", border: "border-l-violet-500/60" },
+  amber:   { pill: "bg-amber-500/20 text-amber-300 border-amber-500/40",  dot: "bg-amber-400",  header: "text-amber-300",  border: "border-l-amber-500/60" },
+  emerald: { pill: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40", dot: "bg-emerald-400", header: "text-emerald-300", border: "border-l-emerald-500/60" },
+  rose:    { pill: "bg-rose-500/20 text-rose-300 border-rose-500/40",    dot: "bg-rose-400",    header: "text-rose-300",    border: "border-l-rose-500/60" },
+  slate:   { pill: "bg-slate-700/40 text-slate-300 border-slate-600/40", dot: "bg-slate-400",   header: "text-slate-300",   border: "border-l-slate-500/40" },
+};
 
 const roleBadgeStyles = {
   ADMIN: "bg-purple-950/70 border-purple-500/50 text-purple-300",
@@ -239,16 +221,10 @@ const roleBadgeStyles = {
 
 export default function Sidebar({ activePage, onNavigate }) {
   const { user, logout } = useAuth();
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-
-  // Filter navigation items by active user role
   const userRole = user?.role || "VIEWER";
-  const visibleNavItems = ALL_NAV_ITEMS.filter(
-    (item) => !item.roles || item.roles.includes(userRole)
-  );
 
   return (
-    <aside className="w-64 flex-shrink-0 flex flex-col bg-sentinel-900/80 border-r border-white/10 backdrop-blur-md relative z-20">
+    <aside className="w-72 flex-shrink-0 flex flex-col bg-sentinel-900/80 border-r border-white/10 backdrop-blur-md relative z-20">
 
       {/* ── Brand Header ─────────────────────────────────── */}
       <div className="px-4 py-5 border-b border-white/10">
@@ -262,7 +238,7 @@ export default function Sidebar({ activePage, onNavigate }) {
             <p className="text-xs font-bold text-accent-cyan tracking-[0.2em] uppercase">
               Sentinel-Trace
             </p>
-            <p className="text-[10px] text-slate-500 mt-0.5">v1.0.0 · Sprint 10B Live</p>
+            <p className="text-[10px] text-slate-400 mt-0.5">Zero-Trust SIEM Intelligence</p>
           </div>
         </div>
       </div>
@@ -293,35 +269,61 @@ export default function Sidebar({ activePage, onNavigate }) {
         </div>
       )}
 
-      {/* ── Navigation ───────────────────────────────────── */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        {visibleNavItems.map((item) => {
-          const isActive = activePage === item.id;
-          const isDisabled = item.sprint > 10;
+      {/* ── Navigation by Architectural Phases ───────────── */}
+      <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
+        {NAV_GROUPS.map((section) => {
+          const visibleItems = section.items.filter(
+            (item) => !item.roles || item.roles.includes(userRole)
+          );
+          if (visibleItems.length === 0) return null;
+
+          const c = phaseColors[section.color] || phaseColors.slate;
 
           return (
-            <button
-              key={item.id}
-              onClick={() => !isDisabled && onNavigate(item.id)}
-              title={isDisabled ? `Planned for future sprint (${item.sprint})` : item.description}
-              className={[
-                "nav-link w-full text-left group flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-mono transition cursor-pointer",
-                isActive ? "bg-accent-cyan/15 text-accent-cyan font-bold border border-accent-cyan/30" : "text-slate-400 hover:text-white hover:bg-white/5",
-                isDisabled ? "opacity-40 cursor-not-allowed hover:bg-transparent hover:text-slate-400" : "",
-              ].join(" ")}
-            >
-              <span className="text-base w-5 text-center leading-none">{item.icon}</span>
-              <span className="flex-1 truncate">{item.label}</span>
-              {isDisabled ? (
-                <span className="text-[9px] font-mono text-slate-600 bg-slate-800/60 border border-slate-700 px-1.5 py-0.5 rounded">
-                  S{item.sprint}
-                </span>
-              ) : item.sprint > 0 ? (
-                <span className="text-[9px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-1.5 py-0.5 rounded">
-                  LIVE
-                </span>
-              ) : null}
-            </button>
+            <div key={section.group} className="mb-1">
+
+              {/* ── Phase Header: numbered pill + title on ONE line ── */}
+              <div className="flex items-center gap-2 px-2 pt-3 pb-1.5">
+                {section.phaseNum ? (
+                  <span className={`text-[9px] font-mono font-black px-1.5 py-0.5 rounded border ${c.pill} shrink-0 leading-none`}>
+                    P{section.phaseNum}
+                  </span>
+                ) : (
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0" />
+                )}
+                <div className="min-w-0">
+                  <p className={`text-[11px] font-bold font-mono uppercase tracking-wide leading-none ${c.header}`}>
+                    {section.group}
+                  </p>
+                  <p className="text-[9px] text-slate-500 font-mono mt-0.5 leading-none truncate">
+                    {section.subtitle}
+                  </p>
+                </div>
+              </div>
+
+              {/* ── Items in this Phase ─ left-border accent ── */}
+              <div className={`ml-3 pl-3 border-l border-slate-700/60 space-y-0.5`}>
+                {visibleItems.map((item) => {
+                  const isActive = activePage === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => onNavigate(item.id)}
+                      title={item.description}
+                      className={[
+                        "w-full text-left flex items-center gap-2 px-2 py-1.5 rounded-lg text-[11px] font-mono transition-all cursor-pointer",
+                        isActive
+                          ? `bg-accent-cyan/15 text-accent-cyan font-bold border border-accent-cyan/25`
+                          : "text-slate-400 hover:text-white hover:bg-white/5",
+                      ].join(" ")}
+                    >
+                      <span className="text-xs w-4 text-center leading-none shrink-0">{item.icon}</span>
+                      <span className="truncate">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           );
         })}
       </nav>
@@ -352,7 +354,7 @@ export default function Sidebar({ activePage, onNavigate }) {
         </div>
 
         <p className="text-[9px] text-slate-600 text-center leading-tight pt-1">
-          SENTINEL-TRACE · SIH 2026<br />
+          SENTINEL-TRACE<br />
           Identity & RBAC Governance Active
         </p>
       </div>

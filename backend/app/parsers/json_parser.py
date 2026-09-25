@@ -71,7 +71,7 @@ class JSONParser(BaseParser):
             deductions.append("timestamp missing in JSON payload")
 
         # 2. Canonical Action / Event Type
-        event_type = data.get("event_type") or data.get("action") or data.get("event") or data.get("status")
+        event_type = data.get("action") or data.get("event_type") or data.get("event") or data.get("status")
         if event_type:
             upper_event = str(event_type).upper()
             if "FAIL" in upper_event or "DENY" in upper_event or "ERROR" in upper_event:
@@ -85,14 +85,14 @@ class JSONParser(BaseParser):
             deductions.append("action/event_type field missing")
 
         # 3. Source IP / Client IP
-        src_ip = data.get("client_ip") or data.get("src_ip") or data.get("source_ip") or data.get("ip")
+        src_ip = data.get("src_ip") or data.get("client_ip") or data.get("source_ip") or data.get("ip")
         if src_ip:
             fields["src_ip"] = str(src_ip)
         else:
             fields["src_ip"] = None
 
         # 4. User / Actor
-        user = data.get("username") or data.get("user") or data.get("account") or data.get("actor")
+        user = data.get("user_name") or data.get("username") or data.get("user") or data.get("account") or data.get("actor")
         if user:
             fields["user_name"] = str(user)
         else:

@@ -34,6 +34,8 @@ import ComplianceIntelligence from "./pages/ComplianceIntelligence";
 import ThreatIntelligenceCommandCenter from "./pages/ThreatIntelligenceCommandCenter";
 import SecurityInvestigationCommandCenter from "./pages/SecurityInvestigationCommandCenter";
 import SecurityAnalyticsCommandCenter from "./pages/SecurityAnalyticsCommandCenter";
+import Quarantine from "./pages/Quarantine";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import Login from "./pages/Login";
 
 // Placeholder page for future navigation items
@@ -182,6 +184,9 @@ function MainAppShell() {
       case "evidence-packages":
       case "security-reports":
         return <SecurityAnalyticsCommandCenter />;
+      case "quarantine":
+      case "dlq":
+        return <Quarantine />;
       case "profile":
         return <UserProfile onNavigate={setActivePage} />;
       default:
@@ -192,7 +197,9 @@ function MainAppShell() {
   return (
     <div className="h-full flex overflow-hidden">
       <Sidebar activePage={activePage} onNavigate={setActivePage} />
-      {renderPage()}
+      <ErrorBoundary>
+        {renderPage()}
+      </ErrorBoundary>
     </div>
   );
 }

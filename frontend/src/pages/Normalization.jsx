@@ -638,6 +638,19 @@ export default function Normalization() {
                     )}
                   </div>
 
+                  {/* Unmapped Fields (Lossless Preservation) */}
+                  {selectedNormalized.unmapped_data && Object.keys(selectedNormalized.unmapped_data).length > 0 && (
+                    <div className="space-y-1 text-[11px] p-2.5 rounded bg-slate-950 border border-slate-800">
+                      <div className="text-amber-500/80 font-bold mb-1 text-[10px] uppercase">Unmapped Vendor Fields:</div>
+                      {Object.entries(selectedNormalized.unmapped_data).map(([key, val]) => (
+                        <div key={key} className="flex justify-between">
+                          <span className="text-slate-500">{key}:</span>
+                          <span className="text-slate-300 truncate max-w-[150px]" title={String(val)}>{String(val)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   {/* Confidence Breakdown Reasons */}
                   {selectedNormalized.confidence_reasons && selectedNormalized.confidence_reasons.length > 0 && (
                     <div className="space-y-1">

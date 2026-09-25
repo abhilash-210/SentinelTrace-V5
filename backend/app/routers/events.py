@@ -20,6 +20,7 @@ from app.schemas.event import (
     EventListResponse,
     EventSummaryResponse,
     EventVerificationResponse,
+    PipelineStatsResponse,
 )
 from app.services.event_service import EventService
 
@@ -81,6 +82,26 @@ def list_events(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve event list from database.",
+        ) from exc
+
+@router.get(
+    "/pipeline-stats",
+    response_model=PipelineStatsResponse,
+    summary="Get Pipeline Dashboard Stats",
+    description="Retrieve live pipeline statistics and recent events for the ULPF dashboard.",
+)
+def get_pipeline_stats(
+    current_user: User = Depends(require_permission("EVIDENCE_READ")),
+    db: Session = Depends(get_db),
+) -> PipelineStatsResponse:
+    try:
+        stats = EventService.get_pipeline_stats(db)
+        return PipelineStatsResponse(**stats)
+    except Exception as exc:
+        logger.error("Failed to retrieve pipeline stats: %s", exc, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve pipeline stats.",
         ) from exc
 
 

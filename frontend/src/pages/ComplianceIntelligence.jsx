@@ -225,7 +225,7 @@ export default function ComplianceIntelligence() {
       if (res.ok) {
         const data = await res.json();
         setLatestPosture(data);
-        setStatusMessage({ type: "success", text: `Evaluated ${selectedFramework?.framework_code} Posture: ${data.posture_status} (${data.overall_posture_score.toFixed(1)}/100.0)` });
+        setStatusMessage({ type: "success", text: `Evaluated ${selectedFramework?.framework_code} Posture: ${data.posture_status} (${data.overall_posture_score?.toFixed(1) ?? "--"}/100.0)` });
         fetchMetrics();
       }
     } catch (err) {
@@ -252,7 +252,7 @@ export default function ComplianceIntelligence() {
         const data = await res.json();
         setStatusMessage({
           type: data.cryptographic_integrity_status === "FAILED" ? "warning" : "success",
-          text: `Control ${selectedControl.control_code} evaluated: ${data.effectiveness_status} (${data.effectiveness_score.toFixed(1)}/100.0). Crypto: ${data.cryptographic_integrity_status}`,
+          text: `Control ${selectedControl.control_code} evaluated: ${data.effectiveness_status} (${data.effectiveness_score?.toFixed(1) ?? "--"}/100.0). Crypto: ${data.cryptographic_integrity_status}`,
         });
         selectControl(selectedControl);
         fetchControls();
@@ -452,7 +452,7 @@ export default function ComplianceIntelligence() {
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className={`text-3xl font-extrabold font-mono ${metrics?.global_compliance_index >= 90 ? 'text-emerald-400' : metrics?.global_compliance_index >= 75 ? 'text-cyan-400' : 'text-amber-400'}`}>
-              {metrics ? metrics.global_compliance_index.toFixed(1) : "--"}
+              {metrics?.global_compliance_index != null ? metrics.global_compliance_index.toFixed(1) : "--"}
             </span>
             <span className="text-xs text-slate-500">/ 100.0</span>
           </div>
@@ -635,7 +635,7 @@ export default function ComplianceIntelligence() {
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-slate-400">POSTURE SCORE</span>
                       <span className={`text-xl font-bold px-2 py-0.5 rounded border ${getScoreColor(latestPosture.overall_posture_score)}`}>
-                        {latestPosture.overall_posture_score.toFixed(1)} / 100.0
+                        {latestPosture.overall_posture_score?.toFixed(1) ?? "--"} / 100.0
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
@@ -777,7 +777,7 @@ export default function ComplianceIntelligence() {
                     <div className="bg-sentinel-950 p-3 rounded-lg border border-sentinel-800">
                       <div className="text-[10px] text-slate-500">SCORE & STATUS</div>
                       <div className="text-lg font-bold text-accent-cyan mt-1">
-                        {controlEvaluations[0].effectiveness_score.toFixed(1)} / 100
+                        {controlEvaluations[0].effectiveness_score?.toFixed(1) ?? "--"} / 100
                       </div>
                       <div className="text-[11px] text-slate-400">{controlEvaluations[0].effectiveness_status}</div>
                     </div>

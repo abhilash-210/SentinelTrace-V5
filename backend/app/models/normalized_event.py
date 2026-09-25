@@ -177,6 +177,13 @@ class NormalizedEvent(Base):
         comment="Dictionary of all format-specifically extracted raw key-value pairs",
     )
 
+    unmapped_data = Column(
+        JSONB().with_variant(JSON(), "sqlite"),
+        nullable=False,
+        default=dict,
+        comment="Dictionary of all vendor-specific raw fields that could not be mapped to OCSF",
+    )
+
     # ── Parser & Confidence Metadata ───────────────────────────────────────────
     parser_name = Column(
         String(100),
@@ -250,6 +257,7 @@ class NormalizedEvent(Base):
             "process_name": self.process_name,
             "process_id": self.process_id,
             "raw_data": self.raw_data or {},
+            "unmapped_data": self.unmapped_data or {},
             "parser_name": self.parser_name,
             "parser_version": self.parser_version,
             "source_profile_id": self.source_profile_id,
