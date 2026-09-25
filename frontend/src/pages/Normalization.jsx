@@ -13,7 +13,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+import { API_BASE_URL, getAuthHeaders } from "../apiConfig";
+
+const API_BASE = API_BASE_URL;
 
 export default function Normalization() {
   // Data State
@@ -43,9 +45,9 @@ export default function Normalization() {
     setError(null);
     try {
       const [normRes, rawRes, profRes] = await Promise.all([
-        fetch(`${API_BASE}/api/v1/normalized-events?limit=100`),
-        fetch(`${API_BASE}/api/v1/events?limit=100`),
-        fetch(`${API_BASE}/api/v1/source-profiles`),
+        fetch(`${API_BASE}/api/v1/normalized-events?limit=100`, { headers: { ...getAuthHeaders() } }),
+        fetch(`${API_BASE}/api/v1/events?limit=100`, { headers: { ...getAuthHeaders() } }),
+        fetch(`${API_BASE}/api/v1/source-profiles`, { headers: { ...getAuthHeaders() } }),
       ]);
 
       if (normRes.ok) {
@@ -80,6 +82,7 @@ export default function Normalization() {
     try {
       const res = await fetch(`${API_BASE}/api/v1/events/${eventId}/normalize`, {
         method: "POST",
+        headers: { ...getAuthHeaders() },
       });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -106,11 +109,17 @@ export default function Normalization() {
       if (unnormalized.length === 0) {
         // Re-run all to demonstrate idempotency
         for (const evt of rawEvents.slice(0, 10)) {
-          await fetch(`${API_BASE}/api/v1/events/${evt.event_id}/normalize`, { method: "POST" });
+          await fetch(`${API_BASE}/api/v1/events/${evt.event_id}/normalize`, {
+            method: "POST",
+            headers: { ...getAuthHeaders() },
+          });
         }
       } else {
         for (const evt of unnormalized) {
-          await fetch(`${API_BASE}/api/v1/events/${evt.event_id}/normalize`, { method: "POST" });
+          await fetch(`${API_BASE}/api/v1/events/${evt.event_id}/normalize`, {
+            method: "POST",
+            headers: { ...getAuthHeaders() },
+          });
         }
       }
       setSuccessMsg("Batch normalization completed successfully.");
@@ -130,7 +139,9 @@ export default function Normalization() {
     setSelectedRaw(null);
 
     try {
-      const rawRes = await fetch(`${API_BASE}/api/v1/events/${normEvent.original_event_id}`);
+      const rawRes = await fetch(`${API_BASE}/api/v1/events/${normEvent.original_event_id}`, {
+        headers: { ...getAuthHeaders() },
+      });
       if (rawRes.ok) {
         const rawData = await rawRes.json();
         setSelectedRaw(rawData);

@@ -6,7 +6,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+import { API_BASE_URL, getAuthHeaders } from "../apiConfig";
+
+const API_BASE = API_BASE_URL;
 
 export default function Quarantine() {
   const [quarantinedEvents, setQuarantinedEvents] = useState([]);
@@ -24,7 +26,9 @@ export default function Quarantine() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE}/api/v1/quarantine?status=QUARANTINED&limit=100`);
+      const res = await fetch(`${API_BASE}/api/v1/quarantine?status=QUARANTINED&limit=100`, {
+        headers: { ...getAuthHeaders() },
+      });
       if (res.ok) {
         const data = await res.json();
         setQuarantinedEvents(data.items || []);
@@ -47,7 +51,9 @@ export default function Quarantine() {
     
     // Fetch history
     try {
-      const res = await fetch(`${API_BASE}/api/v1/quarantine/${evt.quarantine_id}/history`);
+      const res = await fetch(`${API_BASE}/api/v1/quarantine/${evt.quarantine_id}/history`, {
+        headers: { ...getAuthHeaders() },
+      });
       if (res.ok) {
         const data = await res.json();
         setReplayHistory(data || []);
@@ -65,7 +71,10 @@ export default function Quarantine() {
     try {
       const res = await fetch(`${API_BASE}/api/v1/quarantine/${selectedEvent.quarantine_id}/replay`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeaders(),
+        },
         body: JSON.stringify({})
       });
       if (!res.ok) {

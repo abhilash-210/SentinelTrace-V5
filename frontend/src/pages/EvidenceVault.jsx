@@ -12,8 +12,9 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
+import { API_BASE_URL, getAuthHeaders } from "../apiConfig";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const API_BASE = API_BASE_URL;
 
 const SAMPLE_PRESETS = [
   {
@@ -88,7 +89,9 @@ export default function EvidenceVault() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE}/api/v1/events?limit=50&offset=0`);
+      const res = await fetch(`${API_BASE}/api/v1/events?limit=50&offset=0`, {
+        headers: { ...getAuthHeaders() },
+      });
       if (!res.ok) throw new Error(`API error: ${res.status}`);
       const data = await res.json();
       setEvents(data.items || []);
@@ -141,7 +144,10 @@ export default function EvidenceVault() {
     try {
       const res = await fetch(`${API_BASE}/api/v1/ingest`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeaders(),
+        },
         body: JSON.stringify({
           source_name: sourceName,
           source_type: sourceType,
@@ -173,7 +179,9 @@ export default function EvidenceVault() {
     setVerificationResult(null);
 
     try {
-      const res = await fetch(`${API_BASE}/api/v1/events/${eventId}/verify`);
+      const res = await fetch(`${API_BASE}/api/v1/events/${eventId}/verify`, {
+        headers: { ...getAuthHeaders() },
+      });
       if (!res.ok) throw new Error("Verification request failed");
       const result = await res.json();
       
@@ -205,7 +213,9 @@ export default function EvidenceVault() {
     setVerificationResult(null);
     setInspectModalOpen(true);
     try {
-      const res = await fetch(`${API_BASE}/api/v1/events/${eventId}`);
+      const res = await fetch(`${API_BASE}/api/v1/events/${eventId}`, {
+        headers: { ...getAuthHeaders() },
+      });
       if (res.ok) {
         const data = await res.json();
         setSelectedEvent(data);
