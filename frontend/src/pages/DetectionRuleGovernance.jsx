@@ -24,8 +24,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { API_V1_URL } from "../apiConfig";
 
-const API_BASE = "/api/v1";
+const API_BASE = API_V1_URL;
 
 const STATUS_CONFIG = {
   DRAFT: {

@@ -9,6 +9,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { API_V1_URL } from "../apiConfig";
 function IconWrapper({ children, className = "w-4 h-4", ...props }) {
   return (
     <svg
@@ -103,7 +104,7 @@ const Compass = (props) => (
   <IconWrapper {...props}><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></IconWrapper>
 );
 
-const API_BASE = "/api/v1/threat-intelligence";
+const API_BASE = `${API_V1_URL}/threat-intelligence`;
 
 export default function ThreatIntelligenceCommandCenter() {
   const { user, token } = useAuth();

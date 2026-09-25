@@ -9,6 +9,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { API_V1_URL } from "../apiConfig";
 
 function IconWrapper({ children, className = "w-4 h-4", ...props }) {
   return (
@@ -77,7 +78,7 @@ const Check = (props) => (
   <IconWrapper {...props}><polyline points="20 6 9 17 4 12"/></IconWrapper>
 );
 
-const API_BASE = "/api/v1/investigations";
+const API_BASE = `${API_V1_URL}/investigations`;
 
 export default function SecurityInvestigationCommandCenter() {
   const { user, token } = useAuth();

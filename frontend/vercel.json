@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:match*",
+      "destination": "https://sentineltrace-v5.onrender.com/api/:match*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://sentineltrace-v5.onrender.com/health"
+    }
+  ]
+}

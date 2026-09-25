@@ -13,7 +13,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function IncidentResponse() {
   const { user } = useAuth();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("sentinel_token") || localStorage.getItem("token");
 
   const [activeTab, setActiveTab] = useState("workspace"); // workspace | review | execution | verification | provenance | playbooks
   const [incidents, setIncidents] = useState([]);
