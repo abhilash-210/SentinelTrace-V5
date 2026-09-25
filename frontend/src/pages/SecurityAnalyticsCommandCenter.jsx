@@ -10,8 +10,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { API_V1_URL } from "../apiConfig";
 
-const API_BASE = "http://localhost:8000/api/v1/security-analytics";
+const API_BASE = `${API_V1_URL}/security-analytics`;
 
 export default function SecurityAnalyticsCommandCenter() {
   const { token, user } = useAuth();

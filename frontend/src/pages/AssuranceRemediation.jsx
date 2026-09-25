@@ -10,6 +10,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../context/AuthContext";
+import { API_V1_URL } from "../apiConfig";
 
 const DOMAINS = [
   "ALL",
@@ -225,7 +226,7 @@ export default function AssuranceRemediation() {
         const token = localStorage.getItem("sentinel_token");
         if (!token) return;
 
-        const kpiRes = await fetch("http://localhost:8000/api/v1/assurance-remediation/kpis/summary", {
+        const kpiRes = await fetch(`${API_V1_URL}/assurance-remediation/kpis/summary`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (kpiRes.ok) {
@@ -233,7 +234,7 @@ export default function AssuranceRemediation() {
           setKpis(kpiData);
         }
 
-        const casesRes = await fetch("http://localhost:8000/api/v1/assurance-remediation/cases", {
+        const casesRes = await fetch(`${API_V1_URL}/assurance-remediation/cases`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (casesRes.ok) {

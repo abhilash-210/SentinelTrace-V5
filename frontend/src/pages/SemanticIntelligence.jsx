@@ -6,8 +6,9 @@
  */
 
 import { useEffect, useState } from "react";
+import { API_V1_URL } from "../apiConfig";
 
-const API_BASE = "http://localhost:8000/api/v1";
+const API_BASE = API_V1_URL;
 
 export default function SemanticIntelligence() {
   const [activeTab, setActiveTab] = useState("interpretations"); // 'interpretations' | 'alerts' | 'policies'

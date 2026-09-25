@@ -19,6 +19,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../context/AuthContext";
+import { API_V1_URL } from "../apiConfig";
 
 const DOMAIN_CONFIGS = {
   EVIDENCE_ASSURANCE: {
@@ -110,7 +111,7 @@ const SEVERITY_BADGES = {
   LOW: "bg-cyan-950/80 border-cyan-500/50 text-cyan-400",
 };
 
-const API_BASE = "http://localhost:8000/api/v1";
+const API_BASE = API_V1_URL;
 
 export default function SecurityAssurance() {
   const { user } = useAuth();

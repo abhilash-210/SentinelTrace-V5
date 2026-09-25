@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import StatusCard from "../components/StatusCard";
+import { API_V1_URL } from "../apiConfig";
 
 export default function Dashboard({ onNavigate }) {
   const [stats, setStats] = useState({
@@ -18,7 +19,7 @@ export default function Dashboard({ onNavigate }) {
     const fetchStats = async () => {
       try {
         const token = localStorage.getItem("sentinel_token");
-        const res = await fetch("http://localhost:8000/api/v1/events/pipeline-stats", {
+        const res = await fetch(`${API_V1_URL}/events/pipeline-stats`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
