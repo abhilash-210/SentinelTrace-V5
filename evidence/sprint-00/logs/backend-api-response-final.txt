@@ -1,7 +1,0 @@
-﻿HTTP/1.1 200 OK
-date: Sun, 06 Sep 2026 11:41:15 GMT
-server: uvicorn
-content-length: 246
-content-type: application/json
-
-{"service":"sentinel-trace-backend","version":"0.1.0","description":"SENTINEL-TRACE: Verifiable Security Log Normalization & Semantic Trust Governance Platform","docs_url":"/docs","health_url":"/health","sprint":"Sprint 0 — Project Foundation"}

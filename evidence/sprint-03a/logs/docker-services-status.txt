@@ -1,4 +1,0 @@
-CONTAINER ID   NAMES                     STATUS                       PORTS
-2a771930d5e3   sentinel-trace-frontend   Up 6 minutes (healthy)       0.0.0.0:3000->80/tcp, [::]:3000->80/tcp
-6e5ab4b88b05   sentinel-trace-backend    Up 6 minutes (healthy)       0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
-18287be108fe   sentinel-trace-db         Up About an hour (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp

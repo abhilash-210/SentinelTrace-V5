@@ -1,7 +1,0 @@
-=== SENTINEL-TRACE V5 — DOCKER SERVICES STATUS ===
-
-NAME                      IMAGE                     COMMAND                  SERVICE    CREATED              STATUS                        PORTS
-sentinel-trace-backend    sentinel-trace-backend    "uvicorn app.main:ap…"   backend    About a minute ago   Up About a minute (healthy)   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp
-sentinel-trace-db         postgres:15-alpine        "docker-entrypoint.s…"   db         41 minutes ago       Up 41 minutes (healthy)       0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
-sentinel-trace-frontend   sentinel-trace-frontend   "/docker-entrypoint.…"   frontend   About a minute ago   Up About a minute (healthy)   0.0.0.0:3000->80/tcp, [::]:3000->80/tcp
-

@@ -1,328 +1,348 @@
 # SentinelTrace V5
 
-**Verifiable Security Log Normalization, Deterministic Intelligence & Cryptographic Lineage Governance Platform**
+## Universal Log Pre-processing Framework (ULPF)
 
-> **Smart India Hackathon 2026** — Cybersecurity Track  
-> **Repository**: [github.com/abhilash-210/SentinelTrace-V5](https://github.com/abhilash-210/SentinelTrace-V5.git)  
-> **Status**: COMPLETE, VERIFIED & FROZEN (Sprint 13 Security Hardened)  
-> **Test Coverage**: **935 / 935 Full Regression Tests Passing** (0 Failures, 0 Errors) | **68 / 68 Sprint 13 Hardening Tests Verified**  
+**Smart India Hackathon 2026 — Problem Statement PS 26156**
 
----
-
-## 1. Project Overview
-
-**SentinelTrace V5** is an enterprise-grade, zero-trust security intelligence platform engineered to eliminate log format chaos and provide mathematical proof of evidence provenance in modern Security Operations Centers (SOCs). 
-
-By pairing multi-vendor log ingestion with **Open Cybersecurity Schema Framework (OCSF v1.1.0)** normalization and a **17-Stage SHA-256 Cryptographic Lineage Chain**, SentinelTrace ensures that security telemetry can be parsed, correlated, investigated, and audited without reliance on vendor-proprietary text formats or unverifiable log servers.
-
-### Core Scope Expansion
-While originally conceived to address raw log parsing and schema mapping, SentinelTrace V5 expands the core normalization pipeline into a complete, end-to-end SOC operations platform incorporating threat intelligence, risk correlation, forensic case management, compliance baselining, zero-trust security analytics, multi-template executive reporting, and Maker-Checker dual governance.
+Security Operations Centers today ingest logs from dozens of heterogeneous sources — firewalls, authentication gateways, servers, cloud services — each using proprietary formats. Traditional log pipelines discard raw payloads after transformation, silently drop malformed events, and make global semantic assumptions that break under vendor-specific context. SentinelTrace V5 is a prototype ULPF platform that addresses this by enforcing an immutable raw-evidence-first architecture: every log is cryptographically sealed before any parsing occurs, failures are quarantined rather than dropped, and every normalized output retains a mathematical tether back to its original evidence.
 
 ---
 
-## 2. Problem Statement
+## Overview
 
-### The Heterogeneous Log Challenge
-Modern Security Operations Centers ingest millions of logs daily across firewalls, endpoints, identity providers, cloud services, and network switches. These logs create critical operational bottlenecks:
+SentinelTrace V5 accepts heterogeneous security logs (Syslog, JSON, CSV), preserves each raw event with a SHA-256 integrity fingerprint, parses and extracts source-specific fields, maps known fields to an OCSF-aligned canonical schema, retains unmapped proprietary fields in a structured JSON blob, validates the result, quarantines failures for human correction and replay, and exports normalized events to both a JSONL SIEM stream and partitioned Parquet files for downstream analytics.
 
-1. **Schema & Field Inconsistency**: The source IP address may appear as `src_ip`, `source_ip`, `src_address`, or `client_ip` depending on the vendor format.
-2. **Format Fragmentation**: JSON, Syslog (Key-Value), CSV, CEF, XML, and Windows Event Logs require separate parsing rules and maintenance overhead.
-3. **Lack of Evidence Integrity**: Standard Syslog transmission uses unencrypted, unauthenticated protocols without cryptographic digests. Adversaries who access log repositories can alter timestamps or delete intrusion evidence without detection.
-4. **False Clean Posture in SIEMs**: Traditional SIEM platforms treat missing or dropped log streams as "0 alerts", generating false clean reports during telemetry outages.
+The platform also includes a broader security intelligence suite (detection rules, semantic policies, risk correlation, incident management, compliance, and analytics) built on top of the normalization core, demonstrating how ULPF output feeds downstream SOC workflows.
 
 ---
 
-## 3. Proposed Solution
+## Key Capabilities
 
-SentinelTrace V5 addresses these challenges through a unified, verifiable security intelligence pipeline:
+**Core ULPF Pipeline (Implemented)**
+- Multi-format log ingestion (Syslog RFC 5424 / RFC 3164, JSON, CSV)
+- Raw evidence preservation — payload stored unaltered before any parsing
+- SHA-256 integrity fingerprint generated at ingestion
+- Source-specific field extraction via declarative parser modules
+- OCSF-aligned canonical normalization (`Network Activity`, `Authentication`, `System Activity`)
+- Unmapped-field preservation in a `unmapped_data` JSON column
+- Deterministic confidence scoring for normalization quality
+- Source Profile Registry — plug-and-play source onboarding without code changes
+- Validation engine with quarantine (Dead-Letter Queue) for failed events
+- Human-in-the-loop correction and replay from preserved evidence
+- Bidirectional traceability: normalized event → original raw evidence
+- SIEM-style JSONL output stream
+- Parquet Data Lake batch export (partitioned by date and source)
+- Live SHA-256 integrity re-verification via API
+- REST API with Swagger documentation
+- Role-Based Access Control (RBAC) with 5 roles and 32 permissions
+- Maker-Checker dual-approval governance
+- Offline / air-gapped operation (zero external SaaS dependencies)
+- Docker / Docker Compose containerized deployment
 
-```
-[Raw Security Evidence] ──> (SHA-256 Evidence Seal)
-          │
-          ▼
-[Multi-Format Ingestion Vault] ──> [OCSF v1.1.0 Normalization Engine]
-          │
-          ▼
-[Semantic Interpretation & Policy Registry] ──> [Detection & Trust Engine]
-          │
-          ▼
-[Threat Intelligence Correlation] ──> [Risk Scoring & Incident Creation]
-          │
-          ▼
-[Forensic Case Investigation] ──> [Assurance & Remediation Recovery]
-          │
-          ▼
-[15-Domain Security Analytics] ──> [17-Stage Cryptographic Lineage Chain]
-          │
-          ▼
-[Executive Security Report] ──> [Reference-Only Evidence Package]
-          │
-          ▼
-[Governance Ledger & Merkle Proof Verification]
-```
-
----
-
-## 4. Key Capabilities
-
-- **Format-Agnostic Normalization**: Parses Syslog, JSON, CSV, and CEF payloads into standardized OCSF v1.1.0 event classes (`Network Activity`, `IAM`, `System Activity`, `Security Finding`).
-- **17-Stage Cryptographic Lineage Chain**: Calculates a SHA-256 hash digest at every stage of data processing and links it to the `previous_hash` of the preceding stage.
-- **Zero-Trust Telemetry Rules**: Mathematical score capping logic ensures missing, stale, or unverified telemetry degrades overall security confidence rather than fabricating high scores.
-- **Maker-Checker Dual Governance**: Privileged administrative actions (rule version approvals, incident containment authorizations) require dual-operator approval ($\text{Proposer User ID} \neq \text{Approver User ID}$).
-- **Threat Intelligence Correlation**: Ingests IOC feeds (IPs, hashes, domains) and correlates entity behavior without automatically promoting raw matches to confirmed incidents.
-- **15-Domain Security Analytics**: Evaluates platform security health across 15 distinct domains into point-in-time snapshots (`SAS-YYYY-NNN`).
-- **Reference-Only Evidence Packaging**: Synthesizes executive evidence packages (`SEP-YYYY-NNN`) that bind artifact SHA-256 hashes without duplicating heavy raw payloads.
-- **Multi-Layer Tamper Verification**: Recalculates canonical JSON hashes (`compute_canonical_hash`) to detect 1-bit payload modifications across reports and lineage chains.
+**Extended Security Intelligence (Built on ULPF output)**
+- Semantic policy engine with vendor-scoped drift detection
+- Detection rules with trust scoring
+- Risk correlation and incident management
+- Compliance intelligence and security analytics
+- Executive reporting with cryptographic provenance chain
 
 ---
 
-## 5. Architecture
-
-### High-Level System Architecture
+## Architecture
 
 ```mermaid
 graph TD
-    UI[React 18 + Vite Frontend Command Centers] -->|REST API / JWT| API[FastAPI API Gateway Layer]
-    API --> AUTH[OAuth2 / RBAC Authorization Engine]
-    API --> NORM[OCSF Normalization & Parsing Service]
-    API --> DET[Detection Engine & Trust Metric Evaluator]
-    API --> INTEL[Threat Intel & Risk Correlation Service]
-    API --> INC[Security Incident & Case Management]
-    API --> ANALYTICS[15-Domain Security Analytics Engine]
-    
-    NORM --> ORM[SQLAlchemy 2.0 ORM Models]
-    DET --> ORM
-    INTEL --> ORM
-    INC --> ORM
-    ANALYTICS --> ORM
-    
-    ORM --> DB[(SQLite / PostgreSQL Database)]
-    ANALYTICS --> LINEAGE[17-Stage Cryptographic Provenance Service]
-    LINEAGE --> LEDGER[Append-Only Governance Ledger & Merkle Tree]
+    SRC["Heterogeneous Log Sources<br/>Syslog · JSON · CSV"] -->|POST /api/v1/ingest| ING
+
+    subgraph CORE["SentinelTrace ULPF Core"]
+        ING["Ingestion Service<br/>SHA-256 Seal"] --> VAULT["Raw Evidence Vault<br/>(Immutable)"]
+        VAULT --> DETECT["Source Detector<br/>& Profile Registry"]
+        DETECT --> PARSE["Parser Engine<br/>SyslogParser · JSONParser · CSVParser"]
+        PARSE --> NORM["OCSF Normalization<br/>+ Unmapped Field Preservation"]
+        NORM --> VAL{Validation}
+        VAL -->|Valid| OUTPUT["Normalized Event"]
+        VAL -->|Invalid| DLQ["Quarantine / DLQ<br/>Human Fix & Replay"]
+        DLQ -->|Corrected| PARSE
+    end
+
+    OUTPUT --> SIEM["JSONL SIEM Stream"]
+    OUTPUT --> LAKE["Parquet Data Lake"]
+    OUTPUT --> INTEL["Downstream Security Intelligence"]
+    VAULT -->|Trace Link| OUTPUT
 ```
 
 ---
 
-## 6. End-to-End Workflow
+## How It Works
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Edge as Edge Log Device / Ingestor
-    participant API as FastAPI Ingest Endpoint
-    participant Vault as Raw Evidence Vault
-    participant OCSF as Normalization Engine
-    participant Det as Detection Engine
-    participant Case as Investigation Workspace
-    participant Analytics as Security Analytics Engine
-    participant Provenance as 17-Stage Lineage Service
-    participant Ledger as Merkle Governance Ledger
-
-    Edge->>API: POST /api/v1/ingest (Raw Payload)
-    API->>Vault: Seal SHA-256 raw_content_hash & Store (evt_...)
-    Vault->>OCSF: Extract fields & map to OCSF v1.1.0 (norm_...)
-    OCSF->>Det: Evaluate Detection Rules & Update Trust Metric
-    Det->>Case: Create Security Incident & Investigation Case (arc_...)
-    Case->>Analytics: Trigger 15-Domain Evaluation & Snapshot (SAS-YYYY-NNN)
-    Analytics->>Provenance: Generate 17-Stage Hash Lineage Chain
-    Provenance->>Ledger: Commit Root Block to Merkle Governance Ledger
-```
+1. **Ingest** — A log payload arrives via `POST /api/v1/ingest`. The raw content is stored verbatim with a SHA-256 hash before any transformation begins.
+2. **Detect** — The Source Detector reads the `source_type` and `file_format` to select the appropriate parser and source profile.
+3. **Parse** — The selected parser (`SyslogParser`, `JSONParser`, or `CSVParser`) extracts structured fields from the raw string.
+4. **Normalize** — Extracted fields are mapped to OCSF canonical columns (`src_ip`, `dst_ip`, `action`, `protocol`, `user_name`, etc.). Fields not in the OCSF schema are stored in `unmapped_data`.
+5. **Validate** — A confidence score is calculated. Events below threshold are routed to the Quarantine queue with the failure reason.
+6. **Quarantine & Replay** — A human analyst inspects the quarantined event, corrects the payload, and submits a replay. The replay executes against the *original* preserved evidence, not the corrected version (the correction is applied at re-parse time).
+7. **Export** — Validated `NORMALIZED` events are appended to the JSONL forwarder log and batched into Parquet partition files.
+8. **Trace** — Every normalized event carries an `original_event_id` foreign key. The Trace Link in the UI resolves this back to the raw evidence record with its SHA-256 hash for live re-verification.
 
 ---
 
-## 7. Technology Stack
+## Technology Stack
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| **Frontend Framework** | React 18, Vite 5 | Reactive UI rendering and SPA bundle optimization |
-| **UI Components & Styling** | Lucide React, Vanilla CSS | Glassmorphism custom design system tokens |
-| **Routing & Navigation** | React Router DOM v6 | Single Page Application route management |
-| **Backend API Framework** | FastAPI 0.109+ (Python 3.11/3.12) | High-performance asynchronous REST API gateway |
-| **Database ORM** | SQLAlchemy 2.0 | Schema-isolated object-relational database mapping |
-| **Database Engine** | SQLite 3 (`sentinel_trace.db`) | Local persistent relational datastore (`sentinel` schema) |
-| **Validation & Serialization**| Pydantic v2 | Strict request body validation and response serialization |
-| **Authentication & RBAC** | OAuth2 Password Bearer, PyJWT | JSON Web Tokens, password hashing, 32 permissions |
-| **Cryptography** | Standard Python `hashlib` (SHA-256) | Canonical JSON hashing, hash chaining, Merkle trees |
-| **Automated Testing** | Python `unittest` framework | 935 platform regression tests & 68 hardening tests |
-
----
-
-## 8. Security & Governance
-
-- **Authentication**: JWT access tokens signed via HMAC-SHA256 (`HS256`).
-- **Role-Based Access Control (RBAC)**: Enforces 5 distinct system roles (`ADMIN`, `SECURITY_ANALYST`, `SECURITY_REVIEWER`, `COMPLIANCE_AUDITOR`, `VIEWER`) across 32 granular permissions.
-- **Maker-Checker Dual Governance**: Proposer ID cannot equal Approver ID for privileged rule modifications, containment authorizations, or remediation plans.
-- **Canonical Hash Determinism**: Keys are sorted alphabetically and whitespace stripped before hashing (`compute_canonical_hash`), ensuring cross-platform hash consistency.
-- **Fail-Safe Closed Behavior**: Unauthenticated write attempts return HTTP 401; unauthorized role access returns HTTP 403; bad payload structures return HTTP 400/422.
-
-*Note: Automated security tests verify implemented controls and invariants; they do not imply absolute zero-vulnerability guarantees.*
+| Layer | Technology |
+|---|---|
+| Frontend | React 18 + Vite 5 |
+| Routing | React Router DOM v6 |
+| Backend API | Python 3.11/3.12 + FastAPI 0.111 |
+| ORM | SQLAlchemy 2.0 |
+| Database | SQLite (local dev) / PostgreSQL 15 (Docker) |
+| Migrations | Alembic |
+| Validation | Pydantic v2 |
+| Auth | JWT (python-jose) + bcrypt (passlib) |
+| Cryptography | Python `hashlib` SHA-256 |
+| Data Export | pandas + pyarrow (Parquet) |
+| Container | Docker + Docker Compose |
+| Testing | Python `unittest` |
 
 ---
 
-## 9. Testing & Verification Results
-
-The SentinelTrace V5 test suite provides comprehensive verification across unit logic, API routers, database models, cryptographic tamper detection, and RBAC boundary enforcement.
-
-### 1. Sprint 13 Security Hardening Suite (`tests/test_sprint13_final_hardening.py`)
-- **Total Tests**: 68
-- **Passed**: 66 OK
-- **Skipped**: 2 (legitimate endpoint guards for optional containment routes)
-- **Failures / Errors**: 0
-
-### 2. Full Platform Regression Suite
-- **Execution Command**: `python -m unittest discover -s tests -p "test_*.py"`
-- **Total Tests**: **935**
-- **Passed**: **933 OK**
-- **Skipped**: 2
-- **Failures / Errors**: **0**
-- **Suite Execution Time**: 74.64s
-
-*Note: The automated test suite proves the implementation of functional contracts and security invariants, but does not substitute for third-party penetration testing.*
-
----
-
-## 10. Project Structure
+## Project Structure
 
 ```
-SENTINEL-TRACE/
-├── .env.example                      # Environment variables template
-├── .gitignore                         # Version control ignore rules
-├── README.md                          # Master GitHub documentation
-├── docker-compose.yml                 # Multi-container orchestration config
-├── backend/                           # FastAPI Backend Application
+SentinelTrace-V5/
+├── README.md                   # This file
+├── .env.example                # Environment variable template
+├── .gitignore
+├── start_app.bat               # Windows one-click launcher
+├── stop_app.bat                # Windows one-click shutdown
+├── start_app.ps1               # PowerShell launcher
+├── stop_app.ps1                # PowerShell shutdown
+├── docker-compose.yml          # Multi-container orchestration
+│
+├── backend/
 │   ├── app/
-│   │   ├── core/                      # Auth, RBAC permissions, configuration
-│   │   ├── models/                    # 27 SQLAlchemy ORM data models
-│   │   ├── parsers/                   # Multi-format log parsing utilities
-│   │   ├── routers/                   # 29 FastAPI REST API router modules
-│   │   ├── schemas/                   # Pydantic validation schemas
-│   │   └── services/                  # 25 domain logic services
-│   ├── tests/                         # Test suites (935 regression tests)
-│   └── sentinel_trace.db              # SQLite development database
-├── frontend/                          # React + Vite Frontend Application
+│   │   ├── core/               # Security: auth, RBAC, JWT
+│   │   ├── models/             # SQLAlchemy ORM models (27 files)
+│   │   ├── parsers/            # Log parsers: syslog, json, csv
+│   │   ├── routers/            # FastAPI route handlers (33 modules)
+│   │   ├── schemas/            # Pydantic request/response schemas
+│   │   ├── services/           # Business logic layer
+│   │   ├── config.py           # Settings (reads from .env)
+│   │   ├── database.py         # Engine, session, SQLite fallback
+│   │   └── main.py             # Application entry point
+│   ├── migrations/             # Alembic schema migrations
+│   ├── tests/                  # Test suites (35 test modules)
+│   ├── outputs/                # Generated exports (gitignored at runtime)
+│   └── requirements.txt
+│
+├── frontend/
 │   ├── src/
-│   │   ├── components/                # Shared UI cards, headers, sidebars
-│   │   └── pages/                     # 26 React Command Center pages
-│   ├── package.json                   # Frontend node dependencies
-│   └── vite.config.js                 # Vite bundler configuration
-├── prototype project report/          # Complete 24-Document Technical Report Package
-│   ├── FINAL_PROJECT_REPORT.md        # Master 32-section project report
-│   ├── ARCHITECTURE.md                # Technical architecture reference
-│   ├── DATABASE_ARCHITECTURE.md       # ORM model database reference
-│   ├── SIH_DEMO_GUIDE.md              # 5–10 minute judge demonstration script
-│   └── SETUP_AND_RUN_GUIDE.md         # Full installation & setup guide
-├── sample-data/                       # Synthetic sample log payloads
-└── scratch/                           # Seeding scripts (seed_sih_demo.py)
+│   │   ├── components/         # Shared UI components
+│   │   ├── context/            # Auth context (JWT management)
+│   │   └── pages/              # 26 UI page modules
+│   ├── package.json
+│   └── vite.config.js
+│
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── DEMO_GUIDE.md
+│   ├── FINAL_PROJECT_REPORT.md
+│   ├── SIH_REQUIREMENT_MAPPING.md
+│   ├── API_REFERENCE.md
+│   ├── TESTING_AND_VERIFICATION.md
+│   └── LIMITATIONS_AND_FUTURE_SCOPE.md
+│
+├── scripts/
+│   ├── live_telemetry_simulator.py   # Pushes synthetic events via API
+│   ├── seed_sih_demo.py              # Seeds demo data
+│   └── verify_4_phases.py           # CLI end-to-end pipeline check
+│
+└── examples/
+    └── sample_logs/                  # Sample Syslog, JSON, CSV payloads
 ```
 
 ---
 
-## 11. Installation
+## Installation
 
 ### Prerequisites
-- **Python 3.11 or 3.12**
-- **Node.js 18+** and `npm`
+- **Python 3.11 or 3.12** (not 3.13+)
+- **Node.js 18+** with npm
 - **Git**
 
-### Step-by-Step Setup
+### Quick Setup (Windows)
 
-1. **Clone the repository**:
-   ```powershell
-   git clone https://github.com/abhilash-210/SentinelTrace-V5.git
-   cd SentinelTrace-V5
-   ```
+```bat
+git clone https://github.com/abhilash-210/SentinelTrace-V5.git
+cd SentinelTrace-V5
 
-2. **Set up the Backend**:
-   ```powershell
-   cd backend
-   python -m venv .venv
-   .\.venv\Scripts\Activate.ps1
-   pip install -r requirements.txt
-   ```
-
-3. **Set up the Frontend**:
-   ```powershell
-   cd ../frontend
-   npm install
-   ```
-
-4. **Initialize Demo Data**:
-   ```powershell
-   cd ..
-   & "backend/.venv/Scripts/python.exe" -m scratch.seed_sih_demo
-   ```
-
----
-
-## 12. Running the Application
-
-### 1. Start Backend API Server
-```powershell
-cd backend
-uvicorn app.main:app --reload --port 8000
+REM Run the launcher — it sets up venv and npm automatically
+start_app.bat
 ```
-- **API Base URL**: `http://localhost:8000`
-- **Swagger Documentation**: `http://localhost:8000/docs`
-- **Health Check Endpoint**: `http://localhost:8000/api/v1/health`
 
-### 2. Start Frontend UI Development Server
+### Manual Setup
+
 ```powershell
+# 1. Clone
+git clone https://github.com/abhilash-210/SentinelTrace-V5.git
+cd SentinelTrace-V5
+
+# 2. Backend
+cd backend
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+cd ..
+
+# 3. Frontend
+cd frontend
+npm install
+cd ..
+
+# 4. Start backend (separate terminal)
+cd backend
+uvicorn app.main:app --port 8000
+
+# 5. Start frontend (separate terminal)
 cd frontend
 npm run dev
 ```
-- **UI Command Center**: `http://localhost:5173`
+
+### Docker Setup
+
+```bash
+cp .env.example .env
+# Edit .env with secure passwords
+docker compose up --build
+```
 
 ---
 
-## 13. Demonstration
+## Quick Start
 
-To conduct a live demonstration of SentinelTrace V5, use the pre-configured demo credentials:
+```bat
+start_app.bat      # Starts backend + frontend + opens browser
+stop_app.bat       # Safely stops both services
+```
 
-| Role | Username | Password | Key Demo Features |
+After startup:
+- **Dashboard**: http://localhost:5173
+- **API Docs (Swagger)**: http://localhost:8000/docs
+- **Health Check**: http://localhost:8000/api/v1/health
+
+**Demo login credentials:**
+
+| Role | Username | Password |
+|---|---|---|
+| System Administrator | `admin_demo` | `SentinelDemo!2026` |
+| Security Analyst | `analyst_demo` | `SentinelDemo!2026` |
+| Policy Reviewer | `reviewer_demo` | `SentinelDemo!2026` |
+| Compliance Auditor | `auditor_demo` | `SentinelDemo!2026` |
+| Read-Only Viewer | `viewer_demo` | `SentinelDemo!2026` |
+
+---
+
+## Core API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/v1/auth/login` | Authenticate and receive JWT |
+| `POST` | `/api/v1/ingest` | Submit a raw log for preservation + normalization |
+| `GET` | `/api/v1/events` | List preserved raw events |
+| `GET` | `/api/v1/events/{event_id}` | Inspect a specific raw event |
+| `GET` | `/api/v1/events/{event_id}/verify` | Re-verify SHA-256 integrity live |
+| `POST` | `/api/v1/events/{event_id}/normalize` | Trigger normalization explicitly |
+| `GET` | `/api/v1/normalization/events` | List canonical normalized events |
+| `GET` | `/api/v1/quarantine` | List quarantined / failed events |
+| `POST` | `/api/v1/quarantine/replay` | Submit corrected payload for replay |
+| `GET` | `/api/v1/source-profiles` | List registered source profiles |
+| `GET` | `/api/v1/export/parquet` | Trigger Parquet Data Lake export |
+| `GET` | `/api/v1/health` | Backend health check |
+
+Full Swagger documentation: `http://localhost:8000/docs`
+
+---
+
+## SIH PS 26156 Requirement Mapping
+
+| Req | Requirement | Status | Implementation |
 |---|---|---|---|
-| Admin | `admin_demo` | `password` | System overview, user management, rule proposals |
-| Security Analyst | `analyst_demo` | `password` | Log triage, incident investigation, case timeline |
-| Security Reviewer | `reviewer_demo` | `password` | Dual approval, containment authorization |
-| Compliance Auditor | `auditor_demo` | `password` | Governance ledger inspection, report verification |
-| Executive Viewer | `viewer_demo` | `password` | Executive posture dashboard, read-only analytics |
-
-For the complete 5–10 minute step-by-step judge presentation script and visual guide, refer directly to:
-👉 [`prototype project report/SIH_DEMO_GUIDE.md`](prototype%20project%20report/SIH_DEMO_GUIDE.md)
-
----
-
-## 14. Comprehensive Documentation Package
-
-The complete project documentation package is located in the [`prototype project report/`](prototype%20project%20report/) directory and contains 24 technical reference documents:
-
-- **Master Executive Summary**: [`FINAL_PROJECT_REPORT.md`](prototype%20project%20report/FINAL_PROJECT_REPORT.md)
-- **Architecture Reference**: [`ARCHITECTURE.md`](prototype%20project%20report/ARCHITECTURE.md)
-- **Backend Architecture**: [`BACKEND_ARCHITECTURE.md`](prototype%20project%20report/BACKEND_ARCHITECTURE.md)
-- **Frontend Architecture**: [`FRONTEND_ARCHITECTURE.md`](prototype%20project%20report/FRONTEND_ARCHITECTURE.md)
-- **Database Architecture**: [`DATABASE_ARCHITECTURE.md`](prototype%20project%20report/DATABASE_ARCHITECTURE.md)
-- **Cryptographic Security**: [`CRYPTOGRAPHIC_SECURITY.md`](prototype%20project%20report/CRYPTOGRAPHIC_SECURITY.md)
-- **Security Governance & RBAC**: [`SECURITY_GOVERNANCE.md`](prototype%20project%20report/SECURITY_GOVERNANCE.md)
-- **SIH Judge Defense Q&A**: [`PROJECT_EXPLANATION_FOR_JUDGES.md`](prototype%20project%20report/PROJECT_EXPLANATION_FOR_JUDGES.md)
-- **Limitations & Future Scope**: [`LIMITATIONS_AND_FUTURE_SCOPE.md`](prototype%20project%20report/LIMITATIONS_AND_FUTURE_SCOPE.md)
+| a | Preserve complete raw event data | ✅ Implemented | `IngestedEvent.raw_content` stored verbatim; SHA-256 hash sealed before parsing |
+| b | Extract and parse source-specific attributes | ✅ Implemented | `SyslogParser`, `JSONParser`, `CSVParser` extract fields per source profile |
+| c | Normalize into common event taxonomy | ✅ Implemented | OCSF-aligned schema: `class_uid`, `action`, `src_ip`, `dst_ip`, `user_name` |
+| d | Maintain traceability to original events | ✅ Implemented | `original_event_id` FK on every normalized/quarantined event; Trace Link UI |
+| e | Plug-and-play source onboarding | ✅ Implemented | `SourceProfile` table; new sources added via API without code changes |
+| f | Unified visibility | ✅ Implemented | React dashboard with live pipeline stats (total, normalized, quarantined) |
+| g | SIEM / Data Lake integration | ✅ Implemented | JSONL forwarder stream + partitioned Parquet export |
+| h | AI/ML-ready analytics | ✅ Implemented | Parquet output is tabular and ready for ML frameworks |
+| i | Reduced parser development effort | ✅ Implemented | Source profiles decouple source config from parser code |
+| j | Offline / air-gapped deployment | ✅ Implemented | Zero external SaaS dependencies; runs fully offline |
+| k | Container packaging | ✅ Implemented | `Dockerfile` + `docker-compose.yml` for reproducible deployment |
 
 ---
 
-## 15. Current Limitations
+## Demonstrated Prototype Capabilities
 
-1. **Development Relational Database**: Uses an embedded SQLite backend (`sentinel_trace.db`) for rapid dev setup. Production deployment requires migration to PostgreSQL / TimescaleDB.
-2. **In-Process Pipeline Execution**: Log ingestion, parsing, and hash calculations execute within the FastAPI application process. Production scaling requires distributed streaming workers (Apache Kafka + Redis).
-3. **In-Application Key Management**: Cryptographic signing keys are managed via environment variables. Production deployments should anchor keys to a Hardware Security Module (HSM) or AWS KMS.
+The following have been manually verified on the running prototype:
+
+- Raw log ingestion via REST API (Syslog, JSON, CSV)
+- SHA-256 fingerprint generation and live re-verification
+- Normalization pipeline producing OCSF-class events
+- Unmapped proprietary fields retained in `unmapped_data`
+- Malformed JSON event quarantined (not dropped)
+- Human correction and replay producing a `NORMALIZED` result
+- Trace Link resolving normalized event back to raw evidence
+- JSONL SIEM stream appended after normalization
+- Parquet file written to `backend/outputs/datalake/`
+- Offline operation on local machine (no internet required)
+- Docker Compose build and startup verified
 
 ---
 
-## 16. Future Scope Roadmap
+## Testing
 
-- **Distributed Streaming Workers**: Scale ingestion throughput to 100,000+ EPS using Rust-based edge agents and Apache Kafka.
-- **Hardware Security Module (HSM) Root Anchoring**: Anchor Merkle tree root hashes to enterprise HSMs or public immutable ledgers (Ethereum / Polygon).
-- **Automated SIEM Export Adapters**: Export OCSF-normalized events back into existing enterprise SIEMs (Splunk, Microsoft Sentinel).
+```powershell
+cd backend
+.venv\Scripts\Activate.ps1
+
+# ULPF core tests
+python -m pytest tests/test_sprint1_ingestion.py tests/test_sprint2_normalization.py tests/test_sprint2c_quarantine.py -v
+
+# Full regression suite
+python -m unittest discover -s tests -p "test_*.py"
+```
+
+The test suite includes 35 test modules covering ingestion, normalization, quarantine, replay, RBAC, semantic policies, detection rules, incident management, compliance, and analytics.
+
+> **Note**: Some tests use SQLite in-memory databases. Tests that depend on PostgreSQL-specific features (JSONB, schema namespacing) may be skipped in local SQLite mode. This is expected and does not affect application functionality.
 
 ---
 
-## 17. License
+## Current Limitations
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details. Developed for Smart India Hackathon 2026.
+1. **Single-process ingestion** — Log parsing and normalization run within the FastAPI application process. Production would require async worker queues (e.g., Celery, Kafka consumers).
+2. **SQLite local database** — The application auto-falls back to SQLite when PostgreSQL is unavailable. SQLite is not suitable for concurrent high-volume ingestion.
+3. **Parser coverage** — Active parser modules cover Syslog (RFC 5424 / 3164 / Cisco ASA format), JSON, and CSV. CEF and custom vendor formats require additional parser modules.
+4. **Throughput not benchmarked** — No load testing has been performed. EPS capacity is unknown.
+5. **In-process key management** — JWT secrets are environment variables. Production deployments should use a secrets manager.
+
+See [`docs/LIMITATIONS_AND_FUTURE_SCOPE.md`](docs/LIMITATIONS_AND_FUTURE_SCOPE.md) for details.
+
+---
+
+## Future Scope
+
+- Distributed ingestion workers (Celery / Apache Kafka)
+- PostgreSQL + TimescaleDB for time-series optimized storage
+- Additional source-pack parsers (CEF, Windows Event Log, LEEF)
+- Dedicated SIEM push adapters (Splunk HEC, Microsoft Sentinel)
+- Object storage for Data Lake (AWS S3, GCS)
+- High-volume load benchmarking and performance optimization
+- Secrets management via HashiCorp Vault or AWS KMS
+
+---
+
+## License
+
+MIT License — See [LICENSE](LICENSE) for details.
+
+Developed for Smart India Hackathon 2026 by Team SentinelTrace.

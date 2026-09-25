@@ -1,7 +1,0 @@
-﻿HTTP/1.1 200 OK
-date: Sun, 06 Sep 2026 11:41:15 GMT
-server: uvicorn
-content-length: 171
-content-type: application/json
-
-{"status":"healthy","service":"sentinel-trace-backend","version":"0.1.0","environment":"development","database":"connected","timestamp":"2026-09-06T11:41:15.818773+00:00"}
