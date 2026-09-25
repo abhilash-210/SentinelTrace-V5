@@ -51,6 +51,8 @@ backend/outputs/*
 # ── Test Artifacts ─────────────────────────────────
 *.log
 *.txt
+!requirements.txt
+!backend/requirements.txt
 report.xml
 pytest_output*
 backend/report.xml
